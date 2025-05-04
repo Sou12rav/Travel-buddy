@@ -1,0 +1,129 @@
+Build an advanced mobile application called Buddy, an all-in-one AI-powered travel assistant for India. The app should combine travel planning, live updates, chatbot support, location-aware suggestions, bookings, and visual guidance. The centerpiece is Buddy, an AI chatbot like ChatGPT, capable of handling any travel-related (or casual) query with updated, conversational, and context-aware responses.
+
+🤖 Chatbot: Buddy (like ChatGPT, but for Travelers)
+Tech Base: GPT-based language model with real-time function-calling and API integration.
+
+Tone: Friendly, warm, informative — like a well-traveled friend who knows everything.
+
+Memory: Should retain conversation context for follow-up queries.
+
+Response Quality: Human-like, accurate, fast, updated.
+
+✅ Chatbot Buddy Must Answer:
+Here are example queries the chatbot must handle naturally and intelligently:
+
+🌐 Navigation, Weather, and Places
+“How’s the weather in Shimla right now?”
+
+“Suggest 3 lesser-known but amazing places to visit in Jaipur.”
+
+“Show me a walking tour plan for Fort Kochi.”
+
+“Which cities in India are cooler than 20°C right now?”
+
+“Can you give me a monsoon-safe itinerary for Goa?”
+
+🧳 Planning and Booking
+“Compare cab fares from my hotel to Mumbai Airport.”
+
+“Book a hotel near India Gate within ₹2000.”
+
+“What’s the average cost of a 3-day trip to Varanasi?”
+
+“How do I get from Manali to Leh – flights or road?”
+
+“Plan me a solo travel itinerary for Kerala with budget hostels.”
+
+🛡️ Safety & Health
+“Is it safe to travel to Manipur this week?”
+
+“Nearest 24x7 hospital from my location?”
+
+“Any recent COVID alerts in Chennai?”
+
+“Are there dengue cases reported in Kolkata this week?”
+
+🍽️ Food & Culture
+“Best places to try Rajasthani thali in Udaipur?”
+
+“Can I get vegan food near Darjeeling Mall Road?”
+
+“Tell me something about Kolkata’s Durga Puja.”
+
+💬 Fun, Casual, Unexpected Queries
+“Tell me a spooky story from Indian travel history.”
+
+“What’s a fun fact about Hampi?”
+
+“Crack a travel-related joke.”
+
+“Can you write a haiku about Goa?”
+
+💸 Budget and Costing
+“What’s cheaper: train or flight from Delhi to Lucknow?”
+
+“Help me plan a ₹10,000 trip to Northeast India.”
+
+“List cab fares from my hotel to 3 tourist spots.”
+
+🚨 Emergency Help
+“Emergency SOS – I’m stuck in a remote place.”
+
+“Where’s the nearest police station?”
+
+🗺️ Map & Real-Time Interface
+Interactive map interface that:
+
+Highlights temperature, hotels, food joints, and sightseeing spots.
+
+Marks safety zones (color-coded), and "traveler alerts."
+
+Works by detecting user’s location OR selecting a city (e.g., "Kolkata").
+
+Shows nearby:
+
+Hospitals
+
+Hotels
+
+ATMs
+
+Bookable cabs or autos
+
+Tourist attractions
+
+Location-aware chatbot support: “What’s cool near me?”
+
+✨ Design Brief (Elegant & Attractive UI)
+Theme: Smooth gradients, modern icons, immersive city visuals.
+
+Interface:
+
+Home screen with current location, weather, alerts, and “Ask Buddy” button.
+
+Chatbot screen like ChatGPT with voice input, memory bubbles, and clickable suggestions.
+
+Maps panel for destination-based view.
+
+Experience: Should feel premium, intuitive, and built for passionate travelers.
+
+🔧 Suggested Tech Stack
+Frontend: Flutter or React Native
+
+Backend: FastAPI + Python or Node.js
+
+Chatbot: OpenAI GPT with tools/functions for:
+
+Weather (OpenWeather)
+
+Maps/Places (Google Maps, Mapbox)
+
+News (NewsAPI)
+
+Booking (Zomato, Uber/Ola, Booking.com, MakeMyTrip APIs)
+
+Emergency contact (Indian public datasets)
+
+Database: Firebase / MongoDB
+
+Hosting: AWS / Google Cloud
