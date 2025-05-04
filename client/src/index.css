@@ -1,0 +1,97 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Roboto:wght@300;400;500;700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --background: 0 0% 98%;
+  --foreground: 240 10% 3.9%;
+  --muted: 60 4.8% 95.9%;
+  --muted-foreground: 25 5.3% 44.7%;
+  --popover: 0 0% 100%;
+  --popover-foreground: 240 10% 3.9%;
+  --card: 0 0% 100%;
+  --card-foreground: 240 10% 3.9%;
+  --border: 240 5.9% 90%;
+  --input: 240 5.9% 90%;
+  --primary: 346 83% 67%; /* #FF5A5F */
+  --primary-foreground: 0 0% 100%;
+  --secondary: 174 100% 33%; /* #00A699 */
+  --secondary-foreground: 0 0% 100%;
+  --accent: 43 100% 50%; /* #FFB400 */
+  --accent-foreground: 240 5.9% 10%;
+  --destructive: 0 84.2% 60.2%;
+  --destructive-foreground: 0 0% 98%;
+  --ring: 346 83% 67%;
+  --radius: 0.5rem;
+}
+
+.dark {
+  --background: 240 10% 3.9%;
+  --foreground: 0 0% 98%;
+  --muted: 240 3.7% 15.9%;
+  --muted-foreground: 240 5% 64.9%;
+  --popover: 240 10% 3.9%;
+  --popover-foreground: 0 0% 98%;
+  --card: 240 10% 3.9%;
+  --card-foreground: 0 0% 98%;
+  --border: 240 3.7% 15.9%;
+  --input: 240 3.7% 15.9%;
+  --primary: 346 83% 67%;
+  --primary-foreground: 0 0% 100%;
+  --secondary: 174 100% 33%;
+  --secondary-foreground: 0 0% 100%;
+  --accent: 43 100% 50%;
+  --accent-foreground: 0 0% 100%;
+  --destructive: 0 62.8% 30.6%;
+  --destructive-foreground: 0 0% 98%;
+  --ring: 240 4.9% 83.9%;
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply font-roboto antialiased bg-background text-foreground;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    @apply font-poppins;
+  }
+}
+
+@layer components {
+  .chat-message {
+    @apply max-w-[80%] mb-3 leading-normal relative overflow-hidden;
+  }
+  
+  .chat-message.user {
+    @apply ml-auto bg-primary text-white rounded-[18px_18px_4px_18px];
+  }
+  
+  .chat-message.assistant {
+    @apply mr-auto bg-white text-foreground rounded-[18px_18px_18px_4px] border;
+  }
+  
+  .suggestion-chip {
+    @apply whitespace-nowrap px-4 py-2 rounded-full text-sm font-medium transition duration-200 hover:-translate-y-[2px];
+  }
+  
+  .map-marker {
+    @apply absolute w-5 h-5 bg-white border-2 border-primary rounded-full cursor-pointer transition-transform duration-200 hover:scale-125;
+  }
+}
+
+.typing-indicator::after {
+  content: '...';
+  animation: typing 1.5s infinite;
+}
+
+@keyframes typing {
+  0% { content: '.'; }
+  33% { content: '..'; }
+  66% { content: '...'; }
+}
