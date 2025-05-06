@@ -4,12 +4,13 @@ import { QueryClientProvider } from "@tanstack/react-query";
 import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import NotFound from "@/pages/not-found";
-import Home from "@/pages/test-home";
+import Home from "@/pages/home";
 import Chat from "@/pages/chat";
 import Itinerary from "@/pages/itinerary";
 import Profile from "@/pages/profile";
 import BottomNavigation from "@/components/bottom-navigation";
 import { useEffect, useState } from "react";
+import { AppProvider } from "./lib/api_context";
 
 function Router() {
   const [location] = useLocation();
@@ -43,12 +44,14 @@ function Router() {
 
 function App() {
   return (
-    <QueryClientProvider client={queryClient}>
-      <TooltipProvider>
-        <Toaster />
-        <Router />
-      </TooltipProvider>
-    </QueryClientProvider>
+    <AppProvider>
+      <QueryClientProvider client={queryClient}>
+        <TooltipProvider>
+          <Toaster />
+          <Router />
+        </TooltipProvider>
+      </QueryClientProvider>
+    </AppProvider>
   );
 }
 
