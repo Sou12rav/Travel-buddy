@@ -873,8 +873,16 @@ function AddToItineraryButton({ placeId, placeDetails }: { placeId?: string, pla
                   setShowCreateItineraryModal(false);
                   
                   // If we have place details, add the place to the new itinerary
-                  if (placeId && placeDetails && newItinerary.itinerary) {
-                    await addToItinerary(newItinerary.itinerary.id);
+                  if (placeId && placeDetails) {
+                    const id = newItinerary?.itinerary?.id || 
+                               (typeof newItinerary === 'object' && 'id' in newItinerary ? newItinerary.id : null);
+                    
+                    if (id && typeof id === 'number') {
+                      await addToItinerary(id);
+                    } else {
+                      console.error("Couldn't determine itinerary ID from response", newItinerary);
+                      alert("Itinerary created but couldn't add place. Please try adding it manually.");
+                    }
                   } else {
                     // Just show success message
                     alert("Itinerary created successfully!");

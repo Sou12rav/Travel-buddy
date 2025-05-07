@@ -329,10 +329,31 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // ==== Itinerary Routes ====
   apiRouter.post("/itineraries", async (req, res) => {
     try {
-      const itineraryData = insertItinerarySchema.parse(req.body);
+      // Create a modified schema with a string date that we'll convert to a Date
+      const modifiedSchema = z.object({
+        userId: z.number(),
+        title: z.string(),
+        city: z.string(),
+        date: z.string().or(z.date()), // Accept string or date
+        activities: z.any()
+      });
+      
+      // Parse the incoming data with our more flexible schema
+      const parsedData = modifiedSchema.parse(req.body);
+      
+      // Convert the date to a Date object if it's a string
+      const itineraryData = {
+        ...parsedData,
+        date: parsedData.date instanceof Date ? 
+          parsedData.date : 
+          new Date(parsedData.date),
+        activities: parsedData.activities || [] // Ensure activities is never undefined
+      };
+      
       const itinerary = await storage.createItinerary(itineraryData);
       res.status(201).json({ itinerary });
     } catch (error) {
+      console.error("Itinerary creation error:", error);
       res.status(400).json({ message: "Invalid itinerary data", error });
     }
   });
