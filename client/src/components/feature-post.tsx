@@ -113,12 +113,32 @@ export default function FeaturePost({ post, onViewDetails }: FeaturePostProps) {
         onClick={handleViewDetails}
       >
         {post.mediaUrl ? (
-          <img 
-            src={post.mediaUrl} 
-            alt={post.content || "Post image"} 
-            className="w-full object-cover"
-            style={{ maxHeight: '500px' }}
-          />
+          <div className="w-full h-full">
+            {post.mediaUrl.endsWith('.svg') ? (
+              <div className="w-full bg-gray-50 flex items-center justify-center">
+                <object 
+                  data={post.mediaUrl} 
+                  type="image/svg+xml"
+                  className="w-full" 
+                  style={{ height: '400px' }}
+                >
+                  <img 
+                    src={post.mediaUrl} 
+                    alt={post.content || "Post image"} 
+                    className="w-full object-contain"
+                    style={{ maxHeight: '400px' }}
+                  />
+                </object>
+              </div>
+            ) : (
+              <img 
+                src={post.mediaUrl} 
+                alt={post.content || "Post image"} 
+                className="w-full object-cover"
+                style={{ maxHeight: '500px' }}
+              />
+            )}
+          </div>
         ) : (
           <div className="w-full h-60 bg-gray-200 flex items-center justify-center">
             <span className="text-gray-500">No image</span>

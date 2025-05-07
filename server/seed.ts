@@ -347,6 +347,13 @@ const commentContents = [
   "Adding this to my bucket list right now!"
 ];
 
+// Custom SVG images for the feed
+const svgImages = [
+  "/images/taj-mahal.svg",
+  "/images/gateway-of-india.svg",
+  "/images/golden-temple.svg"
+];
+
 function getRandomItem<T>(array: T[]): T {
   return array[Math.floor(Math.random() * array.length)];
 }
@@ -508,14 +515,7 @@ export async function seedDatabase(storage: IStorage) {
       await storage.createSavedPlace(place);
     }
 
-    // New local SVG images for premium quality and faster loading
-    const svgImages = [
-      "/images/taj-mahal.svg",
-      "/images/gateway-of-india.svg", 
-      "/images/golden-temple.svg",
-      "/images/kerala-backwaters.svg",
-      "/images/jaipur-palace.svg"
-    ];
+    // Using our SVG images for premium quality and faster loading
     
     // Create posts for all users (3-5 posts per user)
     for (const user of createdUsers) {
