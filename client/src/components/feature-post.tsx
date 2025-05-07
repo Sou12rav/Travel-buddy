@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Post } from '@shared/schema';
+import { Post, User as UserType } from '@shared/schema';
 import { 
   Heart, 
   MessageCircle, 
@@ -13,9 +13,14 @@ import { useApp } from '../lib/api_context';
 import { apiRequestJson } from '@/lib/queryClient';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 
+// Define extended Post type that includes author information
+interface PostWithAuthor extends Post {
+  author?: UserType;
+}
+
 interface FeaturePostProps {
-  post: Post;
-  onViewDetails?: (post: Post) => void;
+  post: PostWithAuthor;
+  onViewDetails?: (post: PostWithAuthor) => void;
 }
 
 export default function FeaturePost({ post, onViewDetails }: FeaturePostProps) {
@@ -26,9 +31,7 @@ export default function FeaturePost({ post, onViewDetails }: FeaturePostProps) {
 
   const { mutate: likePost } = useMutation({
     mutationFn: async (postId: number) => {
-      return apiRequestJson(`/api/posts/${postId}/like`, {
-        method: 'POST'
-      });
+      return apiRequestJson(`/api/posts/${postId}/like`, 'POST');
     },
     onSuccess: () => {
       setIsLiked(!isLiked);
@@ -48,8 +51,8 @@ export default function FeaturePost({ post, onViewDetails }: FeaturePostProps) {
   };
 
   // Format date in a friendly way
-  const formatDate = (dateString: string) => {
-    const date = new Date(dateString);
+  const formatDate = (dateValue: Date | string) => {
+    const date = dateValue instanceof Date ? dateValue : new Date(dateValue);
     return date.toLocaleDateString('en-US', {
       year: 'numeric',
       month: 'long', 

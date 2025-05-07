@@ -524,9 +524,24 @@ export async function registerRoutes(app: Express): Promise<Server> {
   });
   
   apiRouter.get("/feed/:userId", async (req, res) => {
-    const userId = parseInt(req.params.userId);
-    const posts = await storage.getFeedPosts(userId);
-    res.json({ posts });
+    try {
+      const userId = parseInt(req.params.userId);
+      const posts = await storage.getFeedPosts(userId);
+      
+      // Enhance posts with author information
+      const enhancedPosts = await Promise.all(posts.map(async (post) => {
+        if (post.userId) {
+          const author = await storage.getUser(post.userId);
+          return { ...post, author };
+        }
+        return post;
+      }));
+      
+      res.json({ posts: enhancedPosts });
+    } catch (error) {
+      console.error("Error fetching feed posts:", error);
+      res.status(500).json({ message: "Internal server error" });
+    }
   });
   
   apiRouter.post("/posts", async (req, res) => {

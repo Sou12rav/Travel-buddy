@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { Post } from '@shared/schema';
+import { Post, User as UserType } from '@shared/schema';
 import { useApp } from '../lib/api_context';
 import FeaturePost from '@/components/feature-post';
 import { 
@@ -19,6 +19,11 @@ import {
   MapPin, 
   Bookmark 
 } from 'lucide-react';
+
+// Define extended Post type that includes author information
+interface PostWithAuthor extends Post {
+  author?: UserType;
+}
 
 export default function Feed() {
   const { currentUser } = useApp();
