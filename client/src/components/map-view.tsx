@@ -18,13 +18,16 @@ export default function MapView({ fullMap = false }: { fullMap?: boolean }) {
   const [markers, setMarkers] = useState<MapMarker[]>([]);
   const mapContainerRef = useRef<HTMLDivElement>(null);
   
-  const { data: destinations, isLoading } = useQuery({
+  const { data, isLoading } = useQuery({
     queryKey: [`/api/destinations/${currentCity}`]
   });
 
+  // Extract destinations from response
+  const destinationsData = data?.destinations || [];
+
   useEffect(() => {
-    if (destinations) {
-      const newMarkers = destinations.map((dest: any) => ({
+    if (destinationsData && destinationsData.length > 0) {
+      const newMarkers = destinationsData.map((dest: any) => ({
         id: dest.id,
         title: dest.name,
         type: dest.type,
@@ -32,7 +35,7 @@ export default function MapView({ fullMap = false }: { fullMap?: boolean }) {
       }));
       setMarkers(newMarkers);
     }
-  }, [destinations]);
+  }, [destinationsData]);
 
   // Function to get proper marker icon based on type
   const getMarkerIcon = (type: string) => {

@@ -5,10 +5,13 @@ import { useQuery } from "@tanstack/react-query";
 export default function LocationHeader() {
   const { currentCity, getWeather } = useApp();
   
-  const { data: weather, isLoading } = useQuery({
+  const { data, isLoading } = useQuery({
     queryKey: [`/api/weather/${currentCity}`],
     refetchInterval: 1000 * 60 * 15, // Refetch every 15 minutes
   });
+
+  // Extract weather data from response
+  const weatherData = data?.weather || null;
 
   return (
     <header className="bg-white shadow-sm">
@@ -27,12 +30,12 @@ export default function LocationHeader() {
                 <div className="h-5 w-5 bg-gray-200 rounded-full mr-1"></div>
                 <div className="h-5 w-12 bg-gray-200 rounded"></div>
               </div>
-            ) : weather ? (
+            ) : weatherData ? (
               <>
                 <span className="material-icons text-accent mr-1">
-                  {weather.icon}
+                  {weatherData.icon}
                 </span>
-                <span className="font-medium">{weather.temperature}°C</span>
+                <span className="font-medium">{weatherData.temperature}°C</span>
               </>
             ) : (
               <div className="flex items-center">

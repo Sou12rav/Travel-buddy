@@ -5,10 +5,13 @@ import { Info, AlertTriangle, AlertCircle } from "lucide-react";
 export default function TravelAlerts() {
   const { currentCity, getTravelAlerts } = useApp();
   
-  const { data: alerts, isLoading, error } = useQuery({
+  const { data, isLoading, error } = useQuery({
     queryKey: [`/api/alerts/${currentCity}`],
     refetchInterval: 1000 * 60 * 10, // Refetch every 10 minutes
   });
+
+  // Extract alerts array from response
+  const alertsData = data?.alerts || [];
 
   if (isLoading) {
     return (
@@ -22,7 +25,7 @@ export default function TravelAlerts() {
     );
   }
 
-  if (error || !alerts || alerts.length === 0) {
+  if (error || alertsData.length === 0) {
     return (
       <section className="px-4 py-3">
         <h2 className="font-poppins font-semibold text-dark mb-3">Travel Alerts</h2>
@@ -42,7 +45,7 @@ export default function TravelAlerts() {
   return (
     <section className="px-4 py-3">
       <h2 className="font-poppins font-semibold text-dark mb-3">Travel Alerts</h2>
-      {alerts.map((alert: any) => {
+      {alertsData.map((alert: any) => {
         // Determine alert icon and color based on severity
         let Icon = Info;
         let borderColor = "border-blue-500";

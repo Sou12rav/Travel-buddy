@@ -4,7 +4,6 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useApp } from "../lib/api_context";
 import LocationHeader from "@/components/location-header";
 import QuickActions from "@/components/quick-actions";
-import MapView from "@/components/map-view";
 import PopularDestinations from "@/components/popular-destinations";
 import TravelAlerts from "@/components/travel-alerts";
 import { WelcomeSuggestions } from "@/components/suggestion-chips";
@@ -59,15 +58,6 @@ export default function Home() {
       
       {/* Quick Actions */}
       <QuickActions />
-      
-      {/* Map View */}
-      <section className="px-4 py-3">
-        <div className="flex justify-between items-center mb-3">
-          <h2 className="font-poppins font-semibold text-dark">Explore Nearby</h2>
-          <button className="text-primary text-sm font-medium">View Full Map</button>
-        </div>
-        <MapView />
-      </section>
       
       {/* Popular Destinations */}
       <PopularDestinations />
