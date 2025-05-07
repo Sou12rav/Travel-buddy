@@ -83,10 +83,10 @@ export default function TravelTips({ location, weather }: TravelTipsProps) {
 
     // Filter by weather condition if available
     let relevantTips = [...availableTips];
-    if (weather) {
+    if (weather && weather.condition) {
       const weatherCondition = weather.condition.toLowerCase();
       const isRainy = weatherCondition.includes("rain") || weatherCondition.includes("shower");
-      const isHot = weather.temperature > 30;
+      const isHot = weather && weather.temperature > 30;
 
       // Apply weather filters
       if (isRainy) {
@@ -98,14 +98,16 @@ export default function TravelTips({ location, weather }: TravelTipsProps) {
       }
     }
 
-    // Filter by location
-    const locationLower = location.toLowerCase();
-    const locationTips = relevantTips.filter(tip => 
-      locationLower.includes(tip.condition.toLowerCase())
-    );
-    
-    if (locationTips.length > 0) {
-      relevantTips = locationTips;
+    // Filter by location if location is defined
+    if (location && typeof location === 'string') {
+      const locationLower = location.toLowerCase();
+      const locationTips = relevantTips.filter(tip => 
+        locationLower.includes(tip.condition.toLowerCase())
+      );
+      
+      if (locationTips.length > 0) {
+        relevantTips = locationTips;
+      }
     }
 
     // Sort by priority (lower number = higher priority)

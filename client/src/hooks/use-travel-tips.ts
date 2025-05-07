@@ -3,7 +3,7 @@ import { useLocation } from "@/hooks/use-location";
 import { useWeather } from "@/hooks/use-weather";
 
 export function useTravelTips() {
-  const { city } = useLocation();
+  const location = useLocation();
   const { weather } = useWeather();
   const [showTips, setShowTips] = useState(true);
   const [lastTipTime, setLastTipTime] = useState<number | null>(null);
@@ -35,7 +35,7 @@ export function useTravelTips() {
   };
   
   return {
-    city,
+    city: location?.city || "",
     weather: weather ? {
       condition: weather.condition,
       temperature: weather.temperature

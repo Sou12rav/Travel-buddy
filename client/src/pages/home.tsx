@@ -17,13 +17,6 @@ export default function Home() {
   const queryClient = useQueryClient();
   const { city, weather, showTips, markTipShown } = useTravelTips();
   
-  // When a tip is shown, mark it
-  useEffect(() => {
-    if (showTips) {
-      markTipShown();
-    }
-  }, [city, weather]);
-  
   // Create a new conversation when clicking the chat button
   const { mutate: startConversation } = useMutation({
     mutationFn: async () => {
