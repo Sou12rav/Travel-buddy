@@ -27,16 +27,16 @@ interface PostWithAuthor extends Post {
 
 export default function Feed() {
   const { currentUser } = useApp();
-  const [selectedPost, setSelectedPost] = useState<Post | null>(null);
+  const [selectedPost, setSelectedPost] = useState<PostWithAuthor | null>(null);
   const [isPostDialogOpen, setIsPostDialogOpen] = useState(false);
   const [comment, setComment] = useState('');
 
-  const { data: feedData, isLoading } = useQuery({
+  const { data: feedData, isLoading } = useQuery<{posts: PostWithAuthor[]}>({
     queryKey: [`/api/feed/${currentUser?.id}`],
     enabled: !!currentUser,
   });
 
-  const handleViewPost = (post: Post) => {
+  const handleViewPost = (post: PostWithAuthor) => {
     setSelectedPost(post);
     setIsPostDialogOpen(true);
   };
@@ -71,7 +71,7 @@ export default function Feed() {
 
       {posts.length > 0 ? (
         <div className="mt-2">
-          {posts.map((post: Post) => (
+          {posts.map((post: PostWithAuthor) => (
             <FeaturePost
               key={post.id}
               post={post}
