@@ -292,10 +292,19 @@ export async function registerRoutes(app: Express): Promise<Server> {
         res.json({ message: savedMessage });
       } catch (error) {
         console.error("OpenAI API error:", error);
-        // If OpenAI API fails, provide a fallback response
+        
+        // Determine the type of error and provide appropriate message
+        let errorMessage = "I'm having trouble connecting to my knowledge base right now. Please try again in a moment.";
+        
+        // Check for quota exceeded error
+        if (error.code === 'insufficient_quota') {
+          errorMessage = "The API key for my knowledge base has exceeded its usage limit. Please contact the app administrator to update the API key.";
+        }
+        
+        // If OpenAI API fails, provide a specific response
         const fallbackMessage = await storage.createMessage({
           conversationId,
-          content: "I'm having trouble connecting to my knowledge base right now. Please try again in a moment.",
+          content: errorMessage,
           role: "assistant"
         });
         

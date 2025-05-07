@@ -75,7 +75,7 @@ export default function Chat() {
             <>
               {/* Chat Messages */}
               {Array.isArray(messages) && messages.map((message) => (
-                <ChatBubble key={message.id} message={message} />
+                <ChatBubble key={message.id} message={message as any} />
               ))}
               
               {/* Show typing indicator when assistant is responding */}
