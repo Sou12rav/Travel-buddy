@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useLocation } from "wouter";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useApp } from "../lib/api_context";
@@ -6,6 +6,8 @@ import LocationHeader from "@/components/location-header";
 import QuickActions from "@/components/quick-actions";
 import PopularDestinations from "@/components/popular-destinations";
 import TravelAlerts from "@/components/travel-alerts";
+import TravelTips from "@/components/travel-tips";
+import { useTravelTips } from "@/hooks/use-travel-tips";
 import { WelcomeSuggestions } from "@/components/suggestion-chips";
 import { MessageSquare } from "lucide-react";
 
@@ -13,6 +15,14 @@ export default function Home() {
   const [, navigate] = useLocation();
   const { currentUser, createConversation } = useApp();
   const queryClient = useQueryClient();
+  const { city, weather, showTips, markTipShown } = useTravelTips();
+  
+  // When a tip is shown, mark it
+  useEffect(() => {
+    if (showTips) {
+      markTipShown();
+    }
+  }, [city, weather]);
   
   // Create a new conversation when clicking the chat button
   const { mutate: startConversation } = useMutation({
@@ -69,6 +79,9 @@ export default function Home() {
       >
         <MessageSquare size={24} />
       </button>
+      
+      {/* Contextual Travel Tips */}
+      {showTips && city && <TravelTips location={city} weather={weather} />}
     </div>
   );
 }
