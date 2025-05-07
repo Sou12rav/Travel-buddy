@@ -7,7 +7,10 @@ import {
   insertConversationSchema, 
   insertMessageSchema, 
   insertItinerarySchema, 
-  insertSavedPlaceSchema
+  insertSavedPlaceSchema,
+  insertPostSchema,
+  insertCommentSchema,
+  insertFriendshipSchema
 } from "@shared/schema";
 import OpenAI from "openai";
 import type { ChatCompletionMessageParam } from "openai/resources/chat/completions";
@@ -454,6 +457,121 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
     
     res.json({ alerts });
+  });
+  
+  // ==== Social Platform Routes ====
+  
+  // Posts Routes
+  apiRouter.get("/posts/:id", async (req, res) => {
+    const id = parseInt(req.params.id);
+    const post = await storage.getPost(id);
+    if (!post) {
+      return res.status(404).json({ message: "Post not found" });
+    }
+    res.json({ post });
+  });
+  
+  apiRouter.get("/users/:userId/posts", async (req, res) => {
+    const userId = parseInt(req.params.userId);
+    const posts = await storage.getUserPosts(userId);
+    res.json({ posts });
+  });
+  
+  apiRouter.get("/feed/:userId", async (req, res) => {
+    const userId = parseInt(req.params.userId);
+    const posts = await storage.getFeedPosts(userId);
+    res.json({ posts });
+  });
+  
+  apiRouter.post("/posts", async (req, res) => {
+    try {
+      const postData = insertPostSchema.parse(req.body);
+      const post = await storage.createPost(postData);
+      res.status(201).json({ post });
+    } catch (error) {
+      res.status(400).json({ message: "Invalid post data", error });
+    }
+  });
+  
+  apiRouter.delete("/posts/:id", async (req, res) => {
+    const id = parseInt(req.params.id);
+    const success = await storage.deletePost(id);
+    if (!success) {
+      return res.status(404).json({ message: "Post not found" });
+    }
+    res.json({ success: true });
+  });
+  
+  apiRouter.post("/posts/:id/like", async (req, res) => {
+    const id = parseInt(req.params.id);
+    const post = await storage.likePost(id);
+    if (!post) {
+      return res.status(404).json({ message: "Post not found" });
+    }
+    res.json({ post });
+  });
+  
+  // Comments Routes
+  apiRouter.get("/posts/:postId/comments", async (req, res) => {
+    const postId = parseInt(req.params.postId);
+    const comments = await storage.getPostComments(postId);
+    res.json({ comments });
+  });
+  
+  apiRouter.post("/comments", async (req, res) => {
+    try {
+      const commentData = insertCommentSchema.parse(req.body);
+      const comment = await storage.createComment(commentData);
+      res.status(201).json({ comment });
+    } catch (error) {
+      res.status(400).json({ message: "Invalid comment data", error });
+    }
+  });
+  
+  apiRouter.delete("/comments/:id", async (req, res) => {
+    const id = parseInt(req.params.id);
+    const success = await storage.deleteComment(id);
+    if (!success) {
+      return res.status(404).json({ message: "Comment not found" });
+    }
+    res.json({ success: true });
+  });
+  
+  // Friendship Routes
+  apiRouter.get("/users/:userId/friends", async (req, res) => {
+    const userId = parseInt(req.params.userId);
+    const friends = await storage.getUserFriends(userId);
+    res.json({ friends });
+  });
+  
+  apiRouter.get("/users/:userId/friend-requests", async (req, res) => {
+    const userId = parseInt(req.params.userId);
+    const requests = await storage.getPendingFriendRequests(userId);
+    res.json({ requests });
+  });
+  
+  apiRouter.post("/friendships", async (req, res) => {
+    try {
+      const friendshipData = insertFriendshipSchema.parse(req.body);
+      const friendship = await storage.sendFriendRequest(friendshipData);
+      res.status(201).json({ friendship });
+    } catch (error) {
+      res.status(400).json({ message: "Invalid friendship data", error });
+    }
+  });
+  
+  apiRouter.put("/friendships/:id", async (req, res) => {
+    try {
+      const id = parseInt(req.params.id);
+      const { status } = req.body;
+      const friendship = await storage.updateFriendshipStatus(id, status);
+      if (!friendship) {
+        return res.status(404).json({ message: "Friendship not found" });
+      }
+      res.json({ friendship });
+    } catch (error) {
+      res.status(400).json({ message: "Invalid friendship data", error });
+    }
   });
 
   const httpServer = createServer(app);

@@ -8,6 +8,7 @@ import Home from "@/pages/home";
 import Chat from "@/pages/chat";
 import Itinerary from "@/pages/itinerary";
 import Profile from "@/pages/profile";
+import Social from "@/pages/social";
 import BottomNavigation from "@/components/bottom-navigation";
 import { useEffect, useState } from "react";
 import { AppProvider } from "./lib/api_context";
@@ -23,6 +24,7 @@ function Router() {
     else if (path === "chat") setActiveTab("chat");
     else if (path === "itinerary") setActiveTab("itinerary");
     else if (path === "profile") setActiveTab("profile");
+    else if (path === "social") setActiveTab("social");
   }, [location]);
 
   return (
@@ -33,6 +35,7 @@ function Router() {
           <Route path="/chat/:id" component={Chat} />
           <Route path="/itinerary" component={Itinerary} />
           <Route path="/profile" component={Profile} />
+          <Route path="/social" component={Social} />
           <Route component={NotFound} />
         </Switch>
       </div>

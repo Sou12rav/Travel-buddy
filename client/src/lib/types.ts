@@ -59,3 +59,38 @@ export interface ChatMessage {
 export interface MessagesResponse {
   messages: Array<ChatMessage>;
 }
+
+export interface User {
+  id: number;
+  username: string;
+  displayName: string;
+  email: string;
+  preferences: any;
+}
+
+export interface Post {
+  id: number;
+  userId: number;
+  content: string;
+  mediaUrl: string;
+  mediaType: string; // 'image', 'video', 'reel'
+  location: string;
+  createdAt: string;
+  likes: number;
+}
+
+export interface Comment {
+  id: number;
+  postId: number;
+  userId: number;
+  content: string;
+  createdAt: string;
+}
+
+export interface Friendship {
+  id: number;
+  userId: number;
+  friendId: number;
+  status: string; // 'pending', 'accepted', 'rejected'
+  createdAt: string;
+}
