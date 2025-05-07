@@ -50,6 +50,7 @@ export const itineraries = pgTable("itineraries", {
   date: timestamp("date").notNull(),
   city: text("city").notNull(),
   activities: jsonb("activities").notNull(),
+  metadata: jsonb("metadata"), // For storing additional info like budget, transportation, etc.
   createdAt: timestamp("created_at").defaultNow().notNull(),
 });
 
@@ -59,6 +60,7 @@ export const insertItinerarySchema = createInsertSchema(itineraries).pick({
   date: true,
   city: true,
   activities: true,
+  metadata: true,
 });
 
 export const savedPlaces = pgTable("saved_places", {
