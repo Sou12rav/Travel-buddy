@@ -1,7 +1,7 @@
 import { useState, useRef, ChangeEvent } from "react";
 import { useApp } from "../lib/api_context";
 import { 
-  User, 
+  User as UserIcon, 
   Bell, 
   Moon, 
   Globe, 
@@ -27,7 +27,7 @@ import {
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Switch } from "@/components/ui/switch";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Post } from "@shared/schema";
+import { Post, type User as UserType } from "@shared/schema";
 import { apiRequestJson } from "@/lib/queryClient";
 import { 
   Dialog, 
@@ -69,6 +69,8 @@ export default function Profile() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [comment, setComment] = useState("");
   const [likedPosts, setLikedPosts] = useState<Record<number, boolean>>({});
+  const [isFollowersDialogOpen, setIsFollowersDialogOpen] = useState(false);
+  const [isFollowingDialogOpen, setIsFollowingDialogOpen] = useState(false);
   
   // Fetch user posts
   const { data: postsData, isLoading: isLoadingPosts } = useQuery({
@@ -76,7 +78,23 @@ export default function Profile() {
     enabled: !!currentUser,
   });
   
+  // Fetch followers
+  const { data: followersData, isLoading: isLoadingFollowers } = useQuery({
+    queryKey: [`/api/users/${currentUser?.id}/followers`],
+    enabled: !!currentUser,
+  });
+  
+  // Fetch following
+  const { data: followingData, isLoading: isLoadingFollowing } = useQuery({
+    queryKey: [`/api/users/${currentUser?.id}/following`],
+    enabled: !!currentUser,
+  });
+  
   const posts = postsData?.posts || [];
+  const followers = followersData?.followers || [];
+  const following = followingData?.following || [];
+  const followerCount = followers.length;
+  const followingCount = following.length;
   
   // Handle preference updates
   const { mutate: updatePreference } = useMutation({
@@ -246,7 +264,7 @@ export default function Profile() {
       <section className="px-4 py-6 bg-white">
         <div className="flex items-center">
           <div className="w-20 h-20 rounded-full bg-primary/10 flex items-center justify-center mr-4 relative">
-            <User className="text-primary" size={32} />
+            <UserIcon className="text-primary" size={32} />
             <button className="absolute right-0 bottom-0 bg-primary text-white p-1 rounded-full">
               <Camera size={14} />
             </button>
@@ -265,12 +283,24 @@ export default function Profile() {
             <div className="font-semibold">{posts.length}</div>
             <div className="text-gray-500 text-sm">Posts</div>
           </div>
-          <div className="flex-1">
-            <div className="font-semibold">148</div>
+          <div 
+            className="flex-1 cursor-pointer" 
+            onClick={() => {
+              // We'll add this functionality soon
+              setIsFollowersDialogOpen(true);
+            }}
+          >
+            <div className="font-semibold">{followerCount || 0}</div>
             <div className="text-gray-500 text-sm">Followers</div>
           </div>
-          <div className="flex-1">
-            <div className="font-semibold">256</div>
+          <div 
+            className="flex-1 cursor-pointer" 
+            onClick={() => {
+              // We'll add this functionality soon
+              setIsFollowingDialogOpen(true);
+            }}
+          >
+            <div className="font-semibold">{followingCount || 0}</div>
             <div className="text-gray-500 text-sm">Following</div>
           </div>
         </div>
@@ -671,6 +701,110 @@ export default function Profile() {
               </div>
             </div>
           )}
+        </DialogContent>
+      </Dialog>
+      
+      {/* Followers Dialog */}
+      <Dialog open={isFollowersDialogOpen} onOpenChange={setIsFollowersDialogOpen}>
+        <DialogContent className="sm:max-w-[425px] max-h-[80vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle className="text-center">Followers</DialogTitle>
+          </DialogHeader>
+          
+          <div className="mt-2">
+            {isLoadingFollowers ? (
+              <div className="space-y-4">
+                {[1, 2, 3].map((i) => (
+                  <div key={i} className="flex items-center gap-3 animate-pulse">
+                    <div className="w-12 h-12 rounded-full bg-gray-200"></div>
+                    <div className="flex-1">
+                      <div className="h-4 bg-gray-200 rounded w-1/3 mb-2"></div>
+                      <div className="h-3 bg-gray-200 rounded w-1/2"></div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            ) : followers.length > 0 ? (
+              <div className="space-y-3">
+                {followers.map((user: UserType) => (
+                  <div key={user.id} className="flex items-center justify-between py-2">
+                    <div className="flex items-center gap-3">
+                      <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center">
+                        <User className="text-primary" size={20} />
+                      </div>
+                      <div>
+                        <p className="font-medium">{user.displayName || user.username}</p>
+                        <p className="text-gray-500 text-xs">{user.username}</p>
+                      </div>
+                    </div>
+                    <Button 
+                      variant="outline" 
+                      size="sm"
+                      className="rounded-full px-4"
+                    >
+                      Follow Back
+                    </Button>
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <div className="text-center py-8">
+                <p className="text-gray-500">No followers yet</p>
+              </div>
+            )}
+          </div>
+        </DialogContent>
+      </Dialog>
+      
+      {/* Following Dialog */}
+      <Dialog open={isFollowingDialogOpen} onOpenChange={setIsFollowingDialogOpen}>
+        <DialogContent className="sm:max-w-[425px] max-h-[80vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle className="text-center">Following</DialogTitle>
+          </DialogHeader>
+          
+          <div className="mt-2">
+            {isLoadingFollowing ? (
+              <div className="space-y-4">
+                {[1, 2, 3].map((i) => (
+                  <div key={i} className="flex items-center gap-3 animate-pulse">
+                    <div className="w-12 h-12 rounded-full bg-gray-200"></div>
+                    <div className="flex-1">
+                      <div className="h-4 bg-gray-200 rounded w-1/3 mb-2"></div>
+                      <div className="h-3 bg-gray-200 rounded w-1/2"></div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            ) : following.length > 0 ? (
+              <div className="space-y-3">
+                {following.map((user: User) => (
+                  <div key={user.id} className="flex items-center justify-between py-2">
+                    <div className="flex items-center gap-3">
+                      <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center">
+                        <User className="text-primary" size={20} />
+                      </div>
+                      <div>
+                        <p className="font-medium">{user.displayName || user.username}</p>
+                        <p className="text-gray-500 text-xs">{user.username}</p>
+                      </div>
+                    </div>
+                    <Button 
+                      variant="outline" 
+                      size="sm"
+                      className="rounded-full px-4"
+                    >
+                      Following
+                    </Button>
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <div className="text-center py-8">
+                <p className="text-gray-500">Not following anyone yet</p>
+              </div>
+            )}
+          </div>
         </DialogContent>
       </Dialog>
     </div>
