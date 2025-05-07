@@ -508,6 +508,15 @@ export async function seedDatabase(storage: IStorage) {
       await storage.createSavedPlace(place);
     }
 
+    // New local SVG images for premium quality and faster loading
+    const svgImages = [
+      "/images/taj-mahal.svg",
+      "/images/gateway-of-india.svg", 
+      "/images/golden-temple.svg",
+      "/images/kerala-backwaters.svg",
+      "/images/jaipur-palace.svg"
+    ];
+    
     // Create posts for all users (3-5 posts per user)
     for (const user of createdUsers) {
       // Determine number of posts for this user
@@ -522,11 +531,16 @@ export async function seedDatabase(storage: IStorage) {
           .replace('{place}', location.name)
           .replace('{city}', location.city);
         
+        // Use a mix of external images and our local SVGs
+        // Local SVGs provide faster loading and consistent styling
+        const useLocalSvg = Math.random() > 0.6;
+        const mediaUrl = useLocalSvg ? getRandomItem(svgImages) : location.image;
+        
         // Create the post
         const post = await storage.createPost({
           userId: user.id,
           content,
-          mediaUrl: location.image,
+          mediaUrl,
           mediaType: "image",
           location: `${location.name}, ${location.city}`,
           placeId: location.placeId,
