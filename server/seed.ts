@@ -1,5 +1,7 @@
 import { IStorage } from "./storage";
 import { User } from "../shared/schema";
+import fs from 'fs';
+import path from 'path';
 
 // Define profile data for 20 users
 const userProfiles = [
@@ -367,13 +369,30 @@ function getRandomArrayItems<T>(array: T[], count: number): T[] {
   return shuffled.slice(0, count);
 }
 
+import fs from 'fs';
+import path from 'path';
+
 export async function seedDatabase(storage: IStorage) {
   try {
+    // Check for force reseed flag
+    const forceReseedFlag = path.join(__dirname, '.reseed_force');
+    const forceReseed = fs.existsSync(forceReseedFlag);
+    
     // Check if we already have users to avoid duplicate seeding
     const existingUser = await storage.getUserByUsername("demo");
-    if (existingUser) {
+    if (existingUser && !forceReseed) {
       console.log("Database already seeded, skipping...");
       return;
+    }
+    
+    // If we're forcing a reseed, clean up the flag after using it
+    if (forceReseed) {
+      console.log("Force reseeding enabled...");
+      try {
+        fs.unlinkSync(forceReseedFlag);
+      } catch (err) {
+        // Ignore errors on cleanup
+      }
     }
 
     console.log("Starting database seeding...");
@@ -495,7 +514,7 @@ export async function seedDatabase(storage: IStorage) {
         type: "attraction",
         city: "Kolkata",
         address: "Victoria Memorial Hall, 1, Queens Way, Kolkata",
-        rating: 4.8,
+        rating: 5,
         placeId: "ChIJa8K-gqp3AjoRr8gDZ9YR0tg",
         coordinates: { lat: 22.5448, lng: 88.3426 }
       },
@@ -505,7 +524,7 @@ export async function seedDatabase(storage: IStorage) {
         type: "area",
         city: "Kolkata",
         address: "Park Street, Kolkata",
-        rating: 4.5,
+        rating: 4,
         placeId: "ChIJg9x5Tc12AjoRuMPZcyL5J5I",
         coordinates: { lat: 22.5566, lng: 88.3513 }
       }
