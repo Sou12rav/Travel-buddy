@@ -375,7 +375,7 @@ import path from 'path';
 export async function seedDatabase(storage: IStorage) {
   try {
     // Check for force reseed flag
-    const forceReseedFlag = path.join(__dirname, '.reseed_force');
+    const forceReseedFlag = path.join(process.cwd(), 'server', '.reseed_force');
     const forceReseed = fs.existsSync(forceReseedFlag);
     
     // Check if we already have users to avoid duplicate seeding

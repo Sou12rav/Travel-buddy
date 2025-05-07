@@ -6,7 +6,7 @@ import fs from 'fs';
 import path from 'path';
 
 // Create a special force flag file to bypass the existing user check
-const FORCE_RESEED_FLAG = path.join(__dirname, '.reseed_force');
+const FORCE_RESEED_FLAG = path.join(process.cwd(), 'server', '.reseed_force');
 
 // Create the force flag file to indicate we want to reseed
 fs.writeFileSync(FORCE_RESEED_FLAG, 'true');
