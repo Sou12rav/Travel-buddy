@@ -156,6 +156,8 @@ export const posts = pgTable("posts", {
   mediaUrl: text("media_url"),
   mediaType: text("media_type"), // 'image', 'video', 'reel'
   location: text("location"),
+  placeId: text("place_id"), // ID of a tagged place
+  placeDetails: jsonb("place_details"), // Details about the tagged place
   createdAt: timestamp("created_at").defaultNow().notNull(),
   likes: integer("likes").default(0),
 });
@@ -166,6 +168,8 @@ export const insertPostSchema = createInsertSchema(posts).pick({
   mediaUrl: true,
   mediaType: true,
   location: true,
+  placeId: true,
+  placeDetails: true,
 });
 
 export const comments = pgTable("comments", {
@@ -205,3 +209,19 @@ export type InsertComment = z.infer<typeof insertCommentSchema>;
 
 export type Friendship = typeof friendships.$inferSelect;
 export type InsertFriendship = z.infer<typeof insertFriendshipSchema>;
+
+// Instagram-like followers system
+export const followers = pgTable("followers", {
+  id: serial("id").primaryKey(),
+  followerId: integer("follower_id").references(() => users.id).notNull(),
+  followingId: integer("following_id").references(() => users.id).notNull(),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+});
+
+export const insertFollowerSchema = createInsertSchema(followers).pick({
+  followerId: true,
+  followingId: true,
+});
+
+export type Follower = typeof followers.$inferSelect;
+export type InsertFollower = z.infer<typeof insertFollowerSchema>;

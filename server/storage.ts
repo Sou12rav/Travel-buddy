@@ -18,7 +18,9 @@ import {
   PlaceInfo,
   Weather,
   CabOption,
-  Activity
+  Activity,
+  Follower,
+  InsertFollower
 } from "@shared/schema";
 
 export interface IStorage {
@@ -70,6 +72,16 @@ export interface IStorage {
   getPendingFriendRequests(userId: number): Promise<Friendship[]>;
   sendFriendRequest(friendship: InsertFriendship): Promise<Friendship>;
   updateFriendshipStatus(id: number, status: string): Promise<Friendship | undefined>;
+  
+  // Instagram-like Follower operations
+  followUser(follower: InsertFollower): Promise<Follower>;
+  unfollowUser(followerId: number, followingId: number): Promise<boolean>;
+  getUserFollowers(userId: number): Promise<User[]>;
+  getUserFollowing(userId: number): Promise<User[]>;
+  isFollowing(followerId: number, followingId: number): Promise<boolean>;
+  
+  // Tagged place operations
+  addPlaceToItinerary(userId: number, itineraryId: number, placeId: string, placeDetails: any): Promise<Itinerary | undefined>;
 }
 
 export class MemStorage implements IStorage {
