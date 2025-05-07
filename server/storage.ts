@@ -93,6 +93,7 @@ export class MemStorage implements IStorage {
   private posts: Map<number, Post>;
   private comments: Map<number, Comment>;
   private friendships: Map<number, Friendship>;
+  private followers: Map<number, Follower>;
   
   private userId = 1;
   private conversationId = 1;
@@ -102,6 +103,7 @@ export class MemStorage implements IStorage {
   private postId = 1;
   private commentId = 1;
   private friendshipId = 1;
+  private followerId = 1;
 
   constructor() {
     this.users = new Map();
@@ -112,6 +114,7 @@ export class MemStorage implements IStorage {
     this.posts = new Map();
     this.comments = new Map();
     this.friendships = new Map();
+    this.followers = new Map();
 
     // Add a demo user
     this.createUser({
@@ -380,6 +383,86 @@ export class MemStorage implements IStorage {
     };
     this.friendships.set(id, updatedFriendship);
     return updatedFriendship;
+  }
+  
+  // Instagram-like Follower operations
+  async followUser(insertFollower: InsertFollower): Promise<Follower> {
+    const id = this.followerId++;
+    const follower: Follower = {
+      ...insertFollower,
+      id,
+      createdAt: new Date()
+    };
+    this.followers.set(id, follower);
+    return follower;
+  }
+  
+  async unfollowUser(followerId: number, followingId: number): Promise<boolean> {
+    // Find the follower relationship
+    const followerEntry = Array.from(this.followers.entries()).find(
+      ([_, follower]) => follower.followerId === followerId && follower.followingId === followingId
+    );
+    
+    if (!followerEntry) return false;
+    
+    // Delete the follower relationship
+    return this.followers.delete(followerEntry[0]);
+  }
+  
+  async getUserFollowers(userId: number): Promise<User[]> {
+    // Find all users who follow this user
+    const followerIds = Array.from(this.followers.values())
+      .filter(follower => follower.followingId === userId)
+      .map(follower => follower.followerId);
+    
+    // Return the follower user objects
+    return Array.from(this.users.values())
+      .filter(user => followerIds.includes(user.id));
+  }
+  
+  async getUserFollowing(userId: number): Promise<User[]> {
+    // Find all users who this user follows
+    const followingIds = Array.from(this.followers.values())
+      .filter(follower => follower.followerId === userId)
+      .map(follower => follower.followingId);
+    
+    // Return the following user objects
+    return Array.from(this.users.values())
+      .filter(user => followingIds.includes(user.id));
+  }
+  
+  async isFollowing(followerId: number, followingId: number): Promise<boolean> {
+    return Array.from(this.followers.values()).some(
+      follower => follower.followerId === followerId && follower.followingId === followingId
+    );
+  }
+  
+  // Tagged place operations
+  async addPlaceToItinerary(userId: number, itineraryId: number, placeId: string, placeDetails: any): Promise<Itinerary | undefined> {
+    const itinerary = await this.getItinerary(itineraryId);
+    if (!itinerary || itinerary.userId !== userId) return undefined;
+    
+    // Create a new activity from the place details
+    const newActivity: Activity = {
+      time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+      title: placeDetails.name || "Visit Place",
+      description: `Visit ${placeDetails.name || "tagged place"}`,
+      location: placeDetails.address || placeDetails.location || "",
+      icon: placeDetails.type === "restaurant" ? "restaurant" : 
+           placeDetails.type === "hotel" ? "hotel" : "place",
+      placeId: placeId
+    };
+    
+    // Add the activity to the itinerary
+    const activities = [...(itinerary.activities as Activity[]), newActivity];
+    
+    // Update the itinerary
+    const updatedItinerary = await this.updateItinerary(itineraryId, {
+      ...itinerary,
+      activities
+    });
+    
+    return updatedItinerary;
   }
 }
 

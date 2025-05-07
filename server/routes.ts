@@ -10,7 +10,8 @@ import {
   insertSavedPlaceSchema,
   insertPostSchema,
   insertCommentSchema,
-  insertFriendshipSchema
+  insertFriendshipSchema,
+  insertFollowerSchema
 } from "@shared/schema";
 import OpenAI from "openai";
 import type { ChatCompletionMessageParam } from "openai/resources/chat/completions";
@@ -571,6 +572,94 @@ export async function registerRoutes(app: Express): Promise<Server> {
       res.json({ friendship });
     } catch (error) {
       res.status(400).json({ message: "Invalid friendship data", error });
+    }
+  });
+  
+  // Instagram-like Follower Routes
+  apiRouter.get("/users/:userId/followers", async (req, res) => {
+    const userId = parseInt(req.params.userId);
+    const followers = await storage.getUserFollowers(userId);
+    res.json({ followers });
+  });
+  
+  apiRouter.get("/users/:userId/following", async (req, res) => {
+    const userId = parseInt(req.params.userId);
+    const following = await storage.getUserFollowing(userId);
+    res.json({ following });
+  });
+  
+  apiRouter.post("/follow", async (req, res) => {
+    try {
+      const followerData = insertFollowerSchema.parse(req.body);
+      const follower = await storage.followUser(followerData);
+      res.status(201).json({ follower });
+    } catch (error) {
+      res.status(400).json({ message: "Invalid follower data", error });
+    }
+  });
+  
+  apiRouter.delete("/unfollow", async (req, res) => {
+    try {
+      const { followerId, followingId } = z.object({
+        followerId: z.number(),
+        followingId: z.number()
+      }).parse(req.body);
+      
+      const success = await storage.unfollowUser(followerId, followingId);
+      if (!success) {
+        return res.status(404).json({ message: "Follow relationship not found" });
+      }
+      res.json({ success: true });
+    } catch (error) {
+      res.status(400).json({ message: "Invalid unfollow data", error });
+    }
+  });
+  
+  apiRouter.get("/is-following", async (req, res) => {
+    try {
+      const { followerId, followingId } = z.object({
+        followerId: z.number(),
+        followingId: z.number()
+      }).parse(req.query);
+      
+      const isFollowing = await storage.isFollowing(
+        parseInt(followerId as string), 
+        parseInt(followingId as string)
+      );
+      
+      res.json({ isFollowing });
+    } catch (error) {
+      res.status(400).json({ message: "Invalid follow check data", error });
+    }
+  });
+  
+  // Add Place to Itinerary from Post Routes
+  apiRouter.post("/users/:userId/itineraries/:itineraryId/add-place", async (req, res) => {
+    try {
+      const userId = parseInt(req.params.userId);
+      const itineraryId = parseInt(req.params.itineraryId);
+      
+      const { placeId, placeDetails } = z.object({
+        placeId: z.string(),
+        placeDetails: z.any()
+      }).parse(req.body);
+      
+      const updatedItinerary = await storage.addPlaceToItinerary(
+        userId, 
+        itineraryId, 
+        placeId, 
+        placeDetails
+      );
+      
+      if (!updatedItinerary) {
+        return res.status(404).json({ 
+          message: "Itinerary not found or you don't have permission to modify it"
+        });
+      }
+      
+      res.json({ itinerary: updatedItinerary });
+    } catch (error) {
+      res.status(400).json({ message: "Invalid request data", error });
     }
   });
 
