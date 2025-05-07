@@ -4,7 +4,7 @@ import { useLocation } from "wouter";
 import { useApp } from "@/lib/api_context";
 import { Post, Comment, User } from "@/lib/types";
 import { ArrowLeft, Heart, MessageCircle, Share, MoreVertical, Send } from "lucide-react";
-import { apiRequest } from "@/lib/queryClient";
+import { apiRequest, getQueryFn } from "@/lib/queryClient";
 
 // Post Card Component
 function PostCard({ post, onLike, onComment }: { 
@@ -18,15 +18,13 @@ function PostCard({ post, onLike, onComment }: {
   
   // Get the user who created the post
   const { data: userData } = useQuery({
-    queryKey: ['/api/users', post.userId],
-    queryFn: () => apiRequest<{ user: User }>(`/api/users/${post.userId}`),
+    queryKey: [`/api/users/${post.userId}`],
     enabled: !!post.userId
   });
   
   // Get comments for the post
   const { data: commentsData, refetch: refetchComments } = useQuery({
-    queryKey: ['/api/posts', post.id, 'comments'],
-    queryFn: () => apiRequest<{ comments: Comment[] }>(`/api/posts/${post.id}/comments`),
+    queryKey: [`/api/posts/${post.id}/comments`],
     enabled: showComments
   });
   
@@ -38,8 +36,12 @@ function PostCard({ post, onLike, onComment }: {
     }
   };
   
-  const user = userData?.user;
-  const comments = commentsData?.comments || [];
+  // Type assertion to handle the response format
+  const userData1 = userData as { user?: User } | undefined;
+  const commentsData1 = commentsData as { comments?: Comment[] } | undefined;
+  
+  const user = userData1?.user;
+  const comments = commentsData1?.comments || [];
   const isVideo = post.mediaType === 'video';
 
   return (
@@ -265,25 +267,27 @@ export default function Social() {
   
   // Fetch feed posts for the current user
   const { data: feedData, refetch: refetchFeed } = useQuery({
-    queryKey: ['/api/feed', currentUser?.id],
-    queryFn: () => apiRequest<{ posts: Post[] }>(`/api/feed/${currentUser?.id}`),
+    queryKey: [`/api/feed/${currentUser?.id}`],
     enabled: !!currentUser?.id
   });
   
-  const posts = feedData?.posts || [];
+  // Type assertion to handle the response format
+  const feedData1 = feedData as { posts?: Post[] } | undefined;
+  const posts = feedData1?.posts || [];
   
   // Create a new post
   const createPost = async (postData: any) => {
     if (!currentUser) return;
     
     try {
-      await apiRequest('/api/posts', {
-        method: 'POST',
-        body: JSON.stringify({
+      await apiRequest(
+        'POST',
+        '/api/posts',
+        {
           userId: currentUser.id,
           ...postData
-        })
-      });
+        }
+      );
       
       refetchFeed();
     } catch (error) {
@@ -294,9 +298,7 @@ export default function Social() {
   // Like a post
   const likePost = async (postId: number) => {
     try {
-      await apiRequest(`/api/posts/${postId}/like`, {
-        method: 'POST'
-      });
+      await apiRequest('POST', `/api/posts/${postId}/like`);
       
       refetchFeed();
     } catch (error) {
@@ -309,14 +311,15 @@ export default function Social() {
     if (!currentUser) return;
     
     try {
-      await apiRequest('/api/comments', {
-        method: 'POST',
-        body: JSON.stringify({
+      await apiRequest(
+        'POST',
+        '/api/comments',
+        {
           postId,
           userId: currentUser.id,
           content
-        })
-      });
+        }
+      );
     } catch (error) {
       console.error('Failed to comment on post:', error);
     }
@@ -346,7 +349,7 @@ export default function Social() {
           {/* Feed */}
           <div className="space-y-4">
             {posts.length > 0 ? (
-              posts.map(post => (
+              posts.map((post: Post) => (
                 <PostCard 
                   key={post.id} 
                   post={post} 
