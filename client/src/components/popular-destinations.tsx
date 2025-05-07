@@ -47,7 +47,9 @@ export default function PopularDestinations() {
       <div className="flex gap-4 overflow-x-auto pb-3">
         {destinationsData.map((destination) => (
           <div key={destination.id} className="flex-shrink-0 w-36 bg-white rounded-lg shadow-sm overflow-hidden">
-            <img src={destination.image} alt={destination.name} className="w-full h-24 object-cover" />
+            <div className="w-full h-24 bg-gray-200 flex items-center justify-center">
+              <span className="text-sm text-gray-500">{destination.name}</span>
+            </div>
             <div className="p-2">
               <h3 className="font-medium text-sm">{destination.name}</h3>
               <div className="flex items-center mt-1">

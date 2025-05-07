@@ -47,3 +47,13 @@ export interface CabOptionsResponse {
     eta: number;
   }>;
 }
+
+export interface MessagesResponse {
+  messages: Array<{
+    id: number;
+    conversationId: number;
+    content: string;
+    role: 'user' | 'assistant';
+    createdAt: string;
+  }>;
+}

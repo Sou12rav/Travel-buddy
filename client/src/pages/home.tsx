@@ -39,14 +39,11 @@ export default function Home() {
       <section className="px-4 py-4">
         <div className="bg-white rounded-xl shadow-md overflow-hidden">
           <div className="relative h-40">
-            <img 
-              src="https://images.unsplash.com/photo-1543162056-4ce16eb4e4b7" 
-              alt="Kolkata cityscape" 
-              className="w-full h-full object-cover"
-            />
-            <div className="absolute bottom-0 left-0 w-full bg-gradient-to-t from-black/70 to-transparent p-4">
-              <h2 className="font-poppins font-semibold text-white text-xl">Welcome to Kolkata!</h2>
-              <p className="text-white/80 text-sm">Let Buddy help you explore the City of Joy</p>
+            <div className="w-full h-full bg-blue-100 flex items-center justify-center">
+              <div className="text-center">
+                <h2 className="font-poppins font-semibold text-primary text-xl">Welcome to Kolkata!</h2>
+                <p className="text-gray-600 text-sm mt-2">Let Buddy help you explore the City of Joy</p>
+              </div>
             </div>
           </div>
           <div className="p-4">

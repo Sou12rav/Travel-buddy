@@ -74,7 +74,7 @@ export default function Chat() {
           ) : (
             <>
               {/* Chat Messages */}
-              {messages?.map((message: any) => (
+              {Array.isArray(messages) && messages.map((message) => (
                 <ChatBubble key={message.id} message={message} />
               ))}
               
@@ -82,7 +82,7 @@ export default function Chat() {
               {isTyping && <TypingIndicator />}
               
               {/* Add suggestion chips if last message is from assistant and mentions hotels */}
-              {messages && messages.length > 0 && 
+              {Array.isArray(messages) && messages.length > 0 && 
                 messages[messages.length - 1].role === "assistant" && 
                 messages[messages.length - 1].content.includes("hotel") && (
                 <HotelSuggestions onSelect={handleSuggestionSelect} />

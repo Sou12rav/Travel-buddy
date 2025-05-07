@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { useApp } from "../lib/api_context";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { Message } from "@shared/schema";
+import { MessagesResponse } from "../lib/types";
 
 export function useChat(conversationId: number) {
   const { sendChatMessage, getConversationMessages } = useApp();
@@ -10,13 +11,16 @@ export function useChat(conversationId: number) {
   
   // Fetch messages for this conversation
   const { 
-    data: messages,
+    data,
     isLoading: messagesLoading,
     error: messagesError,
     refetch: refetchMessages
-  } = useQuery({
+  } = useQuery<MessagesResponse>({
     queryKey: [`/api/conversations/${conversationId}/messages`]
   });
+  
+  // Extract messages array from response
+  const messages = data?.messages || [];
   
   // Mutation for sending a message
   const { mutate, isPending } = useMutation({
