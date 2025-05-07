@@ -48,12 +48,14 @@ export interface CabOptionsResponse {
   }>;
 }
 
+export interface ChatMessage {
+  id: number;
+  conversationId: number;
+  content: string;
+  role: 'user' | 'assistant';
+  createdAt: string;
+}
+
 export interface MessagesResponse {
-  messages: Array<{
-    id: number;
-    conversationId: number;
-    content: string;
-    role: 'user' | 'assistant';
-    createdAt: string;
-  }>;
+  messages: Array<ChatMessage>;
 }

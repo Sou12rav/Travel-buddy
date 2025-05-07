@@ -1,12 +1,4 @@
-import { MessagesResponse } from "../lib/types";
-
-interface ChatMessage {
-  id: number;
-  conversationId: number;
-  content: string;
-  role: 'user' | 'assistant';
-  createdAt: string;
-}
+import { ChatMessage } from "../lib/types";
 
 interface ChatBubbleProps {
   message: ChatMessage;

@@ -1,8 +1,7 @@
 import { useState, useEffect } from "react";
 import { useApp } from "../lib/api_context";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { Message } from "@shared/schema";
-import { MessagesResponse } from "../lib/types";
+import { MessagesResponse, ChatMessage } from "../lib/types";
 
 export function useChat(conversationId: number) {
   const { sendChatMessage, getConversationMessages } = useApp();

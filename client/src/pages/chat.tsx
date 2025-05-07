@@ -7,6 +7,7 @@ import ChatInput from "@/components/chat-input";
 import { HotelSuggestions } from "@/components/suggestion-chips";
 import { ArrowLeft, Mic, MoreVertical } from "lucide-react";
 import { useChat } from "@/hooks/use-chat";
+import { ChatMessage } from "@/lib/types";
 
 export default function Chat() {
   const [, navigate] = useLocation();
@@ -75,7 +76,7 @@ export default function Chat() {
             <>
               {/* Chat Messages */}
               {Array.isArray(messages) && messages.map((message) => (
-                <ChatBubble key={message.id} message={message as any} />
+                <ChatBubble key={message.id} message={message} />
               ))}
               
               {/* Show typing indicator when assistant is responding */}
