@@ -868,7 +868,7 @@ function AddToItineraryButton({ placeId, placeDetails }: { placeId?: string, pla
                       date: newItineraryDate,
                       activities: []
                     }
-                  );
+                  ) as { itinerary: { id: number } };
                   
                   setShowCreateItineraryModal(false);
                   
