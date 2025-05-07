@@ -75,6 +75,8 @@ export interface Post {
   mediaUrl: string;
   mediaType: string; // 'image', 'video', 'reel'
   location: string;
+  placeId?: string; // ID of a tagged place
+  placeDetails?: any; // Details about the tagged place
   createdAt: string;
   likes: number;
 }
@@ -93,4 +95,30 @@ export interface Friendship {
   friendId: number;
   status: string; // 'pending', 'accepted', 'rejected'
   createdAt: string;
+}
+
+export interface Follower {
+  id: number;
+  followerId: number; // User who is following
+  followingId: number; // User being followed
+  createdAt: string;
+}
+
+export interface Itinerary {
+  id: number;
+  userId: number;
+  title: string;
+  date: string;
+  city: string;
+  activities: Activity[];
+  createdAt: string;
+}
+
+export interface Activity {
+  time: string;
+  title: string;
+  description: string;
+  location: string;
+  icon: string;
+  placeId?: string;
 }

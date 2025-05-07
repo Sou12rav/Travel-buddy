@@ -623,8 +623,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }).parse(req.query);
       
       const isFollowing = await storage.isFollowing(
-        parseInt(followerId as string), 
-        parseInt(followingId as string)
+        Number(followerId), 
+        Number(followingId)
       );
       
       res.json({ isFollowing });

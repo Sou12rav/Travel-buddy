@@ -621,5 +621,16 @@ export const storage = new MemStorage();
         await storage.likePost(post.id);
       }
     }
+    
+    // Create follow relationships (Instagram-like following)
+    await storage.followUser({
+      followerId: user.id,
+      followingId: friendUser.id
+    });
+    
+    await storage.followUser({
+      followerId: friendUser.id,
+      followingId: user.id
+    });
   }
 })();

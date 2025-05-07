@@ -112,6 +112,28 @@ function PostCard({ post, onLike, onComment }: {
       {/* Post Content */}
       <div className="px-4 pb-2">
         <p className="text-sm">{post.content}</p>
+        
+        {/* Tagged Place */}
+        {post.placeId && post.placeDetails && (
+          <div className="mt-2 p-2 bg-blue-50 rounded-lg">
+            <div className="flex justify-between items-center">
+              <div className="flex flex-col">
+                <span className="text-xs text-blue-600 font-medium">Tagged Place</span>
+                <span className="text-sm font-medium">{post.placeDetails.name}</span>
+                <span className="text-xs text-gray-500">{post.placeDetails.address}</span>
+              </div>
+              <button 
+                className="text-xs bg-blue-600 text-white px-2 py-1 rounded"
+                onClick={() => {
+                  // Open a modal or navigate to add to itinerary
+                  alert("Feature to add place to itinerary coming soon!");
+                }}
+              >
+                Add to Itinerary
+              </button>
+            </div>
+          </div>
+        )}
       </div>
       
       {/* Comments */}
@@ -162,6 +184,23 @@ function NewPostForm({ onSubmit }: { onSubmit: (post: any) => void }) {
   const [mediaType, setMediaType] = useState<"image" | "video">("image");
   const [location, setLocation] = useState("");
   const [isOpen, setIsOpen] = useState(false);
+  const [placeId, setPlaceId] = useState("");
+  const [placeDetails, setPlaceDetails] = useState<any>(null);
+  const [showPlaceTagging, setShowPlaceTagging] = useState(false);
+  
+  // Example place options that would ideally come from an API
+  const placeOptions = [
+    { id: "place1", name: "Victoria Memorial", type: "attraction", address: "Victoria Memorial, Kolkata", location: "Kolkata" },
+    { id: "place2", name: "Howrah Bridge", type: "landmark", address: "Howrah Bridge, Kolkata", location: "Kolkata" },
+    { id: "place3", name: "Park Street", type: "area", address: "Park Street, Kolkata", location: "Kolkata" }
+  ];
+  
+  const handleSelectPlace = (place: any) => {
+    setPlaceId(place.id);
+    setPlaceDetails(place);
+    setLocation(place.address);
+    setShowPlaceTagging(false);
+  };
   
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -169,11 +208,15 @@ function NewPostForm({ onSubmit }: { onSubmit: (post: any) => void }) {
       content,
       mediaUrl,
       mediaType,
-      location
+      location,
+      placeId: placeId || undefined,
+      placeDetails: placeDetails || undefined
     });
     setContent("");
     setMediaUrl("");
     setLocation("");
+    setPlaceId("");
+    setPlaceDetails(null);
     setIsOpen(false);
   };
   
@@ -228,13 +271,61 @@ function NewPostForm({ onSubmit }: { onSubmit: (post: any) => void }) {
               
               <div>
                 <label className="block text-sm mb-1">Location</label>
-                <input 
-                  type="text"
-                  className="w-full border rounded-lg p-2 text-sm"
-                  value={location}
-                  onChange={(e) => setLocation(e.target.value)}
-                  placeholder="e.g. Victoria Memorial, Kolkata"
-                />
+                <div className="flex space-x-2">
+                  <input 
+                    type="text"
+                    className="flex-1 border rounded-lg p-2 text-sm"
+                    value={location}
+                    onChange={(e) => setLocation(e.target.value)}
+                    placeholder="e.g. Victoria Memorial, Kolkata"
+                  />
+                  <button
+                    type="button"
+                    className="px-3 py-2 bg-blue-100 text-blue-700 rounded-lg text-sm"
+                    onClick={() => setShowPlaceTagging(!showPlaceTagging)}
+                  >
+                    Tag Place
+                  </button>
+                </div>
+                
+                {showPlaceTagging && (
+                  <div className="mt-2 border rounded-lg p-3 bg-gray-50">
+                    <h4 className="text-sm font-medium mb-2">Select a place to tag</h4>
+                    <div className="space-y-2 max-h-40 overflow-y-auto">
+                      {placeOptions.map(place => (
+                        <div 
+                          key={place.id}
+                          className={`p-2 rounded-lg cursor-pointer ${place.id === placeId ? 'bg-blue-100' : 'bg-white border'}`}
+                          onClick={() => handleSelectPlace(place)}
+                        >
+                          <div className="font-medium text-sm">{place.name}</div>
+                          <div className="text-xs text-gray-500">{place.address}</div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+                
+                {placeId && placeDetails && (
+                  <div className="mt-2 p-2 bg-blue-50 rounded-lg text-sm">
+                    <div className="flex justify-between items-center">
+                      <div>
+                        <span className="font-medium">Tagged: </span>
+                        <span>{placeDetails.name}</span>
+                      </div>
+                      <button
+                        type="button"
+                        className="text-red-500 text-xs"
+                        onClick={() => {
+                          setPlaceId("");
+                          setPlaceDetails(null);
+                        }}
+                      >
+                        Remove
+                      </button>
+                    </div>
+                  </div>
+                )}
               </div>
               
               <div className="flex space-x-2">
