@@ -10,6 +10,7 @@ import {
   insertSavedPlaceSchema
 } from "@shared/schema";
 import OpenAI from "openai";
+import type { ChatCompletionMessageParam } from "openai/resources/chat/completions";
 
 // Initialize OpenAI client
 const openai = new OpenAI({ 
@@ -260,22 +261,28 @@ export async function registerRoutes(app: Express): Promise<Server> {
       const messages = await storage.getConversationMessages(conversationId);
       
       // Format messages for OpenAI
-      const chatMessages = messages.map(msg => ({
+      const chatMessages: ChatCompletionMessageParam[] = messages.map(msg => ({
         role: msg.role === "user" ? "user" : "assistant",
         content: msg.content
       }));
 
-      // Prepend system message
-      chatMessages.unshift({
+      // Add system message
+      const systemMessage: ChatCompletionMessageParam = {
         role: "system",
         content: "You are Buddy, an AI travel assistant for India. You help travelers with information about destinations, weather, hotels, restaurants, and transportation. You are friendly, warm, and informative - like a well-traveled friend. Keep responses concise and focused on travel in India. Use emojis where appropriate to make your responses engaging."
-      });
+      };
+      
+      // Final formatted messages
+      const formattedMessages: ChatCompletionMessageParam[] = [
+        systemMessage,
+        ...chatMessages
+      ];
 
       try {
         // the newest OpenAI model is "gpt-4o" which was released May 13, 2024. do not change this unless explicitly requested by the user
         const response = await openai.chat.completions.create({
           model: "gpt-4o",
-          messages: chatMessages,
+          messages: formattedMessages,
           temperature: 0.7,
           max_tokens: 500
         });
@@ -290,14 +297,14 @@ export async function registerRoutes(app: Express): Promise<Server> {
         });
 
         res.json({ message: savedMessage });
-      } catch (error) {
+      } catch (error: any) {
         console.error("OpenAI API error:", error);
         
         // Determine the type of error and provide appropriate message
         let errorMessage = "I'm having trouble connecting to my knowledge base right now. Please try again in a moment.";
         
         // Check for quota exceeded error
-        if (error.code === 'insufficient_quota') {
+        if (error && error.code === 'insufficient_quota') {
           errorMessage = "The API key for my knowledge base has exceeded its usage limit. Please contact the app administrator to update the API key.";
         }
         
@@ -392,7 +399,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   // ==== Weather API ====
   apiRouter.get("/weather/:city", async (req, res) => {
-    const city = req.params.city;
+    const city = req.params.city as keyof typeof weatherData;
     const weather = weatherData[city];
     
     if (!weather) {
@@ -404,7 +411,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
   // ==== Popular Destinations API ====
   apiRouter.get("/destinations/:city", async (req, res) => {
-    const city = req.params.city;
+    const city = req.params.city as keyof typeof popularDestinations;
     const destinations = popularDestinations[city];
     
     if (!destinations) {
