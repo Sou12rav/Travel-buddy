@@ -1,11 +1,12 @@
 import { useApp } from "../lib/api_context";
 import { useQuery } from "@tanstack/react-query";
 import { Star } from "lucide-react";
+import { DestinationsResponse } from "../lib/types";
 
 export default function PopularDestinations() {
   const { currentCity, getDestinations } = useApp();
   
-  const { data, isLoading, error } = useQuery({
+  const { data, isLoading, error } = useQuery<DestinationsResponse>({
     queryKey: [`/api/destinations/${currentCity}`]
   });
 
@@ -44,7 +45,7 @@ export default function PopularDestinations() {
     <section className="px-4 py-3">
       <h2 className="font-poppins font-semibold text-dark mb-3">Popular in {currentCity}</h2>
       <div className="flex gap-4 overflow-x-auto pb-3">
-        {destinationsData.map((destination: any) => (
+        {destinationsData.map((destination) => (
           <div key={destination.id} className="flex-shrink-0 w-36 bg-white rounded-lg shadow-sm overflow-hidden">
             <img src={destination.image} alt={destination.name} className="w-full h-24 object-cover" />
             <div className="p-2">

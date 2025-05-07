@@ -1,11 +1,12 @@
 import { MapPin, Sun } from "lucide-react";
 import { useApp } from "../lib/api_context";
 import { useQuery } from "@tanstack/react-query";
+import { WeatherResponse } from "../lib/types";
 
 export default function LocationHeader() {
   const { currentCity, getWeather } = useApp();
   
-  const { data, isLoading } = useQuery({
+  const { data, isLoading } = useQuery<WeatherResponse>({
     queryKey: [`/api/weather/${currentCity}`],
     refetchInterval: 1000 * 60 * 15, // Refetch every 15 minutes
   });

@@ -1,11 +1,12 @@
 import { useQuery } from "@tanstack/react-query";
 import { useApp } from "../lib/api_context";
 import { Droplets, Wind, CloudRain } from "lucide-react";
+import { WeatherResponse } from "../lib/types";
 
 export default function WeatherDisplay() {
   const { currentCity, getWeather } = useApp();
   
-  const { data, isLoading, error } = useQuery({
+  const { data, isLoading, error } = useQuery<WeatherResponse>({
     queryKey: [`/api/weather/${currentCity}`],
     refetchInterval: 1000 * 60 * 15, // Refetch every 15 minutes
   });

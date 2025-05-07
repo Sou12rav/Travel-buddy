@@ -1,11 +1,12 @@
 import { useApp } from "../lib/api_context";
 import { useQuery } from "@tanstack/react-query";
 import { Info, AlertTriangle, AlertCircle } from "lucide-react";
+import { AlertsResponse } from "../lib/types";
 
 export default function TravelAlerts() {
   const { currentCity, getTravelAlerts } = useApp();
   
-  const { data, isLoading, error } = useQuery({
+  const { data, isLoading, error } = useQuery<AlertsResponse>({
     queryKey: [`/api/alerts/${currentCity}`],
     refetchInterval: 1000 * 60 * 10, // Refetch every 10 minutes
   });
@@ -45,7 +46,7 @@ export default function TravelAlerts() {
   return (
     <section className="px-4 py-3">
       <h2 className="font-poppins font-semibold text-dark mb-3">Travel Alerts</h2>
-      {alertsData.map((alert: any) => {
+      {alertsData.map((alert) => {
         // Determine alert icon and color based on severity
         let Icon = Info;
         let borderColor = "border-blue-500";
