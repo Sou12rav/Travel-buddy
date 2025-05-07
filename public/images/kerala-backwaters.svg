@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="200px" height="200px" viewBox="0 0 200 200" version="1.1" xmlns="http://www.w3.org/2000/svg">
+  <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+    <g transform="translate(10, 10)">
+      <!-- Water -->
+      <rect x="0" y="110" width="180" height="70" fill="#a0d8ef"/>
+      
+      <!-- Sky -->
+      <rect x="0" y="0" width="180" height="110" fill="#87ceeb"/>
+      
+      <!-- House boat -->
+      <rect x="40" y="90" width="100" height="30" rx="2" fill="#8B4513"/>
+      
+      <!-- Boat roof -->
+      <path d="M45,90 L55,70 L125,70 L135,90 Z" fill="#A52A2A"/>
+      
+      <!-- Windows -->
+      <rect x="55" y="100" width="10" height="10" rx="1" fill="#FFF8DC"/>
+      <rect x="75" y="100" width="10" height="10" rx="1" fill="#FFF8DC"/>
+      <rect x="95" y="100" width="10" height="10" rx="1" fill="#FFF8DC"/>
+      <rect x="115" y="100" width="10" height="10" rx="1" fill="#FFF8DC"/>
+      
+      <!-- Palm trees -->
+      <rect x="10" y="80" width="4" height="30" fill="#8B4513"/>
+      <path d="M12,80 L2,70 L12,75 L7,65 L12,73 L12,63 L17,73 L22,63 L17,75 L27,70 L17,80 Z" fill="#006400"/>
+      
+      <rect x="165" y="70" width="4" height="40" fill="#8B4513"/>
+      <path d="M167,70 L157,60 L167,65 L162,55 L167,63 L167,53 L172,63 L177,53 L172,65 L182,60 L172,70 Z" fill="#006400"/>
+      
+      <!-- Reflection in water -->
+      <rect x="40" y="120" width="100" height="30" fill="#8B4513" opacity="0.3"/>
+      <path d="M45,150 L55,170 L125,170 L135,150 Z" fill="#A52A2A" opacity="0.3"/>
+    </g>
+  </g>
+</svg>

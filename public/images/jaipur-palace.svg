@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="200px" height="200px" viewBox="0 0 200 200" version="1.1" xmlns="http://www.w3.org/2000/svg">
+  <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+    <g transform="translate(10, 10)">
+      <!-- Base -->
+      <rect x="10" y="170" width="160" height="10" fill="#ddd"/>
+      
+      <!-- Main structure -->
+      <rect x="20" y="70" width="140" height="100" fill="#ff9e7a"/>
+      
+      <!-- Windows and decorative elements -->
+      <rect x="35" y="90" width="20" height="30" rx="10" fill="#ffcbbd"/>
+      <rect x="70" y="90" width="20" height="30" rx="10" fill="#ffcbbd"/>
+      <rect x="105" y="90" width="20" height="30" rx="10" fill="#ffcbbd"/>
+      <rect x="140" y="90" width="10" height="30" rx="5" fill="#ffcbbd"/>
+      <rect x="30" y="90" width="10" height="30" rx="5" fill="#ffcbbd"/>
+      
+      <rect x="35" y="130" width="20" height="40" rx="3" fill="#ffcbbd"/>
+      <rect x="70" y="130" width="20" height="40" rx="3" fill="#ffcbbd"/>
+      <rect x="105" y="130" width="20" height="40" rx="3" fill="#ffcbbd"/>
+      
+      <!-- Domes -->
+      <path d="M35,70 Q40,50 45,70 Z" fill="#ff9e7a"/>
+      <path d="M70,70 Q80,40 90,70 Z" fill="#ff9e7a"/>
+      <path d="M105,70 Q115,40 125,70 Z" fill="#ff9e7a"/>
+      
+      <!-- Ornate tops on domes -->
+      <circle cx="40" cy="55" r="2" fill="#ffcbbd"/>
+      <circle cx="80" cy="45" r="3" fill="#ffcbbd"/>
+      <circle cx="115" cy="45" r="3" fill="#ffcbbd"/>
+      
+      <!-- Decorative band -->
+      <rect x="20" y="120" width="140" height="5" fill="#ffcbbd"/>
+      
+      <!-- Main entrance -->
+      <rect x="60" y="145" width="40" height="25" fill="#ffcbbd"/>
+      <path d="M60,145 Q80,130 100,145 Z" fill="#ffcbbd"/>
+    </g>
+  </g>
+</svg>

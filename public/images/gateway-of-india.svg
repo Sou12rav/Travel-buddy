@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="200px" height="200px" viewBox="0 0 200 200" version="1.1" xmlns="http://www.w3.org/2000/svg">
+  <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+    <g transform="translate(10, 10)">
+      <!-- Base -->
+      <rect x="15" y="170" width="150" height="10" fill="#ddd"/>
+      
+      <!-- Main structure -->
+      <rect x="20" y="70" width="140" height="100" fill="#f0c070"/>
+      
+      <!-- Main archway -->
+      <path d="M70,170 L70,90 Q90,70 110,90 L110,170 Z" fill="#d0a060"/>
+      
+      <!-- Side archways -->
+      <path d="M45,170 L45,120 Q50,110 55,120 L55,170 Z" fill="#d0a060"/>
+      <path d="M125,170 L125,120 Q130,110 135,120 L135,170 Z" fill="#d0a060"/>
+      
+      <!-- Dome -->
+      <path d="M80,70 Q90,50 100,70 Z" fill="#f0c070"/>
+      
+      <!-- Decorative elements -->
+      <rect x="20" y="90" width="140" height="5" fill="#d0a060"/>
+      <rect x="20" y="140" width="140" height="5" fill="#d0a060"/>
+      
+      <!-- Windows -->
+      <rect x="30" y="100" width="10" height="15" fill="#d0a060"/>
+      <rect x="140" y="100" width="10" height="15" fill="#d0a060"/>
+      
+      <!-- Water reflection -->
+      <ellipse cx="90" cy="180" rx="70" ry="3" fill="#a0d8ef" opacity="0.5"/>
+    </g>
+  </g>
+</svg>
