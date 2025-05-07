@@ -335,7 +335,8 @@ export async function registerRoutes(app: Express): Promise<Server> {
         title: z.string(),
         city: z.string(),
         date: z.string().or(z.date()), // Accept string or date
-        activities: z.any()
+        activities: z.any(),
+        metadata: z.any().optional() // Allow any metadata
       });
       
       // Parse the incoming data with our more flexible schema

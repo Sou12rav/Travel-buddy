@@ -724,6 +724,12 @@ function AddToItineraryButton({ placeId, placeDetails }: { placeId?: string, pla
   const [newItineraryTitle, setNewItineraryTitle] = useState("");
   const [newItineraryCity, setNewItineraryCity] = useState("");
   const [newItineraryDate, setNewItineraryDate] = useState("");
+  const [newItineraryTime, setNewItineraryTime] = useState("08:00");
+  const [newItineraryDuration, setNewItineraryDuration] = useState("3");
+  const [newItineraryBudget, setNewItineraryBudget] = useState("");
+  const [newItineraryNotes, setNewItineraryNotes] = useState("");
+  const [newItineraryTransport, setNewItineraryTransport] = useState("flight");
+  const [newItineraryAccommodation, setNewItineraryAccommodation] = useState("hotel");
   const { currentUser } = useApp();
   
   // Get user's itineraries
@@ -858,6 +864,16 @@ function AddToItineraryButton({ placeId, placeDetails }: { placeId?: string, pla
                 
                 try {
                   // Create a new itinerary
+                  // Prepare itinerary metadata with extended details
+                  const itineraryMetadata = {
+                    startTime: newItineraryTime,
+                    duration: parseInt(newItineraryDuration),
+                    budget: newItineraryBudget ? parseInt(newItineraryBudget) : null,
+                    notes: newItineraryNotes,
+                    transportation: newItineraryTransport,
+                    accommodation: newItineraryAccommodation
+                  };
+                  
                   const newItinerary = await apiRequest(
                     'POST',
                     '/api/itineraries',
@@ -866,7 +882,8 @@ function AddToItineraryButton({ placeId, placeDetails }: { placeId?: string, pla
                       title: newItineraryTitle,
                       city: newItineraryCity,
                       date: new Date(newItineraryDate), // Convert string to Date object
-                      activities: []
+                      activities: [],
+                      metadata: itineraryMetadata // Store additional fields as metadata
                     }
                   ) as { itinerary: { id: number } };
                   
@@ -917,15 +934,103 @@ function AddToItineraryButton({ placeId, placeDetails }: { placeId?: string, pla
                     />
                   </div>
                   
+                  <div className="grid grid-cols-2 gap-3">
+                    <div>
+                      <label className="block text-sm font-medium mb-1">Date</label>
+                      <input
+                        type="date"
+                        className="w-full border rounded-lg p-2 text-sm"
+                        value={newItineraryDate}
+                        onChange={(e) => setNewItineraryDate(e.target.value)}
+                        required
+                      />
+                    </div>
+                    
+                    <div>
+                      <label className="block text-sm font-medium mb-1">Start Time</label>
+                      <input
+                        type="time"
+                        className="w-full border rounded-lg p-2 text-sm"
+                        value={newItineraryTime}
+                        onChange={(e) => setNewItineraryTime(e.target.value)}
+                        required
+                      />
+                    </div>
+                  </div>
+                  
+                  <div className="grid grid-cols-2 gap-3">
+                    <div>
+                      <label className="block text-sm font-medium mb-1">Duration (days)</label>
+                      <select
+                        className="w-full border rounded-lg p-2 text-sm"
+                        value={newItineraryDuration}
+                        onChange={(e) => setNewItineraryDuration(e.target.value)}
+                        required
+                      >
+                        <option value="1">1 day</option>
+                        <option value="2">2 days</option>
+                        <option value="3">3 days</option>
+                        <option value="4">4 days</option>
+                        <option value="5">5 days</option>
+                        <option value="7">1 week</option>
+                        <option value="14">2 weeks</option>
+                        <option value="30">1 month</option>
+                      </select>
+                    </div>
+                    
+                    <div>
+                      <label className="block text-sm font-medium mb-1">Budget (₹)</label>
+                      <input
+                        type="number"
+                        className="w-full border rounded-lg p-2 text-sm"
+                        value={newItineraryBudget}
+                        onChange={(e) => setNewItineraryBudget(e.target.value)}
+                        placeholder="e.g. 25000"
+                      />
+                    </div>
+                  </div>
+                  
+                  <div className="grid grid-cols-2 gap-3">
+                    <div>
+                      <label className="block text-sm font-medium mb-1">Transportation</label>
+                      <select
+                        className="w-full border rounded-lg p-2 text-sm"
+                        value={newItineraryTransport}
+                        onChange={(e) => setNewItineraryTransport(e.target.value)}
+                      >
+                        <option value="flight">Flight</option>
+                        <option value="train">Train</option>
+                        <option value="bus">Bus</option>
+                        <option value="car">Car</option>
+                        <option value="other">Other</option>
+                      </select>
+                    </div>
+                    
+                    <div>
+                      <label className="block text-sm font-medium mb-1">Accommodation</label>
+                      <select
+                        className="w-full border rounded-lg p-2 text-sm"
+                        value={newItineraryAccommodation}
+                        onChange={(e) => setNewItineraryAccommodation(e.target.value)}
+                      >
+                        <option value="hotel">Hotel</option>
+                        <option value="hostel">Hostel</option>
+                        <option value="resort">Resort</option>
+                        <option value="homestay">Homestay</option>
+                        <option value="airbnb">Airbnb</option>
+                        <option value="other">Other</option>
+                      </select>
+                    </div>
+                  </div>
+                  
                   <div>
-                    <label className="block text-sm font-medium mb-1">Date</label>
-                    <input
-                      type="date"
-                      className="w-full border rounded-lg p-2 text-sm"
-                      value={newItineraryDate}
-                      onChange={(e) => setNewItineraryDate(e.target.value)}
-                      required
-                    />
+                    <label className="block text-sm font-medium mb-1">Notes</label>
+                    <textarea
+                      className="w-full border rounded-lg p-2 text-sm h-20"
+                      value={newItineraryNotes}
+                      onChange={(e) => setNewItineraryNotes(e.target.value)}
+                      placeholder="Any special requirements or preferences..."
+                    ></textarea>
                   </div>
                   
                   {placeId && placeDetails && (
