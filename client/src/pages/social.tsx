@@ -865,7 +865,7 @@ function AddToItineraryButton({ placeId, placeDetails }: { placeId?: string, pla
                       userId: currentUser.id,
                       title: newItineraryTitle,
                       city: newItineraryCity,
-                      date: newItineraryDate,
+                      date: new Date(newItineraryDate), // Convert string to Date object
                       activities: []
                     }
                   ) as { itinerary: { id: number } };
