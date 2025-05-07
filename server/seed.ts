@@ -536,25 +536,24 @@ export async function seedDatabase(storage: IStorage) {
 
     // Using our SVG images for premium quality and faster loading
     
-    // Create posts for all users (3-5 posts per user)
-    for (const user of createdUsers) {
-      // Determine number of posts for this user
-      const postCount = getRandomNumber(4, 8);
+    // More efficient seeding - create only 2 posts for each of the first 7 users
+    // This ensures we have enough content for the feed while completing faster
+    for (let userIndex = 0; userIndex < 7; userIndex++) {
+      const user = createdUsers[userIndex];
       
-      for (let i = 0; i < postCount; i++) {
-        // Randomly select a location
+      // Create exactly 2 posts per user
+      for (let i = 0; i < 2; i++) {
+        // Pick a sequential SVG image to ensure all our custom images are used
+        const svgIndex = (userIndex * 2 + i) % svgImages.length;
+        const mediaUrl = svgImages[svgIndex];
+        
+        // Pick a random location
         const location = getRandomItem(travelLocations);
         
         // Create content with placeholders replaced
         const content = getRandomItem(postContents)
           .replace('{place}', location.name)
           .replace('{city}', location.city);
-        
-        // Use a mix of external images and our local SVGs
-        // Local SVGs provide faster loading and consistent styling
-        // Higher probability (70%) of using our custom SVGs for better visual experience
-        const useLocalSvg = Math.random() > 0.3;
-        const mediaUrl = useLocalSvg ? getRandomItem(svgImages) : location.image;
         
         // Create the post
         const post = await storage.createPost({
@@ -572,17 +571,14 @@ export async function seedDatabase(storage: IStorage) {
           }
         });
         
-        // Update the post to add likes (since likes isn't part of the insert schema)
+        // Add likes
         await storage.likePost(post.id);
         
-        // Add 3-8 comments to each post
-        const commentCount = getRandomNumber(3, 8);
-        for (let j = 0; j < commentCount; j++) {
-          // Select a random user to comment (not the post owner)
-          let commenter;
-          do {
-            commenter = getRandomItem(createdUsers);
-          } while (commenter.id === user.id);
+        // Add exactly 2 comments to each post to speed up seeding
+        for (let j = 0; j < 2; j++) {
+          // Get commenter (use fixed index to speed up)
+          const commenterIndex = ((userIndex + j + 3) % createdUsers.length);
+          const commenter = createdUsers[commenterIndex];
           
           // Create comment with placeholders replaced
           const commentText = getRandomItem(commentContents)
@@ -597,7 +593,7 @@ export async function seedDatabase(storage: IStorage) {
         }
       }
       
-      console.log(`Created ${postCount} posts with comments for user: ${user.displayName}`);
+      console.log(`Created 2 posts with comments for user: ${user.displayName}`);
     }
 
     console.log("Database seeded with 20 users, posts, and follows!");

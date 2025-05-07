@@ -197,13 +197,28 @@ export class DatabaseStorage implements IStorage {
   }
 
   async getFeedPosts(userId: number): Promise<Post[]> {
-    // This is a simplified implementation
-    // In real-world, you would fetch posts from users that this user follows
-    // For now, return all posts
+    // Return posts from followed users, but if none are found, return all posts
+    // This ensures we always have content in the feed
+    const followedPosts = await db
+      .select()
+      .from(posts)
+      .innerJoin(followers, eq(followers.followingId, posts.userId))
+      .where(eq(followers.followerId, userId))
+      .orderBy(desc(posts.createdAt));
+    
+    // If we have posts from followed users, return those
+    if (followedPosts.length > 0) {
+      return followedPosts.map(row => ({
+        ...row.posts
+      }));
+    }
+    
+    // Otherwise, return all posts (fallback to ensure feed is never empty)
     return db
       .select()
       .from(posts)
-      .orderBy(desc(posts.createdAt));
+      .orderBy(desc(posts.createdAt))
+      .limit(20);
   }
 
   async createPost(post: InsertPost): Promise<Post> {
