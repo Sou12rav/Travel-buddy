@@ -602,10 +602,12 @@ function PostOptionsMenu({ postId, userId, post }: { postId: number, userId: num
         'POST',
         '/api/conversations', 
         { userId: currentUser.id, otherUserId: userId }
-      ) as { conversation: { id: number } };
+      );
+      
+      const data = await response.json();
       
       alert("Redirecting to chat...");
-      window.location.href = `/chat?conversation=${response.conversation.id}`;
+      window.location.href = `/chat?conversation=${data.conversation.id}`;
     } catch (error) {
       console.error('Failed to initiate chat:', error);
     }
@@ -874,7 +876,7 @@ function AddToItineraryButton({ placeId, placeDetails }: { placeId?: string, pla
                     accommodation: newItineraryAccommodation
                   };
                   
-                  const newItinerary = await apiRequest(
+                  const response = await apiRequest(
                     'POST',
                     '/api/itineraries',
                     {
@@ -885,19 +887,20 @@ function AddToItineraryButton({ placeId, placeDetails }: { placeId?: string, pla
                       activities: [],
                       metadata: itineraryMetadata // Store additional fields as metadata
                     }
-                  ) as { itinerary: { id: number } };
+                  );
+                  
+                  const data = await response.json();
                   
                   setShowCreateItineraryModal(false);
                   
                   // If we have place details, add the place to the new itinerary
                   if (placeId && placeDetails) {
-                    const id = newItinerary?.itinerary?.id || 
-                               (typeof newItinerary === 'object' && 'id' in newItinerary ? newItinerary.id : null);
+                    const id = data?.itinerary?.id;
                     
                     if (id && typeof id === 'number') {
                       await addToItinerary(id);
                     } else {
-                      console.error("Couldn't determine itinerary ID from response", newItinerary);
+                      console.error("Couldn't determine itinerary ID from response", data);
                       alert("Itinerary created but couldn't add place. Please try adding it manually.");
                     }
                   } else {

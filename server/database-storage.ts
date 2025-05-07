@@ -259,7 +259,7 @@ export class DatabaseStorage implements IStorage {
     const result = await db
       .delete(comments)
       .where(eq(comments.id, id));
-    return result.rowCount > 0;
+    return !!result.rowCount;
   }
   
   // Friendship operations
@@ -334,7 +334,7 @@ export class DatabaseStorage implements IStorage {
           eq(followers.followingId, followingId)
         )
       );
-    return result.rowCount > 0;
+    return !!result.rowCount;
   }
 
   async getUserFollowers(userId: number): Promise<User[]> {
@@ -343,7 +343,7 @@ export class DatabaseStorage implements IStorage {
       .from(followers)
       .where(eq(followers.followingId, userId));
     
-    const followerIds = followerList.map(f => f.followerId).filter(Boolean);
+    const followerIds = followerList.map((f: any) => f.followerId).filter(Boolean);
     
     if (followerIds.length === 0) return [];
     
@@ -357,7 +357,7 @@ export class DatabaseStorage implements IStorage {
       .from(followers)
       .where(eq(followers.followerId, userId));
     
-    const followingIds = followingList.map(f => f.followingId).filter(Boolean);
+    const followingIds = followingList.map((f: any) => f.followingId).filter(Boolean);
     
     if (followingIds.length === 0) return [];
     
