@@ -61,10 +61,14 @@ export default function Profile() {
     currentUser?.preferences?.darkMode ?? false
   );
   const [isUploadDialogOpen, setIsUploadDialogOpen] = useState(false);
+  const [isViewPostDialogOpen, setIsViewPostDialogOpen] = useState(false);
+  const [selectedPost, setSelectedPost] = useState<Post | null>(null);
   const [mediaUpload, setMediaUpload] = useState<MediaUpload | null>(null);
   const [postCaption, setPostCaption] = useState("");
   const [postLocation, setPostLocation] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [comment, setComment] = useState("");
+  const [likedPosts, setLikedPosts] = useState<Record<number, boolean>>({});
   
   // Fetch user posts
   const { data: postsData, isLoading: isLoadingPosts } = useQuery({
@@ -167,6 +171,52 @@ export default function Profile() {
       location: postLocation || null
     });
   };
+  
+  // Handle liking a post
+  const { mutate: likePost } = useMutation({
+    mutationFn: async (postId: number) => {
+      return apiRequestJson(`/api/posts/${postId}/like`, {
+        method: 'POST'
+      });
+    },
+    onSuccess: (data, postId) => {
+      setLikedPosts((prev) => ({ ...prev, [postId]: !prev[postId] }));
+      
+      // If we're viewing this post in detail, update it
+      if (selectedPost && selectedPost.id === postId) {
+        setSelectedPost({
+          ...selectedPost,
+          likes: (selectedPost.likes || 0) + (likedPosts[postId] ? -1 : 1)
+        });
+      }
+      
+      queryClient.invalidateQueries({ queryKey: [`/api/users/${currentUser?.id}/posts`] });
+    }
+  });
+  
+  // Handle adding a comment to a post
+  const { mutate: addComment } = useMutation({
+    mutationFn: async ({ postId, content }: { postId: number, content: string }) => {
+      return apiRequestJson(`/api/posts/${postId}/comments`, {
+        method: 'POST',
+        body: JSON.stringify({
+          userId: currentUser?.id,
+          postId,
+          content
+        })
+      });
+    },
+    onSuccess: () => {
+      setComment("");
+      queryClient.invalidateQueries({ queryKey: [`/api/users/${currentUser?.id}/posts`] });
+    }
+  });
+  
+  const handleAddComment = (postId: number) => {
+    if (!comment.trim()) return;
+    
+    addComment({ postId, content: comment });
+  };
 
   if (!currentUser) {
     return (
@@ -256,7 +306,11 @@ export default function Profile() {
                 {posts.map((post: Post) => (
                   <div 
                     key={post.id} 
-                    className="aspect-square bg-gray-100 relative overflow-hidden"
+                    className="aspect-square bg-gray-100 relative overflow-hidden cursor-pointer"
+                    onClick={() => {
+                      setSelectedPost(post);
+                      setIsViewPostDialogOpen(true);
+                    }}
                   >
                     {post.mediaUrl ? (
                       <>
@@ -482,6 +536,141 @@ export default function Profile() {
               {isSubmitting ? "Posting..." : "Share"}
             </Button>
           </DialogFooter>
+        </DialogContent>
+      </Dialog>
+      
+      {/* Post detail dialog */}
+      <Dialog open={isViewPostDialogOpen} onOpenChange={setIsViewPostDialogOpen}>
+        <DialogContent className="sm:max-w-[550px] max-h-[90vh] overflow-y-auto">
+          {selectedPost && (
+            <div className="flex flex-col">
+              <div className="flex items-center p-2">
+                <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center mr-3">
+                  <User className="text-primary" size={18} />
+                </div>
+                <div className="flex-1">
+                  <div className="font-semibold">
+                    {currentUser?.displayName || currentUser?.username}
+                  </div>
+                  {selectedPost.location && (
+                    <div className="text-xs text-gray-500 flex items-center">
+                      <MapPin size={10} className="mr-1" />
+                      {selectedPost.location}
+                    </div>
+                  )}
+                </div>
+                <div className="relative group">
+                  <button className="p-2 hover:bg-gray-100 rounded-full">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                      <path d="M12 13C12.5523 13 13 12.5523 13 12C13 11.4477 12.5523 11 12 11C11.4477 11 11 11.4477 11 12C11 12.5523 11.4477 13 12 13Z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                      <path d="M19 13C19.5523 13 20 12.5523 20 12C20 11.4477 19.5523 11 19 11C18.4477 11 18 11.4477 18 12C18 12.5523 18.4477 13 19 13Z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                      <path d="M5 13C5.55228 13 6 12.5523 6 12C6 11.4477 5.55228 11 5 11C4.44772 11 4 11.4477 4 12C4 12.5523 4.44772 13 5 13Z" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"/>
+                    </svg>
+                  </button>
+                  
+                  {/* Three-dot menu options */}
+                  <div className="absolute right-0 top-full mt-1 bg-white shadow-md rounded-md hidden group-hover:block z-10 w-48">
+                    <ul className="py-1">
+                      <li className="px-4 py-2 hover:bg-gray-100 text-sm flex items-center cursor-pointer">
+                        <Share size={14} className="mr-2" />
+                        Share
+                      </li>
+                      <li className="px-4 py-2 hover:bg-gray-100 text-sm flex items-center cursor-pointer">
+                        <BookmarkIcon size={14} className="mr-2" />
+                        Save
+                      </li>
+                      <li className="px-4 py-2 hover:bg-gray-100 text-sm flex items-center cursor-pointer">
+                        <MapPin size={14} className="mr-2" />
+                        Show on Map
+                      </li>
+                    </ul>
+                  </div>
+                </div>
+              </div>
+              
+              <div className="bg-gray-100 overflow-hidden" style={{ maxHeight: '60vh' }}>
+                {selectedPost.mediaType === 'video' ? (
+                  <video 
+                    src={selectedPost.mediaUrl || ''} 
+                    className="w-full h-full object-contain"
+                    controls
+                    autoPlay
+                  ></video>
+                ) : (
+                  <img 
+                    src={selectedPost.mediaUrl || ''} 
+                    alt={selectedPost.content || "Post"} 
+                    className="w-full h-full object-contain"
+                  />
+                )}
+              </div>
+              
+              <div className="p-3">
+                <div className="flex justify-between mb-3">
+                  <div className="flex space-x-4">
+                    <button 
+                      className={`flex items-center ${likedPosts[selectedPost.id] ? 'text-red-500' : 'text-gray-800'}`}
+                      onClick={() => likePost(selectedPost.id)}
+                    >
+                      <Heart 
+                        size={24} 
+                        className={`mr-1 ${likedPosts[selectedPost.id] ? 'fill-current' : ''}`} 
+                      />
+                      <span className="text-sm">{selectedPost.likes || 0}</span>
+                    </button>
+                    <button className="text-gray-800">
+                      <MessageCircle size={24} />
+                    </button>
+                    <button className="text-gray-800">
+                      <Share size={24} />
+                    </button>
+                  </div>
+                  <button className="text-gray-800">
+                    <BookmarkIcon size={24} />
+                  </button>
+                </div>
+                
+                {selectedPost.content && (
+                  <div className="mb-3">
+                    <p className="text-sm">
+                      <span className="font-semibold mr-2">
+                        {currentUser?.displayName || currentUser?.username}
+                      </span>
+                      {selectedPost.content}
+                    </p>
+                  </div>
+                )}
+                
+                <div className="text-xs text-gray-500">
+                  {new Date(selectedPost.createdAt).toLocaleDateString('en-US', {
+                    year: 'numeric',
+                    month: 'long',
+                    day: 'numeric'
+                  })}
+                </div>
+                
+                <div className="mt-3 pt-3 border-t">
+                  <div className="flex">
+                    <input 
+                      type="text"
+                      placeholder="Add a comment..."
+                      className="flex-1 text-sm border-none focus:ring-0 bg-transparent"
+                      value={comment}
+                      onChange={(e) => setComment(e.target.value)}
+                      onKeyPress={(e) => e.key === 'Enter' && handleAddComment(selectedPost.id)}
+                    />
+                    <button 
+                      className="text-primary text-sm font-semibold"
+                      onClick={() => handleAddComment(selectedPost.id)}
+                      disabled={!comment.trim()}
+                    >
+                      Post
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
         </DialogContent>
       </Dialog>
     </div>
