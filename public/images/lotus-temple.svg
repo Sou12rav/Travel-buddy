@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="800" height="600" viewBox="0 0 800 600" xmlns="http://www.w3.org/2000/svg">
+  <!-- Sky background -->
+  <rect width="800" height="600" fill="#B0E0E6"/>
+  
+  <!-- Ground/Garden -->
+  <rect x="0" y="450" width="800" height="150" fill="#7CFC00"/>
+  
+  <!-- Water pool around the temple -->
+  <ellipse cx="400" cy="500" rx="300" ry="50" fill="#87CEFA"/>
+  
+  <!-- Lotus Temple Base -->
+  <ellipse cx="400" cy="450" rx="150" ry="30" fill="#F0F0F0"/>
+  
+  <!-- Lotus Temple Petals - 9 petals in 3 rows -->
+  <!-- First row (outermost) -->
+  <path d="M250,450 Q400,200 550,450" fill="#FFFFFF" stroke="#E0E0E0" stroke-width="2"/>
+  <path d="M220,450 Q400,220 580,450" fill="#FFFFFF" stroke="#E0E0E0" stroke-width="2" transform="rotate(20, 400, 450)"/>
+  <path d="M220,450 Q400,220 580,450" fill="#FFFFFF" stroke="#E0E0E0" stroke-width="2" transform="rotate(-20, 400, 450)"/>
+  
+  <!-- Second row -->
+  <path d="M270,450 Q400,240 530,450" fill="#FFFFFF" stroke="#E0E0E0" stroke-width="2" transform="rotate(10, 400, 450)"/>
+  <path d="M270,450 Q400,240 530,450" fill="#FFFFFF" stroke="#E0E0E0" stroke-width="2" transform="rotate(-10, 400, 450)"/>
+  <path d="M270,450 Q400,240 530,450" fill="#FFFFFF" stroke="#E0E0E0" stroke-width="2" transform="rotate(30, 400, 450)"/>
+  
+  <!-- Third row (innermost) -->
+  <path d="M300,450 Q400,260 500,450" fill="#FFFFFF" stroke="#E0E0E0" stroke-width="2"/>
+  <path d="M300,450 Q400,260 500,450" fill="#FFFFFF" stroke="#E0E0E0" stroke-width="2" transform="rotate(15, 400, 450)"/>
+  <path d="M300,450 Q400,260 500,450" fill="#FFFFFF" stroke="#E0E0E0" stroke-width="2" transform="rotate(-15, 400, 450)"/>
+  
+  <!-- Center entrance -->
+  <path d="M380,450 L380,380 A20,20 0 0,1 420,380 L420,450" fill="#F8F8F8" stroke="#E0E0E0" stroke-width="1"/>
+  
+  <!-- Steps leading to the temple -->
+  <rect x="350" y="450" width="100" height="5" fill="#D3D3D3"/>
+  <rect x="340" y="455" width="120" height="5" fill="#D3D3D3"/>
+  <rect x="330" y="460" width="140" height="5" fill="#D3D3D3"/>
+  <rect x="320" y="465" width="160" height="5" fill="#D3D3D3"/>
+  <rect x="310" y="470" width="180" height="5" fill="#D3D3D3"/>
+  
+  <!-- People silhouettes near the temple -->
+  <circle cx="350" y="490" r="8" fill="#000"/>
+  <rect x="348" y="498" width="4" height="15" fill="#000"/>
+  <rect x="343" y="505" width="15" height="3" fill="#000"/>
+  <rect x="348" y="515" width="4" height="10" fill="#000"/>
+  
+  <circle cx="420" y="485" r="6" fill="#000"/>
+  <rect x="418" y="491" width="4" height="12" fill="#000"/>
+  <rect x="414" y="497" width="12" height="2" fill="#000"/>
+  <rect x="418" y="503" width="4" height="9" fill="#000"/>
+  
+  <circle cx="480" y="488" r="7" fill="#000"/>
+  <rect x="478" y="495" width="4" height="14" fill="#000"/>
+  <rect x="474" y="502" width="14" height="3" fill="#000"/>
+  <rect x="478" y="509" width="4" height="10" fill="#000"/>
+  
+  <!-- Text - "LOTUS TEMPLE" -->
+  <text x="320" y="560" font-family="Arial" font-size="24" font-weight="bold" fill="#000">LOTUS TEMPLE</text>
+  
+  <!-- Clouds -->
+  <ellipse cx="150" cy="100" rx="60" ry="40" fill="#F8F8FF"/>
+  <ellipse cx="200" cy="90" rx="70" ry="45" fill="#F8F8FF"/>
+  <ellipse cx="240" cy="110" rx="55" ry="35" fill="#F8F8FF"/>
+  
+  <ellipse cx="600" cy="150" rx="70" ry="40" fill="#F8F8FF"/>
+  <ellipse cx="650" cy="135" rx="60" ry="35" fill="#F8F8FF"/>
+  <ellipse cx="690" cy="160" rx="50" ry="30" fill="#F8F8FF"/>
+</svg>
