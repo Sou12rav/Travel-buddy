@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { useLocation } from "wouter";
 import { useApp } from "@/lib/api_context";
@@ -6,7 +6,8 @@ import { Post, Comment, User } from "@/lib/types";
 import { 
   ArrowLeft, Heart, MessageCircle, Share, MoreVertical, 
   Send, UserPlus, UserMinus, Users, User as UserIcon,
-  PlusCircle, MapPin, Calendar 
+  PlusCircle, MapPin, Calendar, Bookmark, 
+  ImagePlus, Map, MessageSquare, Link
 } from "lucide-react";
 import { apiRequest, getQueryFn } from "@/lib/queryClient";
 
@@ -64,9 +65,11 @@ function PostCard({ post, onLike, onComment }: {
             <p className="text-xs text-gray-500">{post.location || 'Unknown Location'}</p>
           </div>
         </div>
-        <button className="text-gray-500">
-          <MoreVertical size={20} />
-        </button>
+        <PostOptionsMenu 
+          postId={post.id} 
+          userId={post.userId} 
+          post={post}
+        />
       </div>
       
       {/* Post Media */}
@@ -536,6 +539,181 @@ function FollowersSection({ userId }: { userId: number }) {
         </div>
       )}
     </>
+  );
+}
+
+// PostOptionsMenu Component 
+function PostOptionsMenu({ postId, userId, post }: { postId: number, userId: number, post: Post }) {
+  const [showOptions, setShowOptions] = useState(false);
+  const [showMapModal, setShowMapModal] = useState(false);
+  const { currentUser } = useApp();
+  const menuRef = useRef<HTMLDivElement>(null);
+  
+  // Handle clicking outside of the menu to close it
+  useEffect(() => {
+    function handleClickOutside(event: MouseEvent) {
+      if (menuRef.current && !menuRef.current.contains(event.target as Node)) {
+        setShowOptions(false);
+      }
+    }
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, [menuRef]);
+  
+  // Function to save post
+  const savePost = async () => {
+    try {
+      await apiRequest('POST', `/api/posts/${postId}/save`);
+      alert("Post saved successfully!");
+      setShowOptions(false);
+    } catch (error) {
+      console.error('Failed to save post:', error);
+    }
+  };
+  
+  // Function to copy link
+  const copyLink = () => {
+    const postLink = `${window.location.origin}/post/${postId}`;
+    navigator.clipboard.writeText(postLink)
+      .then(() => {
+        alert("Link copied to clipboard!");
+        setShowOptions(false);
+      })
+      .catch(err => {
+        console.error('Failed to copy:', err);
+      });
+  };
+  
+  // Function to add to story
+  const addToStory = () => {
+    alert("Feature to add to story coming soon!");
+    setShowOptions(false);
+  };
+  
+  // Function to send direct message to post author
+  const sendMessage = async () => {
+    if (!currentUser) return;
+    
+    try {
+      // Create a new conversation or get existing one
+      const response = await apiRequest(
+        'POST',
+        '/api/conversations', 
+        { userId: currentUser.id, otherUserId: userId }
+      );
+      
+      alert("Redirecting to chat...");
+      window.location.href = `/chat?conversation=${response.conversation.id}`;
+    } catch (error) {
+      console.error('Failed to initiate chat:', error);
+    }
+  };
+  
+  return (
+    <div className="relative" ref={menuRef}>
+      <button 
+        className="text-gray-500"
+        onClick={() => setShowOptions(!showOptions)}
+      >
+        <MoreVertical size={20} />
+      </button>
+      
+      {showOptions && (
+        <div className="absolute right-0 top-full mt-1 bg-white rounded-lg shadow-lg z-20 w-56 py-1 text-sm">
+          <button 
+            className="w-full px-4 py-2 text-left flex items-center space-x-2 hover:bg-gray-100"
+            onClick={savePost}
+          >
+            <Bookmark size={16} />
+            <span>Save post</span>
+          </button>
+          
+          <button 
+            className="w-full px-4 py-2 text-left flex items-center space-x-2 hover:bg-gray-100"
+            onClick={addToStory}
+          >
+            <ImagePlus size={16} />
+            <span>Add to your story</span>
+          </button>
+          
+          {post.placeId && post.placeDetails && (
+            <button 
+              className="w-full px-4 py-2 text-left flex items-center space-x-2 hover:bg-gray-100"
+              onClick={() => {
+                setShowMapModal(true);
+                setShowOptions(false);
+              }}
+            >
+              <Map size={16} />
+              <span>Show on map</span>
+            </button>
+          )}
+          
+          {userId !== currentUser?.id && (
+            <button 
+              className="w-full px-4 py-2 text-left flex items-center space-x-2 hover:bg-gray-100"
+              onClick={sendMessage}
+            >
+              <MessageSquare size={16} />
+              <span>Message</span>
+            </button>
+          )}
+          
+          <button 
+            className="w-full px-4 py-2 text-left flex items-center space-x-2 hover:bg-gray-100"
+            onClick={copyLink}
+          >
+            <Link size={16} />
+            <span>Copy link</span>
+          </button>
+        </div>
+      )}
+      
+      {/* Map Modal */}
+      {showMapModal && post.placeId && post.placeDetails && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white rounded-lg w-full max-w-md mx-4">
+            <div className="flex items-center justify-between p-4 border-b">
+              <h3 className="font-medium">View on Map</h3>
+              <button onClick={() => setShowMapModal(false)} className="text-gray-500">
+                &times;
+              </button>
+            </div>
+            
+            <div className="p-4">
+              <div className="mb-4">
+                <h4 className="font-medium">{post.placeDetails.name}</h4>
+                <p className="text-sm text-gray-500">{post.placeDetails.address}</p>
+              </div>
+              
+              {/* Map Placeholder - would be replaced with actual map component */}
+              <div className="bg-gray-200 rounded-lg h-60 flex items-center justify-center">
+                <div className="text-center">
+                  <Map size={48} className="mx-auto text-gray-500 mb-2" />
+                  <p className="text-gray-500">Map view would display here</p>
+                  <p className="text-xs text-gray-400">Integration with maps coming soon</p>
+                </div>
+              </div>
+              
+              <div className="mt-4">
+                <button
+                  className="w-full py-2 bg-blue-600 text-white rounded-lg"
+                  onClick={() => {
+                    // Open in maps app or similar functionality
+                    setShowMapModal(false);
+                    alert("Opening in maps app coming soon!");
+                  }}
+                >
+                  Get Directions
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+    </div>
   );
 }
 
