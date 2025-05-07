@@ -1,5 +1,7 @@
 import { IStorage } from "./storage";
 import { User } from "../shared/schema";
+import fs from 'fs';
+import path from 'path';
 // Define profile data for 20 users
 const userProfiles = [
   {
@@ -370,9 +372,6 @@ function getRandomArrayItems<T>(array: T[], count: number): T[] {
   return shuffled.slice(0, count);
 }
 
-import fs from 'fs';
-import path from 'path';
-
 export async function seedDatabase(storage: IStorage) {
   try {
     // Check for force reseed flag
@@ -416,10 +415,10 @@ export async function seedDatabase(storage: IStorage) {
     // Sample main user for reference
     const mainUser = createdUsers[0];
     
-    // Create follow relationships (each user follows between 5-15 random other users)
+    // Create follow relationships (each user follows between 10-18 random other users)
     for (const follower of createdUsers) {
-      // Determine how many users this person will follow
-      const followCount = getRandomNumber(5, 15);
+      // Determine how many users this person will follow - higher follow count for more connections
+      const followCount = getRandomNumber(10, 18);
       
       // Get a filtered list of potential users to follow (excluding self)
       const potentialFollows = createdUsers.filter(u => u.id !== follower.id);
@@ -438,8 +437,8 @@ export async function seedDatabase(storage: IStorage) {
       console.log(`Created ${followCount} follows for user: ${follower.displayName}`);
     }
     
-    // Ensure the main user has some friendships
-    for (let i = 1; i <= 10; i++) {
+    // Ensure the main user has many friendships (almost everyone is a friend)
+    for (let i = 1; i <= 15; i++) {
       const friendUser = createdUsers[i];
       await storage.sendFriendRequest({
         userId: friendUser.id,
@@ -553,7 +552,8 @@ export async function seedDatabase(storage: IStorage) {
         
         // Use a mix of external images and our local SVGs
         // Local SVGs provide faster loading and consistent styling
-        const useLocalSvg = Math.random() > 0.6;
+        // Higher probability (70%) of using our custom SVGs for better visual experience
+        const useLocalSvg = Math.random() > 0.3;
         const mediaUrl = useLocalSvg ? getRandomItem(svgImages) : location.image;
         
         // Create the post
