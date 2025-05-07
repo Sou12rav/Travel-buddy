@@ -1,7 +1,15 @@
-import { Message } from "@shared/schema";
+import { MessagesResponse } from "../lib/types";
+
+interface ChatMessage {
+  id: number;
+  conversationId: number;
+  content: string;
+  role: 'user' | 'assistant';
+  createdAt: string;
+}
 
 interface ChatBubbleProps {
-  message: Message;
+  message: ChatMessage;
 }
 
 export default function ChatBubble({ message }: ChatBubbleProps) {
