@@ -3,7 +3,11 @@ import { useQuery } from "@tanstack/react-query";
 import { useLocation } from "wouter";
 import { useApp } from "@/lib/api_context";
 import { Post, Comment, User } from "@/lib/types";
-import { ArrowLeft, Heart, MessageCircle, Share, MoreVertical, Send } from "lucide-react";
+import { 
+  ArrowLeft, Heart, MessageCircle, Share, MoreVertical, 
+  Send, UserPlus, UserMinus, Users, User as UserIcon,
+  PlusCircle, MapPin, Calendar 
+} from "lucide-react";
 import { apiRequest, getQueryFn } from "@/lib/queryClient";
 
 // Post Card Component
@@ -122,15 +126,10 @@ function PostCard({ post, onLike, onComment }: {
                 <span className="text-sm font-medium">{post.placeDetails.name}</span>
                 <span className="text-xs text-gray-500">{post.placeDetails.address}</span>
               </div>
-              <button 
-                className="text-xs bg-blue-600 text-white px-2 py-1 rounded"
-                onClick={() => {
-                  // Open a modal or navigate to add to itinerary
-                  alert("Feature to add place to itinerary coming soon!");
-                }}
-              >
-                Add to Itinerary
-              </button>
+              <AddToItineraryButton 
+                placeId={post.placeId} 
+                placeDetails={post.placeDetails}
+              />
             </div>
           </div>
         )}
@@ -351,6 +350,308 @@ function NewPostForm({ onSubmit }: { onSubmit: (post: any) => void }) {
   );
 }
 
+// Followers/Following Component
+function FollowersSection({ userId }: { userId: number }) {
+  const [activeTab, setActiveTab] = useState<'followers' | 'following'>('followers');
+  const [showModal, setShowModal] = useState(false);
+  const { currentUser } = useApp();
+  
+  // Fetch followers data
+  const { data: followersData } = useQuery({
+    queryKey: [`/api/users/${userId}/followers`],
+    enabled: showModal && activeTab === 'followers'
+  });
+  
+  // Fetch following data
+  const { data: followingData } = useQuery({
+    queryKey: [`/api/users/${userId}/following`],
+    enabled: showModal && activeTab === 'following'
+  });
+  
+  // Fetch is-following status for the current user
+  const { data: isFollowingCurrentUser } = useQuery({
+    queryKey: [`/api/follow-check?followerId=${currentUser?.id}&followingId=${userId}`],
+    enabled: !!currentUser?.id && userId !== currentUser?.id
+  });
+  
+  // Type assertion for response format
+  const followersData1 = followersData as { users?: User[] } | undefined;
+  const followingData1 = followingData as { users?: User[] } | undefined;
+  const isFollowingData = isFollowingCurrentUser as { isFollowing?: boolean } | undefined;
+  
+  const followers = followersData1?.users || [];
+  const following = followingData1?.users || [];
+  const isFollowing = isFollowingData?.isFollowing || false;
+  
+  // Function to follow a user
+  const followUser = async (followingId: number) => {
+    if (!currentUser) return;
+    
+    try {
+      await apiRequest(
+        'POST',
+        '/api/follow',
+        {
+          followerId: currentUser.id,
+          followingId
+        }
+      );
+      // Refetch followers/following data
+      window.location.reload(); // Simple reload to update the UI
+    } catch (error) {
+      console.error('Failed to follow user:', error);
+    }
+  };
+  
+  // Function to unfollow a user
+  const unfollowUser = async (followingId: number) => {
+    if (!currentUser) return;
+    
+    try {
+      await apiRequest(
+        'DELETE',
+        `/api/unfollow?followerId=${currentUser.id}&followingId=${followingId}`
+      );
+      // Refetch followers/following data
+      window.location.reload(); // Simple reload to update the UI
+    } catch (error) {
+      console.error('Failed to unfollow user:', error);
+    }
+  };
+  
+  return (
+    <>
+      <div className="flex items-center justify-between py-3 border-b border-gray-100">
+        <div className="flex space-x-6">
+          <button
+            onClick={() => {
+              setActiveTab('followers');
+              setShowModal(true);
+            }}
+            className="flex items-center space-x-1"
+          >
+            <Users size={16} />
+            <span className="text-sm font-medium">Followers</span>
+            <span className="text-xs bg-gray-100 rounded-full px-2 py-0.5">{followers.length || 0}</span>
+          </button>
+          
+          <button
+            onClick={() => {
+              setActiveTab('following');
+              setShowModal(true);
+            }}
+            className="flex items-center space-x-1"
+          >
+            <UserIcon size={16} />
+            <span className="text-sm font-medium">Following</span>
+            <span className="text-xs bg-gray-100 rounded-full px-2 py-0.5">{following.length || 0}</span>
+          </button>
+        </div>
+        
+        {userId !== currentUser?.id && (
+          <button
+            onClick={() => isFollowing ? unfollowUser(userId) : followUser(userId)}
+            className={`flex items-center space-x-1 px-3 py-1 rounded-full text-sm ${
+              isFollowing ? 'bg-gray-200 text-gray-800' : 'bg-blue-600 text-white'
+            }`}
+          >
+            {isFollowing ? (
+              <>
+                <UserMinus size={16} />
+                <span>Unfollow</span>
+              </>
+            ) : (
+              <>
+                <UserPlus size={16} />
+                <span>Follow</span>
+              </>
+            )}
+          </button>
+        )}
+      </div>
+      
+      {showModal && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white rounded-lg w-full max-w-sm mx-4">
+            <div className="flex items-center justify-between p-4 border-b">
+              <h3 className="font-medium">{activeTab === 'followers' ? 'Followers' : 'Following'}</h3>
+              <button onClick={() => setShowModal(false)} className="text-gray-500">
+                &times;
+              </button>
+            </div>
+            
+            <div className="p-4 max-h-80 overflow-y-auto">
+              {activeTab === 'followers' ? (
+                followers.length > 0 ? (
+                  followers.map(user => (
+                    <div key={user.id} className="flex items-center justify-between py-2">
+                      <div className="flex items-center space-x-3">
+                        <div className="h-10 w-10 rounded-full bg-gray-200 flex items-center justify-center">
+                          {user.displayName.charAt(0)}
+                        </div>
+                        <div>
+                          <div className="font-medium">{user.displayName}</div>
+                          <div className="text-xs text-gray-500">@{user.username}</div>
+                        </div>
+                      </div>
+                      
+                      {/* Follow/Unfollow button would go here */}
+                    </div>
+                  ))
+                ) : (
+                  <p className="text-center text-gray-500 py-4">No followers yet</p>
+                )
+              ) : (
+                following.length > 0 ? (
+                  following.map(user => (
+                    <div key={user.id} className="flex items-center justify-between py-2">
+                      <div className="flex items-center space-x-3">
+                        <div className="h-10 w-10 rounded-full bg-gray-200 flex items-center justify-center">
+                          {user.displayName.charAt(0)}
+                        </div>
+                        <div>
+                          <div className="font-medium">{user.displayName}</div>
+                          <div className="text-xs text-gray-500">@{user.username}</div>
+                        </div>
+                      </div>
+                      
+                      {/* Follow/Unfollow button would go here */}
+                    </div>
+                  ))
+                ) : (
+                  <p className="text-center text-gray-500 py-4">Not following anyone yet</p>
+                )
+              )}
+            </div>
+            
+            <div className="p-4 border-t">
+              <button
+                onClick={() => setShowModal(false)}
+                className="w-full py-2 bg-gray-100 rounded-lg text-sm font-medium"
+              >
+                Close
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+    </>
+  );
+}
+
+// AddToItineraryButton Component
+function AddToItineraryButton({ placeId, placeDetails }: { placeId?: string, placeDetails?: any }) {
+  const [showModal, setShowModal] = useState(false);
+  const { currentUser } = useApp();
+  
+  // Get user's itineraries
+  const { data: itinerariesData } = useQuery({
+    queryKey: [`/api/users/${currentUser?.id}/itineraries`],
+    enabled: !!currentUser?.id && showModal
+  });
+  
+  // Type assertion
+  const itinerariesData1 = itinerariesData as { itineraries?: any[] } | undefined;
+  const itineraries = itinerariesData1?.itineraries || [];
+  
+  // Add place to itinerary
+  const addToItinerary = async (itineraryId: number) => {
+    if (!currentUser || !placeId || !placeDetails) return;
+    
+    try {
+      await apiRequest(
+        'POST',
+        `/api/users/${currentUser.id}/itineraries/${itineraryId}/add-place`,
+        {
+          placeId,
+          placeDetails
+        }
+      );
+      
+      setShowModal(false);
+      alert("Place added to itinerary successfully!");
+    } catch (error) {
+      console.error('Failed to add place to itinerary:', error);
+      alert("Failed to add place to itinerary. Please try again.");
+    }
+  };
+  
+  return (
+    <>
+      <button 
+        className="text-xs bg-blue-600 text-white px-2 py-1 rounded flex items-center space-x-1"
+        onClick={() => setShowModal(true)}
+      >
+        <PlusCircle size={14} />
+        <span>Add to Itinerary</span>
+      </button>
+      
+      {/* Modal for adding to itinerary */}
+      {showModal && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white rounded-lg w-full max-w-sm mx-4">
+            <div className="flex items-center justify-between p-4 border-b">
+              <h3 className="font-medium">Add to Itinerary</h3>
+              <button onClick={() => setShowModal(false)} className="text-gray-500">
+                &times;
+              </button>
+            </div>
+            
+            <div className="p-4">
+              <div className="mb-4 bg-blue-50 p-3 rounded-lg">
+                <div className="flex items-start space-x-2">
+                  <MapPin className="text-blue-600 mt-1" size={16} />
+                  <div>
+                    <p className="font-medium text-sm">{placeDetails?.name}</p>
+                    <p className="text-xs text-gray-500">{placeDetails?.address}</p>
+                  </div>
+                </div>
+              </div>
+              
+              <p className="text-sm mb-4">Select an itinerary to add this place to:</p>
+              
+              {itineraries.length > 0 ? (
+                <div className="space-y-2 max-h-60 overflow-y-auto">
+                  {itineraries.map(itinerary => (
+                    <div 
+                      key={itinerary.id}
+                      className="border rounded-lg p-3 flex justify-between items-center hover:bg-gray-50 cursor-pointer"
+                      onClick={() => addToItinerary(itinerary.id)}
+                    >
+                      <div className="flex items-center space-x-2">
+                        <Calendar size={16} className="text-gray-500" />
+                        <div>
+                          <p className="font-medium text-sm">{itinerary.title}</p>
+                          <p className="text-xs text-gray-500">{itinerary.city} • {itinerary.date}</p>
+                        </div>
+                      </div>
+                      <PlusCircle size={18} className="text-blue-600" />
+                    </div>
+                  ))}
+                </div>
+              ) : (
+                <div className="text-center py-4 text-gray-500">
+                  <p>No itineraries available</p>
+                  <p className="text-xs mt-1">Create an itinerary first</p>
+                </div>
+              )}
+            </div>
+            
+            <div className="p-4 border-t">
+              <button
+                onClick={() => setShowModal(false)}
+                className="w-full py-2 bg-gray-100 rounded-lg text-sm font-medium"
+              >
+                Cancel
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+    </>
+  );
+}
+
 // Main Social Page Component
 export default function Social() {
   const [, navigate] = useLocation();
@@ -434,6 +735,25 @@ export default function Social() {
 
       <div className="flex flex-col h-[calc(100%-56px)] overflow-y-auto">
         <div className="container mx-auto px-4 py-4">
+          {/* Followers Section */}
+          {currentUser?.id && (
+            <div className="bg-white rounded-lg shadow-md mb-4">
+              <div className="p-4">
+                <div className="flex items-center space-x-3 mb-3">
+                  <div className="h-12 w-12 rounded-full bg-gray-200 flex items-center justify-center text-gray-700 font-medium text-lg">
+                    {currentUser.displayName?.charAt(0) || 'U'}
+                  </div>
+                  <div>
+                    <h2 className="font-medium">{currentUser.displayName}</h2>
+                    <p className="text-xs text-gray-500">@{currentUser.username}</p>
+                  </div>
+                </div>
+                
+                <FollowersSection userId={currentUser.id} />
+              </div>
+            </div>
+          )}
+          
           {/* New Post Form */}
           <NewPostForm onSubmit={createPost} />
           
