@@ -374,6 +374,29 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
     res.json({ success: true });
   });
+  
+  // Add place to itinerary
+  apiRouter.post("/users/:userId/itineraries/:itineraryId/add-place", async (req, res) => {
+    const { userId, itineraryId } = req.params;
+    const { placeId, placeDetails } = req.body;
+    
+    try {
+      const updatedItinerary = await storage.addPlaceToItinerary(
+        Number(userId),
+        Number(itineraryId),
+        placeId,
+        placeDetails
+      );
+      
+      if (!updatedItinerary) {
+        return res.status(404).json({ message: "Itinerary not found" });
+      }
+      
+      res.json({ itinerary: updatedItinerary });
+    } catch (error) {
+      res.status(500).json({ error: 'Failed to add place to itinerary' });
+    }
+  });
 
   // ==== Saved Places Routes ====
   apiRouter.post("/saved-places", async (req, res) => {
@@ -633,35 +656,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
   
-  // Add Place to Itinerary from Post Routes
-  apiRouter.post("/users/:userId/itineraries/:itineraryId/add-place", async (req, res) => {
-    try {
-      const userId = parseInt(req.params.userId);
-      const itineraryId = parseInt(req.params.itineraryId);
-      
-      const { placeId, placeDetails } = z.object({
-        placeId: z.string(),
-        placeDetails: z.any()
-      }).parse(req.body);
-      
-      const updatedItinerary = await storage.addPlaceToItinerary(
-        userId, 
-        itineraryId, 
-        placeId, 
-        placeDetails
-      );
-      
-      if (!updatedItinerary) {
-        return res.status(404).json({ 
-          message: "Itinerary not found or you don't have permission to modify it"
-        });
-      }
-      
-      res.json({ itinerary: updatedItinerary });
-    } catch (error) {
-      res.status(400).json({ message: "Invalid request data", error });
-    }
-  });
+
 
   const httpServer = createServer(app);
   return httpServer;

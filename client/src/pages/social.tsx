@@ -602,7 +602,7 @@ function PostOptionsMenu({ postId, userId, post }: { postId: number, userId: num
         'POST',
         '/api/conversations', 
         { userId: currentUser.id, otherUserId: userId }
-      );
+      ) as { conversation: { id: number } };
       
       alert("Redirecting to chat...");
       window.location.href = `/chat?conversation=${response.conversation.id}`;
@@ -720,6 +720,10 @@ function PostOptionsMenu({ postId, userId, post }: { postId: number, userId: num
 // AddToItineraryButton Component
 function AddToItineraryButton({ placeId, placeDetails }: { placeId?: string, placeDetails?: any }) {
   const [showModal, setShowModal] = useState(false);
+  const [showCreateItineraryModal, setShowCreateItineraryModal] = useState(false);
+  const [newItineraryTitle, setNewItineraryTitle] = useState("");
+  const [newItineraryCity, setNewItineraryCity] = useState("");
+  const [newItineraryDate, setNewItineraryDate] = useState("");
   const { currentUser } = useApp();
   
   // Get user's itineraries
@@ -808,9 +812,17 @@ function AddToItineraryButton({ placeId, placeDetails }: { placeId?: string, pla
                   ))}
                 </div>
               ) : (
-                <div className="text-center py-4 text-gray-500">
-                  <p>No itineraries available</p>
-                  <p className="text-xs mt-1">Create an itinerary first</p>
+                <div className="text-center py-4">
+                  <p className="text-gray-500 mb-3">No itineraries available</p>
+                  <button 
+                    onClick={() => {
+                      setShowModal(false);
+                      setShowCreateItineraryModal(true);
+                    }}
+                    className="bg-blue-600 text-white px-4 py-2 rounded-lg text-sm"
+                  >
+                    Create New Itinerary
+                  </button>
                 </div>
               )}
             </div>
@@ -822,6 +834,122 @@ function AddToItineraryButton({ placeId, placeDetails }: { placeId?: string, pla
               >
                 Cancel
               </button>
+            </div>
+          </div>
+        </div>
+      )}
+      
+      {/* Modal for creating new itinerary */}
+      {showCreateItineraryModal && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white rounded-lg w-full max-w-sm mx-4">
+            <div className="flex items-center justify-between p-4 border-b">
+              <h3 className="font-medium">Create New Itinerary</h3>
+              <button onClick={() => setShowCreateItineraryModal(false)} className="text-gray-500">
+                &times;
+              </button>
+            </div>
+            
+            <div className="p-4">
+              <form onSubmit={async (e) => {
+                e.preventDefault();
+                
+                if (!currentUser) return;
+                
+                try {
+                  // Create a new itinerary
+                  const newItinerary = await apiRequest(
+                    'POST',
+                    '/api/itineraries',
+                    {
+                      userId: currentUser.id,
+                      title: newItineraryTitle,
+                      city: newItineraryCity,
+                      date: newItineraryDate,
+                      activities: []
+                    }
+                  );
+                  
+                  setShowCreateItineraryModal(false);
+                  
+                  // If we have place details, add the place to the new itinerary
+                  if (placeId && placeDetails && newItinerary.itinerary) {
+                    await addToItinerary(newItinerary.itinerary.id);
+                  } else {
+                    // Just show success message
+                    alert("Itinerary created successfully!");
+                  }
+                } catch (error) {
+                  console.error('Failed to create itinerary:', error);
+                  alert("Failed to create itinerary. Please try again.");
+                }
+              }}>
+                <div className="space-y-4">
+                  <div>
+                    <label className="block text-sm font-medium mb-1">Itinerary Title</label>
+                    <input
+                      type="text"
+                      className="w-full border rounded-lg p-2 text-sm"
+                      value={newItineraryTitle}
+                      onChange={(e) => setNewItineraryTitle(e.target.value)}
+                      placeholder="e.g. Weekend in Kolkata"
+                      required
+                    />
+                  </div>
+                  
+                  <div>
+                    <label className="block text-sm font-medium mb-1">City</label>
+                    <input
+                      type="text"
+                      className="w-full border rounded-lg p-2 text-sm"
+                      value={newItineraryCity}
+                      onChange={(e) => setNewItineraryCity(e.target.value)}
+                      placeholder="e.g. Kolkata"
+                      required
+                    />
+                  </div>
+                  
+                  <div>
+                    <label className="block text-sm font-medium mb-1">Date</label>
+                    <input
+                      type="date"
+                      className="w-full border rounded-lg p-2 text-sm"
+                      value={newItineraryDate}
+                      onChange={(e) => setNewItineraryDate(e.target.value)}
+                      required
+                    />
+                  </div>
+                  
+                  {placeId && placeDetails && (
+                    <div className="bg-blue-50 p-3 rounded-lg">
+                      <div className="flex items-start space-x-2">
+                        <MapPin className="text-blue-600 mt-1" size={16} />
+                        <div>
+                          <p className="text-xs text-blue-600 font-medium">Will add this place:</p>
+                          <p className="font-medium text-sm">{placeDetails.name}</p>
+                          <p className="text-xs text-gray-500">{placeDetails.address}</p>
+                        </div>
+                      </div>
+                    </div>
+                  )}
+                  
+                  <div className="flex space-x-2 pt-2">
+                    <button
+                      type="button"
+                      onClick={() => setShowCreateItineraryModal(false)}
+                      className="flex-1 py-2 border border-gray-300 rounded-lg text-sm"
+                    >
+                      Cancel
+                    </button>
+                    <button
+                      type="submit"
+                      className="flex-1 py-2 bg-blue-600 text-white rounded-lg text-sm"
+                    >
+                      Create Itinerary
+                    </button>
+                  </div>
+                </div>
+              </form>
             </div>
           </div>
         </div>
