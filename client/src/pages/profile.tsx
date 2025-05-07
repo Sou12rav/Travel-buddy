@@ -1,4 +1,4 @@
-import { useState, useRef, ChangeEvent } from "react";
+import { useState, useRef, ChangeEvent, FormEvent } from "react";
 import { useApp } from "../lib/api_context";
 import { 
   User as UserIcon, 
@@ -542,21 +542,20 @@ export default function Profile() {
             
             <div className="space-y-2">
               <Label htmlFor="location">Location</Label>
-              <div className="relative">
-                <MapPin className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={16} />
-                <Input 
-                  id="location" 
-                  placeholder="Add location"
-                  className="pl-10"
-                  value={postLocation}
-                  onChange={(e) => setPostLocation(e.target.value)}
-                />
-              </div>
+              <Input 
+                id="location" 
+                placeholder="Add a location"
+                value={postLocation}
+                onChange={(e) => setPostLocation(e.target.value)}
+              />
             </div>
           </div>
           
           <DialogFooter>
-            <Button variant="outline" onClick={() => setIsUploadDialogOpen(false)}>
+            <Button 
+              variant="outline" 
+              onClick={() => setIsUploadDialogOpen(false)}
+            >
               Cancel
             </Button>
             <Button 
@@ -569,14 +568,14 @@ export default function Profile() {
         </DialogContent>
       </Dialog>
       
-      {/* Post detail dialog */}
+      {/* Post view dialog */}
       <Dialog open={isViewPostDialogOpen} onOpenChange={setIsViewPostDialogOpen}>
-        <DialogContent className="sm:max-w-[550px] max-h-[90vh] overflow-y-auto">
+        <DialogContent className="sm:max-w-[600px] p-0 overflow-hidden max-h-[90vh]">
           {selectedPost && (
             <div className="flex flex-col">
               <div className="flex items-center p-2">
                 <div className="w-10 h-10 rounded-full bg-primary/10 flex items-center justify-center mr-3">
-                  <User className="text-primary" size={18} />
+                  <UserIcon className="text-primary" size={18} />
                 </div>
                 <div className="flex-1">
                   <div className="font-semibold">
@@ -730,7 +729,7 @@ export default function Profile() {
                   <div key={user.id} className="flex items-center justify-between py-2">
                     <div className="flex items-center gap-3">
                       <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center">
-                        <User className="text-primary" size={20} />
+                        <UserIcon className="text-primary" size={20} />
                       </div>
                       <div>
                         <p className="font-medium">{user.displayName || user.username}</p>
@@ -778,11 +777,11 @@ export default function Profile() {
               </div>
             ) : following.length > 0 ? (
               <div className="space-y-3">
-                {following.map((user: User) => (
+                {following.map((user: UserType) => (
                   <div key={user.id} className="flex items-center justify-between py-2">
                     <div className="flex items-center gap-3">
                       <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center">
-                        <User className="text-primary" size={20} />
+                        <UserIcon className="text-primary" size={20} />
                       </div>
                       <div>
                         <p className="font-medium">{user.displayName || user.username}</p>
