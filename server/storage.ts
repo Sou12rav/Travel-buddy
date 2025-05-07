@@ -9,6 +9,12 @@ import {
   InsertItinerary,
   SavedPlace,
   InsertSavedPlace,
+  Post,
+  InsertPost,
+  Comment,
+  InsertComment,
+  Friendship,
+  InsertFriendship,
   PlaceInfo,
   Weather,
   CabOption,
@@ -44,6 +50,26 @@ export interface IStorage {
   getUserSavedPlaces(userId: number): Promise<SavedPlace[]>;
   createSavedPlace(savedPlace: InsertSavedPlace): Promise<SavedPlace>;
   deleteSavedPlace(id: number): Promise<boolean>;
+  
+  // Social platform operations
+  // Post operations
+  getPost(id: number): Promise<Post | undefined>;
+  getUserPosts(userId: number): Promise<Post[]>;
+  getFeedPosts(userId: number): Promise<Post[]>;
+  createPost(post: InsertPost): Promise<Post>;
+  deletePost(id: number): Promise<boolean>;
+  likePost(id: number): Promise<Post | undefined>;
+  
+  // Comment operations
+  getPostComments(postId: number): Promise<Comment[]>;
+  createComment(comment: InsertComment): Promise<Comment>;
+  deleteComment(id: number): Promise<boolean>;
+  
+  // Friendship operations
+  getUserFriends(userId: number): Promise<User[]>;
+  getPendingFriendRequests(userId: number): Promise<Friendship[]>;
+  sendFriendRequest(friendship: InsertFriendship): Promise<Friendship>;
+  updateFriendshipStatus(id: number, status: string): Promise<Friendship | undefined>;
 }
 
 export class MemStorage implements IStorage {
@@ -52,12 +78,18 @@ export class MemStorage implements IStorage {
   private messages: Map<number, Message>;
   private itineraries: Map<number, Itinerary>;
   private savedPlaces: Map<number, SavedPlace>;
+  private posts: Map<number, Post>;
+  private comments: Map<number, Comment>;
+  private friendships: Map<number, Friendship>;
   
   private userId = 1;
   private conversationId = 1;
   private messageId = 1;
   private itineraryId = 1;
   private savedPlaceId = 1;
+  private postId = 1;
+  private commentId = 1;
+  private friendshipId = 1;
 
   constructor() {
     this.users = new Map();
@@ -65,6 +97,9 @@ export class MemStorage implements IStorage {
     this.messages = new Map();
     this.itineraries = new Map();
     this.savedPlaces = new Map();
+    this.posts = new Map();
+    this.comments = new Map();
+    this.friendships = new Map();
 
     // Add a demo user
     this.createUser({
@@ -207,6 +242,133 @@ export class MemStorage implements IStorage {
   async deleteSavedPlace(id: number): Promise<boolean> {
     return this.savedPlaces.delete(id);
   }
+  
+  // Post operations
+  async getPost(id: number): Promise<Post | undefined> {
+    return this.posts.get(id);
+  }
+  
+  async getUserPosts(userId: number): Promise<Post[]> {
+    return Array.from(this.posts.values()).filter(
+      (post) => post.userId === userId
+    ).sort((a, b) => (b.createdAt as Date).getTime() - (a.createdAt as Date).getTime());
+  }
+  
+  async getFeedPosts(userId: number): Promise<Post[]> {
+    // Get all friends of the user
+    const friends = await this.getUserFriends(userId);
+    const friendIds = friends.map(friend => friend.id);
+    
+    // Get posts from friends and the user's own posts
+    return Array.from(this.posts.values())
+      .filter(post => friendIds.includes(post.userId as number) || post.userId === userId)
+      .sort((a, b) => (b.createdAt as Date).getTime() - (a.createdAt as Date).getTime());
+  }
+  
+  async createPost(insertPost: InsertPost): Promise<Post> {
+    const id = this.postId++;
+    const post: Post = {
+      ...insertPost,
+      id,
+      likes: 0,
+      createdAt: new Date()
+    };
+    this.posts.set(id, post);
+    return post;
+  }
+  
+  async deletePost(id: number): Promise<boolean> {
+    // Delete all comments on the post first
+    Array.from(this.comments.values())
+      .filter(comment => comment.postId === id)
+      .forEach(comment => this.comments.delete(comment.id));
+      
+    // Delete the post
+    return this.posts.delete(id);
+  }
+  
+  async likePost(id: number): Promise<Post | undefined> {
+    const post = await this.getPost(id);
+    if (!post) return undefined;
+    
+    const updatedPost: Post = {
+      ...post,
+      likes: (post.likes || 0) + 1
+    };
+    this.posts.set(id, updatedPost);
+    return updatedPost;
+  }
+  
+  // Comment operations
+  async getPostComments(postId: number): Promise<Comment[]> {
+    return Array.from(this.comments.values())
+      .filter(comment => comment.postId === postId)
+      .sort((a, b) => (a.createdAt as Date).getTime() - (b.createdAt as Date).getTime());
+  }
+  
+  async createComment(insertComment: InsertComment): Promise<Comment> {
+    const id = this.commentId++;
+    const comment: Comment = {
+      ...insertComment,
+      id,
+      createdAt: new Date()
+    };
+    this.comments.set(id, comment);
+    return comment;
+  }
+  
+  async deleteComment(id: number): Promise<boolean> {
+    return this.comments.delete(id);
+  }
+  
+  // Friendship operations
+  async getUserFriends(userId: number): Promise<User[]> {
+    const acceptedFriendships = Array.from(this.friendships.values())
+      .filter(friendship => 
+        (friendship.userId === userId || friendship.friendId === userId) && 
+        friendship.status === 'accepted'
+      );
+      
+    // Get friend IDs
+    const friendIds = acceptedFriendships.map(friendship => 
+      friendship.userId === userId ? friendship.friendId : friendship.userId
+    );
+    
+    // Return friend objects
+    return Array.from(this.users.values())
+      .filter(user => friendIds.includes(user.id));
+  }
+  
+  async getPendingFriendRequests(userId: number): Promise<Friendship[]> {
+    return Array.from(this.friendships.values())
+      .filter(friendship => 
+        friendship.friendId === userId && 
+        friendship.status === 'pending'
+      );
+  }
+  
+  async sendFriendRequest(insertFriendship: InsertFriendship): Promise<Friendship> {
+    const id = this.friendshipId++;
+    const friendship: Friendship = {
+      ...insertFriendship,
+      id,
+      createdAt: new Date()
+    };
+    this.friendships.set(id, friendship);
+    return friendship;
+  }
+  
+  async updateFriendshipStatus(id: number, status: string): Promise<Friendship | undefined> {
+    const friendship = this.friendships.get(id);
+    if (!friendship) return undefined;
+    
+    const updatedFriendship: Friendship = {
+      ...friendship,
+      status
+    };
+    this.friendships.set(id, updatedFriendship);
+    return updatedFriendship;
+  }
 }
 
 export const storage = new MemStorage();
@@ -300,6 +462,69 @@ export const storage = new MemStorage();
 
     for (const place of savedPlaces) {
       await storage.createSavedPlace(place);
+    }
+    
+    // Create a friend user
+    const friendUser = await storage.createUser({
+      username: "friend",
+      password: "friend",
+      displayName: "Priya Sharma",
+      email: "priya.sharma@example.com",
+      preferences: { notifications: true, darkMode: true, language: "English" }
+    });
+    
+    // Create friendship
+    await storage.sendFriendRequest({
+      userId: friendUser.id,
+      friendId: user.id,
+      status: 'accepted'
+    });
+    
+    // Create sample posts
+    const samplePosts = [
+      {
+        userId: user.id,
+        content: "Enjoying the beautiful sunrise at Victoria Memorial! Perfect way to start my Kolkata trip. #Travel #Kolkata #India",
+        mediaUrl: "https://images.unsplash.com/photo-1586183189334-1083383afe03?w=800&auto=format&fit=crop&q=60&ixlib=rb-4.0.3",
+        mediaType: "image",
+        location: "Victoria Memorial, Kolkata"
+      },
+      {
+        userId: friendUser.id,
+        content: "Street food tour at Park Street! The phuchkas here are incredible. Who wants to join me next time? #FoodLover #Kolkata #StreetFood",
+        mediaUrl: "https://images.unsplash.com/photo-1599487488170-d11ec9c172f0?w=800&auto=format&fit=crop&q=60&ixlib=rb-4.0.3",
+        mediaType: "image",
+        location: "Park Street, Kolkata"
+      },
+      {
+        userId: user.id,
+        content: "Check out my boat ride along the Hooghly River! The views of Howrah Bridge at sunset are amazing. #TravelVlog #Kolkata",
+        mediaUrl: "https://images.unsplash.com/photo-1558431382-27e303142255?w=800&auto=format&fit=crop&q=60&ixlib=rb-4.0.3",
+        mediaType: "video",
+        location: "Hooghly River, Kolkata"
+      }
+    ];
+    
+    // Add posts
+    for (const postData of samplePosts) {
+      const post = await storage.createPost(postData);
+      
+      // Add some comments and likes
+      if (post.userId === user.id) {
+        await storage.createComment({
+          postId: post.id,
+          userId: friendUser.id,
+          content: "Looks amazing! I'll have to visit there on my next trip."
+        });
+        await storage.likePost(post.id);
+      } else {
+        await storage.createComment({
+          postId: post.id,
+          userId: user.id,
+          content: "Great photos! The food looks delicious."
+        });
+        await storage.likePost(post.id);
+      }
     }
   }
 })();

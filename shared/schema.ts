@@ -147,3 +147,61 @@ export type Activity = {
   icon: string;
   placeId?: string;
 };
+
+// Social platform types
+export const posts = pgTable("posts", {
+  id: serial("id").primaryKey(),
+  userId: integer("user_id").references(() => users.id),
+  content: text("content"),
+  mediaUrl: text("media_url"),
+  mediaType: text("media_type"), // 'image', 'video', 'reel'
+  location: text("location"),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  likes: integer("likes").default(0),
+});
+
+export const insertPostSchema = createInsertSchema(posts).pick({
+  userId: true,
+  content: true,
+  mediaUrl: true,
+  mediaType: true,
+  location: true,
+});
+
+export const comments = pgTable("comments", {
+  id: serial("id").primaryKey(),
+  postId: integer("post_id").references(() => posts.id),
+  userId: integer("user_id").references(() => users.id),
+  content: text("content").notNull(),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+});
+
+export const insertCommentSchema = createInsertSchema(comments).pick({
+  postId: true,
+  userId: true,
+  content: true,
+});
+
+export const friendships = pgTable("friendships", {
+  id: serial("id").primaryKey(),
+  userId: integer("user_id").references(() => users.id),
+  friendId: integer("friend_id").references(() => users.id),
+  status: text("status").notNull(), // 'pending', 'accepted', 'rejected'
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+});
+
+export const insertFriendshipSchema = createInsertSchema(friendships).pick({
+  userId: true,
+  friendId: true,
+  status: true,
+});
+
+// Types
+export type Post = typeof posts.$inferSelect;
+export type InsertPost = z.infer<typeof insertPostSchema>;
+
+export type Comment = typeof comments.$inferSelect;
+export type InsertComment = z.infer<typeof insertCommentSchema>;
+
+export type Friendship = typeof friendships.$inferSelect;
+export type InsertFriendship = z.infer<typeof insertFriendshipSchema>;
