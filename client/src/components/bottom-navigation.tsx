@@ -1,5 +1,5 @@
 import { Link } from "wouter";
-import { Home, Map, Calendar, User, Users } from "lucide-react";
+import { Home, Map, Calendar, User, Users, Image } from "lucide-react";
 
 interface BottomNavigationProps {
   activeTab: string;
@@ -9,6 +9,7 @@ export default function BottomNavigation({ activeTab }: BottomNavigationProps) {
   const navItems = [
     { id: "home", label: "Home", icon: Home, path: "/" },
     { id: "social", label: "Social", icon: Users, path: "/social" },
+    { id: "feed", label: "Explore", icon: Image, path: "/feed" },
     { id: "itinerary", label: "Itinerary", icon: Calendar, path: "/itinerary" },
     { id: "profile", label: "Profile", icon: User, path: "/profile" },
   ];
