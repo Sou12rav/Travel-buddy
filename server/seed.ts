@@ -1,8 +1,5 @@
 import { IStorage } from "./storage";
 import { User } from "../shared/schema";
-import fs from 'fs';
-import path from 'path';
-
 // Define profile data for 20 users
 const userProfiles = [
   {
@@ -353,7 +350,11 @@ const commentContents = [
 const svgImages = [
   "/images/taj-mahal.svg",
   "/images/gateway-of-india.svg",
-  "/images/golden-temple.svg"
+  "/images/golden-temple.svg",
+  "/images/india-gate.svg",
+  "/images/lotus-temple.svg",
+  "/images/hawa-mahal.svg",
+  "/images/mysore-palace.svg"
 ];
 
 function getRandomItem<T>(array: T[]): T {
@@ -539,7 +540,7 @@ export async function seedDatabase(storage: IStorage) {
     // Create posts for all users (3-5 posts per user)
     for (const user of createdUsers) {
       // Determine number of posts for this user
-      const postCount = getRandomNumber(2, 5);
+      const postCount = getRandomNumber(4, 8);
       
       for (let i = 0; i < postCount; i++) {
         // Randomly select a location
@@ -574,8 +575,8 @@ export async function seedDatabase(storage: IStorage) {
         // Update the post to add likes (since likes isn't part of the insert schema)
         await storage.likePost(post.id);
         
-        // Add 1-5 comments to each post
-        const commentCount = getRandomNumber(1, 5);
+        // Add 3-8 comments to each post
+        const commentCount = getRandomNumber(3, 8);
         for (let j = 0; j < commentCount; j++) {
           // Select a random user to comment (not the post owner)
           let commenter;
