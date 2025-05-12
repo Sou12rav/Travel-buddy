@@ -1,6 +1,6 @@
 import { useTheme } from "./theme-provider";
 import { Button } from "@/components/ui/button";
-import { Sun, Moon, Stars } from "lucide-react";
+import { Sun, Moon } from "lucide-react";
 
 export function ThemeToggle({ className = "" }: { className?: string }) {
   const { theme, toggleTheme } = useTheme();
@@ -13,7 +13,7 @@ export function ThemeToggle({ className = "" }: { className?: string }) {
         theme === "dark" 
           ? "bg-purple-900/30 border-purple-400/30 hover:bg-purple-800/40 hover:border-purple-400/40" 
           : "hover:bg-blue-100/80"
-      }`}
+      } ${className}`}
       onClick={toggleTheme}
       aria-label="Toggle theme"
     >
@@ -27,7 +27,7 @@ export function ThemeToggle({ className = "" }: { className?: string }) {
 }
 
 // More elaborate version with tooltip for larger screens
-export function ThemeToggleLarge() {
+export function ThemeToggleLarge({ className = "" }: { className?: string }) {
   const { theme, toggleTheme } = useTheme();
   
   return (
@@ -38,7 +38,7 @@ export function ThemeToggleLarge() {
         theme === "dark" 
           ? "bg-purple-900/30 border-purple-400/30 hover:bg-purple-800/40 hover:border-purple-400/40" 
           : "hover:bg-blue-100/80"
-      }`}
+      } ${className}`}
       onClick={toggleTheme}
     >
       {theme === "dark" ? (
