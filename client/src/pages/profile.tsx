@@ -246,78 +246,138 @@ export default function Profile() {
 
   return (
     <div className="flex-1 overflow-y-auto pb-16">
-      <header className="bg-white shadow-sm">
+      <header className="bg-card dark:bg-card shadow-sm">
         <div className="container mx-auto px-4 py-3 flex justify-between items-center">
-          <h1 className="font-poppins font-semibold text-dark text-lg">My Profile</h1>
-          <div className="flex items-center space-x-2">
-            <button className="text-gray-600">
-              <Plus size={24} />
-            </button>
-            <button className="text-gray-600">
-              <Settings size={24} />
-            </button>
+          <h1 className="font-poppins font-semibold text-foreground text-lg">My Profile</h1>
+          <div className="flex items-center space-x-3">
+            <Dialog>
+              <DialogTrigger asChild>
+                <Button variant="ghost" size="icon" className="rounded-full" aria-label="New post">
+                  <Plus size={22} className="text-primary" />
+                </Button>
+              </DialogTrigger>
+              <DialogContent>
+                <DialogHeader>
+                  <DialogTitle>Create New Post</DialogTitle>
+                </DialogHeader>
+                <div className="py-4">
+                  <p>Share your travel experience with others!</p>
+                </div>
+              </DialogContent>
+            </Dialog>
+            
+            <Dialog>
+              <DialogTrigger asChild>
+                <Button variant="outline" size="icon" className="rounded-full relative border-primary/20 dark:border-primary/40 bg-background dark:bg-background">
+                  <Settings size={20} className="text-primary" />
+                </Button>
+              </DialogTrigger>
+              <DialogContent className="sm:max-w-[425px]">
+                <DialogHeader>
+                  <DialogTitle>Settings</DialogTitle>
+                </DialogHeader>
+                <div className="py-2 space-y-4">
+                  {/* Settings Items */}
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center">
+                      <Bell className="text-muted-foreground mr-3" size={18} />
+                      <span>Notifications</span>
+                    </div>
+                    <Switch 
+                      checked={notifications} 
+                      onCheckedChange={handleNotificationsChange}
+                    />
+                  </div>
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center">
+                      <Moon className="text-muted-foreground mr-3" size={18} />
+                      <span>Dark Mode</span>
+                    </div>
+                    <Switch 
+                      checked={darkMode} 
+                      onCheckedChange={handleDarkModeChange}
+                    />
+                  </div>
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center">
+                      <Globe className="text-muted-foreground mr-3" size={18} />
+                      <span>Language</span>
+                    </div>
+                    <div className="flex items-center text-muted-foreground">
+                      <span className="mr-2">
+                        {currentUser.preferences?.language || "English"}
+                      </span>
+                      <ChevronRight size={16} />
+                    </div>
+                  </div>
+                  <Button 
+                    variant="outline" 
+                    className="w-full mt-4 text-destructive border-destructive/20"
+                    onClick={handleSignOut}
+                  >
+                    <LogOut className="mr-2 h-4 w-4" />
+                    Sign Out
+                  </Button>
+                </div>
+              </DialogContent>
+            </Dialog>
           </div>
         </div>
       </header>
 
       {/* Profile Info */}
-      <section className="px-4 py-6 bg-white">
+      <section className="px-4 py-6 bg-card dark:bg-card border-b border-border">
         <div className="flex items-center">
-          <div className="w-20 h-20 rounded-full bg-primary/10 flex items-center justify-center mr-4 relative">
-            <UserIcon className="text-primary" size={32} />
-            <button className="absolute right-0 bottom-0 bg-primary text-white p-1 rounded-full">
+          <div className="w-20 h-20 rounded-full bg-gradient-to-br from-primary/20 to-secondary/20 dark:from-primary/30 dark:to-secondary/30 flex items-center justify-center mr-5 relative shadow-md">
+            <UserIcon className="text-primary dark:text-primary/90" size={32} />
+            <button className="absolute right-0 bottom-0 bg-primary dark:bg-primary/90 text-white p-1.5 rounded-full shadow-sm hover:bg-primary/90 transition-colors">
               <Camera size={14} />
             </button>
           </div>
           <div className="flex-1">
-            <h2 className="font-poppins font-semibold text-lg">
+            <h2 className="font-poppins font-semibold text-foreground text-xl">
               {currentUser.displayName || currentUser.username}
             </h2>
-            <p className="text-medium text-sm">{currentUser.email}</p>
-            <button className="mt-1 text-primary text-sm font-medium">Edit Profile</button>
+            <p className="text-muted-foreground text-sm">{currentUser.email}</p>
+            <Button variant="ghost" size="sm" className="mt-1 px-3 py-1 h-8 text-primary hover:bg-primary/5 dark:hover:bg-primary/10">
+              Edit Profile
+            </Button>
           </div>
         </div>
         
-        <div className="flex justify-between mt-6 text-center">
-          <div className="flex-1">
-            <div className="font-semibold">{posts.length}</div>
-            <div className="text-gray-500 text-sm">Posts</div>
+        <div className="flex justify-between mt-8 text-center">
+          <div className="flex-1 p-2 hover:bg-muted/40 rounded-md transition-colors">
+            <div className="font-semibold text-foreground">{posts.length}</div>
+            <div className="text-muted-foreground text-sm">Posts</div>
           </div>
           <div 
-            className="flex-1 cursor-pointer" 
-            onClick={() => {
-              // We'll add this functionality soon
-              setIsFollowersDialogOpen(true);
-            }}
+            className="flex-1 p-2 hover:bg-muted/40 rounded-md transition-colors cursor-pointer" 
+            onClick={() => setIsFollowersDialogOpen(true)}
           >
-            <div className="font-semibold">{followerCount || 0}</div>
-            <div className="text-gray-500 text-sm">Followers</div>
+            <div className="font-semibold text-foreground">{followerCount || 0}</div>
+            <div className="text-muted-foreground text-sm">Followers</div>
           </div>
           <div 
-            className="flex-1 cursor-pointer" 
-            onClick={() => {
-              // We'll add this functionality soon
-              setIsFollowingDialogOpen(true);
-            }}
+            className="flex-1 p-2 hover:bg-muted/40 rounded-md transition-colors cursor-pointer" 
+            onClick={() => setIsFollowingDialogOpen(true)}
           >
-            <div className="font-semibold">{followingCount || 0}</div>
-            <div className="text-gray-500 text-sm">Following</div>
+            <div className="font-semibold text-foreground">{followingCount || 0}</div>
+            <div className="text-muted-foreground text-sm">Following</div>
           </div>
         </div>
       </section>
 
       {/* Media Gallery */}
-      <section className="bg-white">
+      <section className="bg-card dark:bg-card">
         <Tabs defaultValue="posts" className="w-full" onValueChange={setActiveTab}>
-          <TabsList className="grid w-full grid-cols-3 bg-white border-b">
-            <TabsTrigger value="posts" className="data-[state=active]:text-primary">
-              <Grid size={20} />
+          <TabsList className="grid w-full grid-cols-2 bg-card dark:bg-card border-b border-border">
+            <TabsTrigger value="posts" className="data-[state=active]:text-primary data-[state=active]:border-primary data-[state=active]:border-b-2 rounded-none">
+              <Grid size={18} className="mr-2" />
+              <span className="text-sm">Posts</span>
             </TabsTrigger>
-            <TabsTrigger value="saved" className="data-[state=active]:text-primary">
-              <BookmarkIcon size={20} />
-            </TabsTrigger>
-            <TabsTrigger value="settings" className="data-[state=active]:text-primary">
-              <Settings size={20} />
+            <TabsTrigger value="saved" className="data-[state=active]:text-primary data-[state=active]:border-primary data-[state=active]:border-b-2 rounded-none">
+              <BookmarkIcon size={18} className="mr-2" />
+              <span className="text-sm">Saved</span>
             </TabsTrigger>
           </TabsList>
           
