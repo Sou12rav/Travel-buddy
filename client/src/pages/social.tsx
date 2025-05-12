@@ -232,7 +232,7 @@ function NewPostForm({ onSubmit }: { onSubmit: (post: any) => void }) {
           Create New Post
         </button>
       ) : (
-        <div className="bg-white rounded-lg shadow-md p-4">
+        <div className="bg-card dark:bg-card rounded-lg shadow-md p-4">
           <h3 className="font-medium mb-3">Create New Post</h3>
           <form onSubmit={handleSubmit}>
             <div className="space-y-3">
@@ -297,11 +297,11 @@ function NewPostForm({ onSubmit }: { onSubmit: (post: any) => void }) {
                       {placeOptions.map(place => (
                         <div 
                           key={place.id}
-                          className={`p-2 rounded-lg cursor-pointer ${place.id === placeId ? 'bg-blue-100' : 'bg-white border'}`}
+                          className={`p-2 rounded-lg cursor-pointer ${place.id === placeId ? 'bg-blue-100 dark:bg-blue-900' : 'bg-card border dark:border-muted'}`}
                           onClick={() => handleSelectPlace(place)}
                         >
                           <div className="font-medium text-sm">{place.name}</div>
-                          <div className="text-xs text-gray-500">{place.address}</div>
+                          <div className="text-xs text-muted-foreground">{place.address}</div>
                         </div>
                       ))}
                     </div>
@@ -475,10 +475,10 @@ function FollowersSection({ userId }: { userId: number }) {
       
       {showModal && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="bg-white rounded-lg w-full max-w-sm mx-4">
-            <div className="flex items-center justify-between p-4 border-b">
+          <div className="bg-card dark:bg-card rounded-lg w-full max-w-sm mx-4">
+            <div className="flex items-center justify-between p-4 border-b dark:border-muted">
               <h3 className="font-medium">{activeTab === 'followers' ? 'Followers' : 'Following'}</h3>
-              <button onClick={() => setShowModal(false)} className="text-gray-500">
+              <button onClick={() => setShowModal(false)} className="text-muted-foreground">
                 &times;
               </button>
             </div>
