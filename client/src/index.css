@@ -5,48 +5,60 @@
 @tailwind utilities;
 
 :root {
-  --background: 0 0% 98%;
-  --foreground: 240 10% 3.9%;
-  --muted: 60 4.8% 95.9%;
-  --muted-foreground: 25 5.3% 44.7%;
-  --popover: 0 0% 100%;
-  --popover-foreground: 240 10% 3.9%;
-  --card: 0 0% 100%;
-  --card-foreground: 240 10% 3.9%;
-  --border: 240 5.9% 90%;
-  --input: 240 5.9% 90%;
-  --primary: 346 83% 67%; /* #FF5A5F */
+  /* Sky blue theme */
+  --background: 210 50% 98%;
+  --foreground: 220 25% 20%;
+  --muted: 210 40% 94%;
+  --muted-foreground: 220 10% 40%;
+  --popover: 210 30% 100%;
+  --popover-foreground: 220 25% 20%;
+  --card: 210 30% 100%;
+  --card-foreground: 220 25% 20%;
+  --border: 214 32% 91%;
+  --input: 214 32% 91%;
+  --primary: 210 100% 50%; /* Vibrant sky blue */
   --primary-foreground: 0 0% 100%;
-  --secondary: 174 100% 33%; /* #00A699 */
+  --secondary: 199 89% 48%; /* Ocean blue */
   --secondary-foreground: 0 0% 100%;
-  --accent: 43 100% 50%; /* #FFB400 */
-  --accent-foreground: 240 5.9% 10%;
+  --accent: 220 70% 60%; /* Soft blue accent */
+  --accent-foreground: 0 0% 100%;
   --destructive: 0 84.2% 60.2%;
   --destructive-foreground: 0 0% 98%;
-  --ring: 346 83% 67%;
+  --ring: 210 100% 50%;
   --radius: 0.5rem;
+  
+  --warning: 38 92% 50%;
+  --danger: 0 72% 51%;
+  --success: 142 71% 45%;
+  --info: 199 89% 48%;
 }
 
 .dark {
-  --background: 240 10% 3.9%;
-  --foreground: 0 0% 98%;
-  --muted: 240 3.7% 15.9%;
-  --muted-foreground: 240 5% 64.9%;
-  --popover: 240 10% 3.9%;
-  --popover-foreground: 0 0% 98%;
-  --card: 240 10% 3.9%;
-  --card-foreground: 0 0% 98%;
-  --border: 240 3.7% 15.9%;
-  --input: 240 3.7% 15.9%;
-  --primary: 346 83% 67%;
+  /* Purple and Black theme */
+  --background: 270 5% 7%; /* Near black with slight purple tint */
+  --foreground: 270 20% 94%;
+  --muted: 270 5% 15%;
+  --muted-foreground: 270 10% 70%;
+  --popover: 270 6% 10%;
+  --popover-foreground: 270 20% 94%;
+  --card: 270 6% 10%;
+  --card-foreground: 270 20% 94%;
+  --border: 270 5% 20%;
+  --input: 270 5% 20%;
+  --primary: 268 75% 60%; /* Rich purple */
   --primary-foreground: 0 0% 100%;
-  --secondary: 174 100% 33%;
+  --secondary: 288 95% 60%; /* Vibrant purple */
   --secondary-foreground: 0 0% 100%;
-  --accent: 43 100% 50%;
+  --accent: 250 95% 65%; /* Blue-ish purple */
   --accent-foreground: 0 0% 100%;
   --destructive: 0 62.8% 30.6%;
   --destructive-foreground: 0 0% 98%;
-  --ring: 240 4.9% 83.9%;
+  --ring: 268 75% 60%;
+  
+  --warning: 38 92% 50%;
+  --danger: 0 72% 51%;
+  --success: 142 71% 45%;
+  --info: 199 89% 48%;
 }
 
 @layer base {

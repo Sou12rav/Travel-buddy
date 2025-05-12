@@ -1,7 +1,7 @@
-import React from "react";
 import { useApp } from "../lib/api_context";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { MapPin, Users, Info, Clock, Calendar, Droplet, Wind } from "lucide-react";
+import { MapPin, Users, Info, Clock, Calendar, Wind } from "lucide-react";
+import { useEffect, useState } from "react";
 
 // City information object with detailed facts
 const CITY_DETAILS: { [key: string]: {

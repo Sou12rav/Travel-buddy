@@ -14,6 +14,7 @@ import BottomNavigation from "@/components/bottom-navigation";
 import { useEffect, useState } from "react";
 import { AppProvider } from "./lib/api_context";
 import { ThemeProvider } from "@/components/theme-provider";
+import { StarryBackground } from "@/components/starry-background";
 
 function Router() {
   const [location] = useLocation();
@@ -32,7 +33,10 @@ function Router() {
 
   return (
     <div className="flex flex-col min-h-screen">
-      <div className="flex-1 pb-16">
+      {/* Starry background for dark mode */}
+      <StarryBackground />
+      
+      <div className="flex-1 pb-16 relative z-10">
         <Switch>
           <Route path="/" component={Home} />
           <Route path="/chat/:id" component={Chat} />

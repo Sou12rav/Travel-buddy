@@ -11,6 +11,7 @@ import { useTravelTips } from "@/hooks/use-travel-tips";
 import { WelcomeSuggestions } from "@/components/suggestion-chips";
 import { MessageSquare } from "lucide-react";
 import { CityDetails } from "@/components/city-details";
+import { CityBackdrop } from "@/components/city-backdrop";
 
 export default function Home() {
   const [, navigate] = useLocation();
@@ -63,10 +64,14 @@ export default function Home() {
       <section className="px-4 py-4">
         <div className="bg-card dark:bg-card rounded-xl shadow-md overflow-hidden">
           <div className="relative h-40">
-            <div className="w-full h-full bg-gradient-to-r from-primary/10 to-secondary/10 dark:from-primary/20 dark:to-secondary/20 flex items-center justify-center">
-              <div className="text-center px-4">
-                <h2 className="font-poppins font-semibold text-primary text-xl">Welcome to {currentCity}!</h2>
-                <p className="text-foreground dark:text-foreground/80 text-sm mt-2">
+            {/* City backdrop image */}
+            <CityBackdrop className="rounded-t-xl" />
+            
+            {/* Content overlay */}
+            <div className="absolute inset-0 flex items-center justify-center backdrop-blur-sm dark:backdrop-blur-md">
+              <div className="text-center px-4 text-white drop-shadow-lg">
+                <h2 className="font-poppins font-semibold text-white text-2xl">Welcome to {currentCity}!</h2>
+                <p className="text-white/90 dark:text-white/90 text-sm mt-2 font-medium">
                   Let Buddy help you explore the {cityNickname}
                 </p>
               </div>
