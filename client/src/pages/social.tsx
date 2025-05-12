@@ -1273,9 +1273,9 @@ export default function Social() {
                 />
               ))
             ) : (
-              <div className="bg-white rounded-lg shadow-md p-6 text-center">
-                <p className="text-gray-500 mb-3">No posts in your feed yet.</p>
-                <p className="text-sm">Create a post or connect with friends to see their travel experiences!</p>
+              <div className="bg-card dark:bg-card rounded-lg shadow-md p-6 text-center">
+                <p className="text-muted-foreground mb-3">No posts in your feed yet.</p>
+                <p className="text-sm text-foreground">Create a post or connect with friends to see their travel experiences!</p>
               </div>
             )}
           </div>
