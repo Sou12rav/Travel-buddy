@@ -8,6 +8,9 @@ export const users = pgTable("users", {
   password: text("password").notNull(),
   displayName: text("display_name"),
   email: text("email"),
+  avatar: text("avatar"),
+  bio: text("bio"),
+  location: text("location"),
   preferences: jsonb("preferences"),
 });
 
