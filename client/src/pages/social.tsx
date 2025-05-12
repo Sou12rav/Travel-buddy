@@ -50,19 +50,19 @@ function PostCard({ post, onLike, onComment }: {
   const isVideo = post.mediaType === 'video';
 
   return (
-    <div className="bg-white rounded-lg shadow-md overflow-hidden mb-4">
+    <div className="bg-card dark:bg-card rounded-lg shadow-md overflow-hidden mb-4">
       {/* Post Header */}
       <div className="p-4 flex items-center justify-between">
         <div className="flex items-center space-x-2">
           <div className="h-10 w-10 rounded-full bg-gray-200 overflow-hidden">
             {/* Avatar placeholder */}
-            <div className="h-full w-full flex items-center justify-center text-gray-500">
+            <div className="h-full w-full flex items-center justify-center text-muted-foreground">
               {user?.displayName?.charAt(0) || 'U'}
             </div>
           </div>
           <div>
             <h3 className="font-medium">{user?.displayName || 'Unknown User'}</h3>
-            <p className="text-xs text-gray-500">{post.location || 'Unknown Location'}</p>
+            <p className="text-xs text-muted-foreground">{post.location || 'Unknown Location'}</p>
           </div>
         </div>
         <PostOptionsMenu 
@@ -89,7 +89,7 @@ function PostCard({ post, onLike, onComment }: {
             />
           )
         ) : (
-          <div className="text-gray-400">No media</div>
+          <div className="text-muted-foreground">No media</div>
         )}
       </div>
       
@@ -97,21 +97,21 @@ function PostCard({ post, onLike, onComment }: {
       <div className="p-4 flex justify-between">
         <div className="flex space-x-4">
           <button 
-            className="flex items-center space-x-1 text-gray-700"
+            className="flex items-center space-x-1 text-foreground"
             onClick={() => onLike(post.id)}
           >
             <Heart size={20} className="text-red-500" />
             <span>{post.likes || 0}</span>
           </button>
           <button 
-            className="flex items-center space-x-1 text-gray-700"
+            className="flex items-center space-x-1 text-foreground"
             onClick={() => setShowComments(!showComments)}
           >
             <MessageCircle size={20} />
             <span>{comments.length}</span>
           </button>
         </div>
-        <button className="text-gray-700">
+        <button className="text-foreground">
           <Share size={20} />
         </button>
       </div>
@@ -127,7 +127,7 @@ function PostCard({ post, onLike, onComment }: {
               <div className="flex flex-col">
                 <span className="text-xs text-blue-600 font-medium">Tagged Place</span>
                 <span className="text-sm font-medium">{post.placeDetails.name}</span>
-                <span className="text-xs text-gray-500">{post.placeDetails.address}</span>
+                <span className="text-xs text-muted-foreground">{post.placeDetails.address}</span>
               </div>
               <AddToItineraryButton 
                 placeId={post.placeId} 
@@ -140,7 +140,7 @@ function PostCard({ post, onLike, onComment }: {
       
       {/* Comments */}
       {showComments && (
-        <div className="px-4 pb-4 border-t border-gray-100 pt-2">
+        <div className="px-4 pb-4 border-t border-muted pt-2">
           <h4 className="text-sm font-medium mb-2">Comments</h4>
           
           {comments.length > 0 ? (
@@ -153,7 +153,7 @@ function PostCard({ post, onLike, onComment }: {
               ))}
             </div>
           ) : (
-            <p className="text-sm text-gray-500 mb-3">No comments yet</p>
+            <p className="text-sm text-muted-foreground mb-3">No comments yet</p>
           )}
           
           {/* Add Comment */}
