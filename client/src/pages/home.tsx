@@ -10,6 +10,7 @@ import TravelTips from "@/components/travel-tips";
 import { useTravelTips } from "@/hooks/use-travel-tips";
 import { WelcomeSuggestions } from "@/components/suggestion-chips";
 import { MessageSquare } from "lucide-react";
+import { CityDetails } from "@/components/city-details";
 
 export default function Home() {
   const [, navigate] = useLocation();
@@ -34,27 +35,52 @@ export default function Home() {
     startConversation();
   };
 
+  // Get city nickname based on current city
+  const getCityNickname = (city: string) => {
+    const nicknames: {[key: string]: string} = {
+      "Kolkata": "City of Joy",
+      "Mumbai": "City of Dreams",
+      "Delhi": "Heart of India",
+      "Chennai": "Gateway of South India",
+      "Bangalore": "Silicon Valley of India",
+      "Hyderabad": "City of Pearls",
+      "Jaipur": "Pink City",
+      "Goa": "Beach Paradise",
+      "Kochi": "Queen of the Arabian Sea",
+      "Varanasi": "Spiritual Capital of India"
+    };
+    return nicknames[city] || "Beautiful City";
+  };
+
+  const { currentCity } = useApp();
+  const cityNickname = getCityNickname(currentCity);
+
   return (
     <div className="flex-1 overflow-y-auto pb-16">
       <LocationHeader />
       
       {/* Welcome Card */}
       <section className="px-4 py-4">
-        <div className="bg-white rounded-xl shadow-md overflow-hidden">
+        <div className="bg-card dark:bg-card rounded-xl shadow-md overflow-hidden">
           <div className="relative h-40">
-            <div className="w-full h-full bg-blue-100 flex items-center justify-center">
-              <div className="text-center">
-                <h2 className="font-poppins font-semibold text-primary text-xl">Welcome to Kolkata!</h2>
-                <p className="text-gray-600 text-sm mt-2">Let Buddy help you explore the City of Joy</p>
+            <div className="w-full h-full bg-gradient-to-r from-primary/10 to-secondary/10 dark:from-primary/20 dark:to-secondary/20 flex items-center justify-center">
+              <div className="text-center px-4">
+                <h2 className="font-poppins font-semibold text-primary text-xl">Welcome to {currentCity}!</h2>
+                <p className="text-foreground dark:text-foreground/80 text-sm mt-2">
+                  Let Buddy help you explore the {cityNickname}
+                </p>
               </div>
             </div>
           </div>
           <div className="p-4">
-            <p className="text-medium mb-3">What would you like to do today?</p>
+            <p className="text-foreground dark:text-foreground/90 mb-3">What would you like to do today?</p>
             <WelcomeSuggestions onSelect={handleSuggestionSelect} />
           </div>
         </div>
       </section>
+      
+      {/* City Details */}
+      <CityDetails />
       
       {/* Quick Actions */}
       <QuickActions />

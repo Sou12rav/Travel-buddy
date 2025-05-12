@@ -15,7 +15,7 @@ export default function BottomNavigation({ activeTab }: BottomNavigationProps) {
   ];
 
   return (
-    <nav className="fixed bottom-0 w-full h-16 bg-white border-t shadow-md flex items-center z-10">
+    <nav className="fixed bottom-0 w-full h-16 bg-card dark:bg-card border-t border-border dark:border-border/50 shadow-md flex items-center z-10">
       {navItems.map((item) => (
         <Link 
           key={item.id} 
@@ -24,16 +24,16 @@ export default function BottomNavigation({ activeTab }: BottomNavigationProps) {
         >
           <div 
             className={`flex flex-col items-center ${
-              activeTab === item.id ? "text-primary" : "text-medium"
+              activeTab === item.id ? "text-primary" : "text-muted-foreground"
             }`}
           >
             <item.icon 
-              className={activeTab === item.id ? "text-primary" : "text-gray-500"} 
+              className={activeTab === item.id ? "text-primary" : "text-muted-foreground"} 
               size={20} 
             />
             <span 
               className={`text-xs font-medium ${
-                activeTab === item.id ? "text-primary" : "text-gray-500"
+                activeTab === item.id ? "text-primary" : "text-muted-foreground"
               }`}
             >
               {item.label}

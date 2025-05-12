@@ -659,7 +659,7 @@ export default function QuickActions() {
   return (
     <>
       <section className="px-4 py-2">
-        <h2 className="font-poppins font-semibold text-dark mb-3">Quick Actions</h2>
+        <h2 className="font-poppins font-semibold text-foreground mb-3">Quick Actions</h2>
         <div className="grid grid-cols-4 gap-4">
           {actions.map(action => (
             <div 
@@ -667,10 +667,10 @@ export default function QuickActions() {
               className="flex flex-col items-center cursor-pointer"
               onClick={action.onClick}
             >
-              <div className={`w-12 h-12 rounded-full ${action.bgColor} border border-gray-200 flex items-center justify-center mb-1`}>
+              <div className={`w-12 h-12 rounded-full ${action.bgColor} border border-border dark:border-border/40 flex items-center justify-center mb-1 transition-colors`}>
                 <span className={action.iconColor}>{action.icon}</span>
               </div>
-              <span className="text-xs text-medium text-center">{action.title}</span>
+              <span className="text-xs text-muted-foreground text-center">{action.title}</span>
             </div>
           ))}
         </div>
