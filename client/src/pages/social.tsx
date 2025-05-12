@@ -1141,15 +1141,15 @@ export default function Social() {
   
   return (
     <div className="flex-1 overflow-hidden">
-      <header className="bg-white shadow-sm">
+      <header className="bg-card dark:bg-card shadow-sm">
         <div className="container mx-auto px-4 py-3">
           <div className="flex items-center">
-            <button onClick={() => navigate("/")} className="mr-2">
+            <button onClick={() => navigate("/")} className="mr-2 text-foreground">
               <ArrowLeft size={20} />
             </button>
             <div className="flex-1">
-              <h1 className="font-poppins font-semibold text-dark text-lg">Travel Social</h1>
-              <p className="text-medium text-sm">Connect with other travelers</p>
+              <h1 className="font-poppins font-semibold text-foreground text-lg">Travel Social</h1>
+              <p className="text-muted-foreground text-sm">Connect with other travelers</p>
             </div>
           </div>
         </div>
@@ -1159,15 +1159,15 @@ export default function Social() {
         <div className="container mx-auto px-4 py-4">
           {/* Followers Section */}
           {currentUser?.id && (
-            <div className="bg-white rounded-lg shadow-md mb-4">
+            <div className="bg-card dark:bg-card rounded-lg shadow-md mb-4">
               <div className="p-4">
                 <div className="flex items-center space-x-3 mb-3">
-                  <div className="h-12 w-12 rounded-full bg-gray-200 flex items-center justify-center text-gray-700 font-medium text-lg">
+                  <div className="h-12 w-12 rounded-full bg-muted flex items-center justify-center text-foreground font-medium text-lg">
                     {currentUser.displayName?.charAt(0) || 'U'}
                   </div>
                   <div>
                     <h2 className="font-medium">{currentUser.displayName}</h2>
-                    <p className="text-xs text-gray-500">@{currentUser.username}</p>
+                    <p className="text-xs text-muted-foreground">@{currentUser.username}</p>
                   </div>
                 </div>
                 
