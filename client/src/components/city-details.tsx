@@ -129,11 +129,16 @@ const CITY_DETAILS: { [key: string]: {
 
 export function CityDetails() {
   const { currentCity } = useApp();
-  const cityInfo = CITY_DETAILS[currentCity] || CITY_DETAILS["Kolkata"]; // Fallback to Kolkata if no info
+  const [cityInfo, setCityInfo] = useState(CITY_DETAILS[currentCity] || CITY_DETAILS["Kolkata"]);
+  
+  // Update city info whenever currentCity changes
+  useEffect(() => {
+    setCityInfo(CITY_DETAILS[currentCity] || CITY_DETAILS["Kolkata"]);
+  }, [currentCity]);
 
   return (
     <section className="px-4 py-3">
-      <Card className="overflow-hidden bg-card dark:bg-card">
+      <Card className="overflow-hidden bg-card dark:bg-card shadow-lg border-primary/10 dark:border-primary/20">
         <CardHeader className="bg-primary/5 dark:bg-primary/10 p-4">
           <CardTitle className="flex items-center text-xl">
             <MapPin className="mr-2 h-5 w-5 text-primary" />
@@ -175,17 +180,17 @@ export function CityDetails() {
             </div>
           </div>
           
-          <div>
+          <div className="animate-in fade-in duration-300">
             <h4 className="text-sm font-medium mb-1">About {currentCity}</h4>
             <p className="text-sm text-muted-foreground">{cityInfo.description}</p>
           </div>
           
-          <div>
+          <div className="animate-in fade-in duration-300">
             <h4 className="text-sm font-medium mb-1">Famous For</h4>
             <div className="flex flex-wrap gap-2">
               {cityInfo.famousFor.map((item, index) => (
                 <span 
-                  key={index} 
+                  key={`${currentCity}-${index}`}
                   className="px-2 py-1 bg-accent/10 text-accent-foreground dark:bg-accent/20 text-xs rounded-full"
                 >
                   {item}
@@ -194,7 +199,7 @@ export function CityDetails() {
             </div>
           </div>
           
-          <div className="bg-muted/50 dark:bg-muted/20 p-3 rounded-lg">
+          <div className="bg-muted/50 dark:bg-muted/20 p-3 rounded-lg animate-in fade-in duration-300">
             <h4 className="text-sm font-medium flex items-center">
               <Wind className="mr-2 h-4 w-4" />
               Did you know?

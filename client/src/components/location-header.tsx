@@ -2,11 +2,10 @@ import { MapPin, Sun, ChevronDown, Search, ArrowLeft } from "lucide-react";
 import { useApp } from "../lib/api_context";
 import { useQuery } from "@tanstack/react-query";
 import { WeatherResponse } from "../lib/types";
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { useState, useEffect } from "react";
-import { ThemeToggle } from "./theme-toggle";
+import { ThemeToggle, ThemeToggleLarge } from "./theme-toggle";
 
 const POPULAR_CITIES = [
   "Kolkata", 
@@ -71,7 +70,7 @@ export default function LocationHeader() {
                 </Button>
                 <h2 className="text-lg font-semibold">Change Location</h2>
               </div>
-              <ThemeToggle />
+              <ThemeToggleLarge />
             </div>
             <div className="relative mb-4">
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={18} />
@@ -131,7 +130,8 @@ export default function LocationHeader() {
                   <span className="font-medium">--°C</span>
                 </div>
               )}
-              <ThemeToggle />
+              <ThemeToggleLarge className="hidden md:flex" />
+              <ThemeToggle className="md:hidden" />
             </div>
           </div>
         )}
