@@ -1078,6 +1078,61 @@ function AddToItineraryButton({ placeId, placeDetails }: { placeId?: string, pla
 export default function Social() {
   const [, navigate] = useLocation();
   const { currentUser } = useApp();
+  const [showProfileEditModal, setShowProfileEditModal] = useState(false);
+  const [profileFormData, setProfileFormData] = useState({
+    displayName: currentUser?.displayName || '',
+    bio: currentUser?.bio || '',
+    location: currentUser?.location || '',
+    avatar: currentUser?.avatar || ''
+  });
+  
+  // Update form data when user changes
+  useEffect(() => {
+    if (currentUser) {
+      setProfileFormData({
+        displayName: currentUser.displayName || '',
+        bio: currentUser.bio || '',
+        location: currentUser.location || '',
+        avatar: currentUser.avatar || ''
+      });
+    }
+  }, [currentUser]);
+  
+  // Handle profile update
+  const handleProfileUpdate = async () => {
+    if (!currentUser) return;
+    
+    try {
+      await apiRequest(
+        'PATCH',
+        `/api/users/${currentUser.id}`,
+        {
+          ...profileFormData
+        }
+      );
+      
+      // Close the modal and refetch user data
+      setShowProfileEditModal(false);
+      window.location.reload(); // Simple way to refresh user data
+    } catch (error) {
+      console.error('Failed to update profile:', error);
+    }
+  };
+  
+  // Handle avatar change
+  const handleAvatarChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    
+    const reader = new FileReader();
+    reader.onloadend = () => {
+      setProfileFormData({
+        ...profileFormData,
+        avatar: reader.result as string
+      });
+    };
+    reader.readAsDataURL(file);
+  };
   
   // Fetch feed posts for the current user
   const { data: feedData, refetch: refetchFeed } = useQuery({
