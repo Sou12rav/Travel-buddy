@@ -1162,12 +1162,39 @@ export default function Social() {
             <div className="bg-card dark:bg-card rounded-lg shadow-md mb-4">
               <div className="p-4">
                 <div className="flex items-center space-x-3 mb-3">
-                  <div className="h-12 w-12 rounded-full bg-muted flex items-center justify-center text-foreground font-medium text-lg">
-                    {currentUser.displayName?.charAt(0) || 'U'}
-                  </div>
-                  <div>
-                    <h2 className="font-medium">{currentUser.displayName}</h2>
-                    <p className="text-xs text-muted-foreground">@{currentUser.username}</p>
+                  {currentUser.avatar ? (
+                    <img 
+                      src={currentUser.avatar} 
+                      alt={currentUser.displayName || ''} 
+                      className="h-16 w-16 rounded-full object-cover"
+                    />
+                  ) : (
+                    <div className="h-16 w-16 rounded-full bg-muted flex items-center justify-center text-foreground font-medium text-lg">
+                      {currentUser.displayName?.charAt(0) || 'U'}
+                    </div>
+                  )}
+                  <div className="flex-1">
+                    <div className="flex items-center justify-between">
+                      <div>
+                        <h2 className="font-medium">{currentUser.displayName}</h2>
+                        <p className="text-xs text-muted-foreground">@{currentUser.username}</p>
+                      </div>
+                      <button 
+                        className="text-xs bg-primary/10 text-primary px-3 py-1 rounded-full"
+                        onClick={() => setShowProfileEditModal(true)}
+                      >
+                        Edit Profile
+                      </button>
+                    </div>
+                    {currentUser.bio && (
+                      <p className="text-sm mt-1 text-foreground">{currentUser.bio}</p>
+                    )}
+                    {currentUser.location && (
+                      <p className="text-xs text-muted-foreground mt-1 flex items-center">
+                        <MapPin size={12} className="mr-1" />
+                        {currentUser.location}
+                      </p>
+                    )}
                   </div>
                 </div>
                 

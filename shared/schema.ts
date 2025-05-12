@@ -19,6 +19,9 @@ export const insertUserSchema = createInsertSchema(users).pick({
   password: true,
   displayName: true,
   email: true,
+  avatar: true,
+  bio: true,
+  location: true,
   preferences: true,
 });
 
