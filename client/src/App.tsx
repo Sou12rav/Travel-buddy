@@ -13,6 +13,7 @@ import Feed from "@/pages/feed";
 import BottomNavigation from "@/components/bottom-navigation";
 import { useEffect, useState } from "react";
 import { AppProvider } from "./lib/api_context";
+import { ThemeProvider } from "@/components/theme-provider";
 
 function Router() {
   const [location] = useLocation();
@@ -51,12 +52,14 @@ function Router() {
 function App() {
   return (
     <AppProvider>
-      <QueryClientProvider client={queryClient}>
-        <TooltipProvider>
-          <Toaster />
-          <Router />
-        </TooltipProvider>
-      </QueryClientProvider>
+      <ThemeProvider>
+        <QueryClientProvider client={queryClient}>
+          <TooltipProvider>
+            <Toaster />
+            <Router />
+          </TooltipProvider>
+        </QueryClientProvider>
+      </ThemeProvider>
     </AppProvider>
   );
 }

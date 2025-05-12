@@ -6,6 +6,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { useState, useEffect } from "react";
+import { ThemeToggle } from "./theme-toggle";
 
 const POPULAR_CITIES = [
   "Kolkata", 
@@ -54,20 +55,23 @@ export default function LocationHeader() {
   };
 
   return (
-    <header className="bg-white shadow-sm">
+    <header className="bg-card dark:bg-card shadow-sm">
       <div className="container mx-auto px-4 py-3">
         {isChangingLocation ? (
           <div className="flex flex-col">
-            <div className="flex items-center mb-3">
-              <Button 
-                variant="ghost" 
-                size="sm" 
-                className="mr-2 p-0 h-8 w-8" 
-                onClick={() => setIsChangingLocation(false)}
-              >
-                <ArrowLeft className="h-5 w-5" />
-              </Button>
-              <h2 className="text-lg font-semibold">Change Location</h2>
+            <div className="flex items-center justify-between mb-3">
+              <div className="flex items-center">
+                <Button 
+                  variant="ghost" 
+                  size="sm" 
+                  className="mr-2 p-0 h-8 w-8" 
+                  onClick={() => setIsChangingLocation(false)}
+                >
+                  <ArrowLeft className="h-5 w-5" />
+                </Button>
+                <h2 className="text-lg font-semibold">Change Location</h2>
+              </div>
+              <ThemeToggle />
             </div>
             <div className="relative mb-4">
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400" size={18} />
@@ -102,31 +106,32 @@ export default function LocationHeader() {
               <MapPin className="text-primary mr-2" />
               <div>
                 <div className="flex items-center">
-                  <h1 className="font-poppins font-semibold text-dark text-lg">{currentCity}, India</h1>
-                  <ChevronDown className="ml-1 h-4 w-4 text-gray-500" />
+                  <h1 className="font-poppins font-semibold text-foreground text-lg">{currentCity}, India</h1>
+                  <ChevronDown className="ml-1 h-4 w-4 text-muted-foreground" />
                 </div>
-                <p className="text-medium text-sm">Tap to change location</p>
+                <p className="text-muted-foreground text-sm">Tap to change location</p>
               </div>
             </button>
-            <div className="flex items-center">
+            <div className="flex items-center space-x-2">
               {isLoading ? (
                 <div className="animate-pulse flex items-center">
-                  <div className="h-5 w-5 bg-gray-200 rounded-full mr-1"></div>
-                  <div className="h-5 w-12 bg-gray-200 rounded"></div>
+                  <div className="h-5 w-5 bg-muted rounded-full mr-1"></div>
+                  <div className="h-5 w-12 bg-muted rounded"></div>
                 </div>
               ) : weatherData ? (
-                <>
+                <div className="flex items-center mr-3">
                   <span className="material-icons text-accent mr-1">
                     {weatherData.icon}
                   </span>
                   <span className="font-medium">{weatherData.temperature}°C</span>
-                </>
+                </div>
               ) : (
-                <div className="flex items-center">
+                <div className="flex items-center mr-3">
                   <Sun className="text-accent mr-1" />
                   <span className="font-medium">--°C</span>
                 </div>
               )}
+              <ThemeToggle />
             </div>
           </div>
         )}
