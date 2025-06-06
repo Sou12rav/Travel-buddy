@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { Post, User as UserType } from '@shared/schema';
 import { useApp } from '../lib/api_context';
@@ -11,13 +11,26 @@ import {
 } from '@/components/ui/dialog';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
+import { Badge } from '@/components/ui/badge';
+import { Card, CardContent } from '@/components/ui/card';
 import { 
   User, 
   Heart, 
   MessageCircle, 
   Share, 
   MapPin, 
-  Bookmark 
+  Bookmark,
+  Star,
+  Navigation,
+  Clock,
+  Camera,
+  Utensils,
+  ShoppingBag,
+  Building,
+  Car,
+  Fuel,
+  Hospital,
+  Compass
 } from 'lucide-react';
 
 // Define extended Post type that includes author information
