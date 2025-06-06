@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const GOOGLE_API_KEY = process.env.GOOGLE_API_KEY;
+const GOOGLE_API_KEY = process.env.GOOGLE_PLACES_API_KEY;
 
 if (!GOOGLE_API_KEY) {
   console.warn('Google API key not provided. Google API features will be disabled.');
@@ -203,32 +203,37 @@ export async function getDirections(origin: string, destination: string, mode = 
   }
 }
 
-// Enhanced weather using location data
+// Enhanced weather using OpenWeatherMap API
 export async function getWeatherByCoordinates(lat: number, lng: number) {
-  // For now, we'll use the existing weather data but enhance it with location context
-  // In a production app, you might integrate with OpenWeatherMap or similar
+  const OPENWEATHER_API_KEY = process.env.OPENWEATHER_API_KEY;
+  
+  if (!OPENWEATHER_API_KEY) {
+    throw new Error('OpenWeatherMap API key not configured');
+  }
+
   try {
-    const locationData = await reverseGeocode(lat, lng);
-    
-    // Extract city from address components
-    const cityComponent = locationData.components.find(
-      (component: any) => component.types.includes('locality') || component.types.includes('administrative_area_level_2')
+    const response = await axios.get(
+      `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lng}&appid=${OPENWEATHER_API_KEY}&units=metric`
     );
-    
-    const city = cityComponent?.long_name || 'Unknown';
+
+    const data = response.data;
     
     return {
-      city,
+      city: data.name,
       coordinates: { lat, lng },
-      // Here you would integrate with a weather API
-      // For now, returning enhanced mock data
-      temperature: Math.round(20 + Math.random() * 20), // Random temp between 20-40
-      condition: 'Partly Cloudy',
-      humidity: Math.round(40 + Math.random() * 40),
-      windSpeed: Math.round(5 + Math.random() * 20)
+      temperature: Math.round(data.main.temp),
+      condition: data.weather[0].main,
+      description: data.weather[0].description,
+      humidity: data.main.humidity,
+      windSpeed: Math.round(data.wind.speed * 3.6), // Convert m/s to km/h
+      pressure: data.main.pressure,
+      visibility: data.visibility ? Math.round(data.visibility / 1000) : null,
+      icon: data.weather[0].icon,
+      sunrise: new Date(data.sys.sunrise * 1000).toLocaleTimeString(),
+      sunset: new Date(data.sys.sunset * 1000).toLocaleTimeString()
     };
   } catch (error) {
-    console.error('Weather by coordinates error:', error);
+    console.error('OpenWeatherMap API error:', error);
     throw new Error('Failed to get weather data');
   }
 }

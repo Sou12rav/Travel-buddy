@@ -1311,14 +1311,24 @@ export async function registerRoutes(app: Express): Promise<Server> {
       }
 
       const radiusNum = radius ? parseInt(radius as string) : 5000;
-      const places = await getNearbyPlaces(
-        parseFloat(lat as string), 
-        parseFloat(lng as string), 
-        type as string, 
-        radiusNum
-      );
       
-      res.json({ places });
+      try {
+        const places = await getNearbyPlaces(
+          parseFloat(lat as string), 
+          parseFloat(lng as string), 
+          type as string, 
+          radiusNum
+        );
+        res.json({ places });
+      } catch (googleError: any) {
+        // If Google API fails, return structured error with guidance
+        console.error("Google Places API error:", googleError.message);
+        res.status(503).json({ 
+          message: "Google Places API unavailable", 
+          error: googleError.message,
+          suggestion: "Please configure GOOGLE_PLACES_API_KEY environment variable"
+        });
+      }
     } catch (error: any) {
       console.error("Nearby places error:", error);
       res.status(500).json({ message: error.message || "Failed to get nearby places" });
