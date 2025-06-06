@@ -15,6 +15,15 @@ import {
 } from "@shared/schema";
 import OpenAI from "openai";
 import type { ChatCompletionMessageParam } from "openai/resources/chat/completions";
+import { 
+  searchPlaces, 
+  getPlaceDetails, 
+  geocodeAddress, 
+  reverseGeocode, 
+  getNearbyPlaces, 
+  getDirections,
+  getWeatherByCoordinates 
+} from "./google-api";
 
 // Initialize OpenAI client
 const openai = new OpenAI({ 
@@ -1222,6 +1231,137 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
     
     res.json({ alerts });
+  });
+
+  // ==== Google API Routes ====
+  
+  // Search places using Google Places API
+  apiRouter.get("/google/places/search", async (req, res) => {
+    try {
+      const { query, lat, lng } = req.query;
+      
+      if (!query) {
+        return res.status(400).json({ message: "Search query is required" });
+      }
+
+      const location = lat && lng ? { lat: parseFloat(lat as string), lng: parseFloat(lng as string) } : undefined;
+      const places = await searchPlaces(query as string, location);
+      
+      res.json({ places });
+    } catch (error: any) {
+      console.error("Places search error:", error);
+      res.status(500).json({ message: error.message || "Failed to search places" });
+    }
+  });
+
+  // Get place details by place ID
+  apiRouter.get("/google/places/:placeId", async (req, res) => {
+    try {
+      const { placeId } = req.params;
+      const placeDetails = await getPlaceDetails(placeId);
+      
+      res.json({ place: placeDetails });
+    } catch (error: any) {
+      console.error("Place details error:", error);
+      res.status(500).json({ message: error.message || "Failed to get place details" });
+    }
+  });
+
+  // Geocode address to coordinates
+  apiRouter.get("/google/geocode", async (req, res) => {
+    try {
+      const { address } = req.query;
+      
+      if (!address) {
+        return res.status(400).json({ message: "Address is required" });
+      }
+
+      const result = await geocodeAddress(address as string);
+      res.json(result);
+    } catch (error: any) {
+      console.error("Geocoding error:", error);
+      res.status(500).json({ message: error.message || "Failed to geocode address" });
+    }
+  });
+
+  // Reverse geocode coordinates to address
+  apiRouter.get("/google/reverse-geocode", async (req, res) => {
+    try {
+      const { lat, lng } = req.query;
+      
+      if (!lat || !lng) {
+        return res.status(400).json({ message: "Latitude and longitude are required" });
+      }
+
+      const result = await reverseGeocode(parseFloat(lat as string), parseFloat(lng as string));
+      res.json(result);
+    } catch (error: any) {
+      console.error("Reverse geocoding error:", error);
+      res.status(500).json({ message: error.message || "Failed to reverse geocode" });
+    }
+  });
+
+  // Get nearby places by type
+  apiRouter.get("/google/nearby", async (req, res) => {
+    try {
+      const { lat, lng, type, radius } = req.query;
+      
+      if (!lat || !lng || !type) {
+        return res.status(400).json({ message: "Latitude, longitude, and type are required" });
+      }
+
+      const radiusNum = radius ? parseInt(radius as string) : 5000;
+      const places = await getNearbyPlaces(
+        parseFloat(lat as string), 
+        parseFloat(lng as string), 
+        type as string, 
+        radiusNum
+      );
+      
+      res.json({ places });
+    } catch (error: any) {
+      console.error("Nearby places error:", error);
+      res.status(500).json({ message: error.message || "Failed to get nearby places" });
+    }
+  });
+
+  // Get directions between two points
+  apiRouter.get("/google/directions", async (req, res) => {
+    try {
+      const { origin, destination, mode } = req.query;
+      
+      if (!origin || !destination) {
+        return res.status(400).json({ message: "Origin and destination are required" });
+      }
+
+      const directions = await getDirections(
+        origin as string, 
+        destination as string, 
+        (mode as string) || 'driving'
+      );
+      
+      res.json({ directions });
+    } catch (error: any) {
+      console.error("Directions error:", error);
+      res.status(500).json({ message: error.message || "Failed to get directions" });
+    }
+  });
+
+  // Enhanced weather by coordinates
+  apiRouter.get("/google/weather", async (req, res) => {
+    try {
+      const { lat, lng } = req.query;
+      
+      if (!lat || !lng) {
+        return res.status(400).json({ message: "Latitude and longitude are required" });
+      }
+
+      const weather = await getWeatherByCoordinates(parseFloat(lat as string), parseFloat(lng as string));
+      res.json({ weather });
+    } catch (error: any) {
+      console.error("Weather by coordinates error:", error);
+      res.status(500).json({ message: error.message || "Failed to get weather data" });
+    }
   });
   
 
