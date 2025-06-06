@@ -209,7 +209,7 @@ const socialCustoms = {
   }
 };
 
-// Popular destinations data
+// Popular destinations data for all major Indian cities
 const popularDestinations = {
   "Kolkata": [
     {
@@ -257,6 +257,17 @@ const popularDestinations = {
       reviews: 3000,
       image: "https://images.unsplash.com/photo-1567157577867-05ccb1388e66",
       coordinates: { lat: 18.9220, lng: 72.8347 }
+    },
+    {
+      id: "mumbai-2",
+      name: "Marine Drive",
+      type: "attraction",
+      address: "Marine Drive, Mumbai",
+      city: "Mumbai",
+      rating: 4.6,
+      reviews: 2500,
+      image: "https://images.unsplash.com/photo-1595658658481-d53d3f999875",
+      coordinates: { lat: 18.9439, lng: 72.8234 }
     }
   ],
   "Delhi": [
@@ -270,11 +281,302 @@ const popularDestinations = {
       reviews: 2800,
       image: "https://images.unsplash.com/photo-1587474260584-136574528ed5",
       coordinates: { lat: 28.6129, lng: 77.2295 }
+    },
+    {
+      id: "delhi-2",
+      name: "Red Fort",
+      type: "attraction",
+      address: "Lal Qila, Chandni Chowk, New Delhi",
+      city: "Delhi",
+      rating: 4.5,
+      reviews: 3200,
+      image: "https://images.unsplash.com/photo-1597149508230-4ba72ad90c33",
+      coordinates: { lat: 28.6562, lng: 77.2410 }
+    }
+  ],
+  "Chennai": [
+    {
+      id: "chennai-1",
+      name: "Marina Beach",
+      type: "attraction",
+      address: "Marina Beach, Chennai",
+      city: "Chennai",
+      rating: 4.3,
+      reviews: 1800,
+      image: "https://images.unsplash.com/photo-1582510003544-4d00b7f74220",
+      coordinates: { lat: 13.0475, lng: 80.2824 }
+    },
+    {
+      id: "chennai-2",
+      name: "Kapaleeshwarar Temple",
+      type: "temple",
+      address: "Mylapore, Chennai",
+      city: "Chennai",
+      rating: 4.6,
+      reviews: 1200,
+      image: "https://images.unsplash.com/photo-1580800917395-1a513e74c0b1",
+      coordinates: { lat: 13.0339, lng: 80.2619 }
+    }
+  ],
+  "Bangalore": [
+    {
+      id: "bangalore-1",
+      name: "Lalbagh Botanical Garden",
+      type: "garden",
+      address: "Lalbagh Main Rd, Bangalore",
+      city: "Bangalore",
+      rating: 4.5,
+      reviews: 2200,
+      image: "https://images.unsplash.com/photo-1578662996442-48f60103fc96",
+      coordinates: { lat: 12.9507, lng: 77.5847 }
+    },
+    {
+      id: "bangalore-2",
+      name: "Bangalore Palace",
+      type: "palace",
+      address: "Palace Rd, Bangalore",
+      city: "Bangalore",
+      rating: 4.4,
+      reviews: 1500,
+      image: "https://images.unsplash.com/photo-1571115764595-644a1f56a55c",
+      coordinates: { lat: 12.9983, lng: 77.5924 }
+    }
+  ],
+  "Hyderabad": [
+    {
+      id: "hyderabad-1",
+      name: "Charminar",
+      type: "monument",
+      address: "Charminar, Hyderabad",
+      city: "Hyderabad",
+      rating: 4.5,
+      reviews: 2800,
+      image: "https://images.unsplash.com/photo-1578662996442-48f60103fc96",
+      coordinates: { lat: 17.3616, lng: 78.4747 }
+    },
+    {
+      id: "hyderabad-2",
+      name: "Golconda Fort",
+      type: "fort",
+      address: "Ibrahim Bagh, Hyderabad",
+      city: "Hyderabad",
+      rating: 4.4,
+      reviews: 1900,
+      image: "https://images.unsplash.com/photo-1580466766168-f4f804de0cfb",
+      coordinates: { lat: 17.3833, lng: 78.4011 }
+    }
+  ],
+  "Jaipur": [
+    {
+      id: "jaipur-1",
+      name: "Hawa Mahal",
+      type: "palace",
+      address: "Hawa Mahal Rd, Jaipur",
+      city: "Jaipur",
+      rating: 4.6,
+      reviews: 3500,
+      image: "https://images.unsplash.com/photo-1477587458883-47145ed94245",
+      coordinates: { lat: 26.9239, lng: 75.8267 }
+    },
+    {
+      id: "jaipur-2",
+      name: "Amber Fort",
+      type: "fort",
+      address: "Devisinghpura, Amer, Jaipur",
+      city: "Jaipur",
+      rating: 4.7,
+      reviews: 4200,
+      image: "https://images.unsplash.com/photo-1599661046289-e31897661096",
+      coordinates: { lat: 26.9855, lng: 75.8513 }
+    }
+  ],
+  "Goa": [
+    {
+      id: "goa-1",
+      name: "Baga Beach",
+      type: "beach",
+      address: "Baga, Goa",
+      city: "Goa",
+      rating: 4.3,
+      reviews: 2100,
+      image: "https://images.unsplash.com/photo-1512343879784-a960bf40e7f2",
+      coordinates: { lat: 15.5557, lng: 73.7516 }
+    },
+    {
+      id: "goa-2",
+      name: "Basilica of Bom Jesus",
+      type: "church",
+      address: "Bainguinim, Goa",
+      city: "Goa",
+      rating: 4.5,
+      reviews: 1600,
+      image: "https://images.unsplash.com/photo-1578928932940-b4f90b98a62e",
+      coordinates: { lat: 15.5007, lng: 73.9114 }
+    }
+  ],
+  "Kochi": [
+    {
+      id: "kochi-1",
+      name: "Chinese Fishing Nets",
+      type: "attraction",
+      address: "Fort Kochi, Kochi",
+      city: "Kochi",
+      rating: 4.2,
+      reviews: 1400,
+      image: "https://images.unsplash.com/photo-1596755389378-c31d21fd1273",
+      coordinates: { lat: 9.9648, lng: 76.2429 }
+    },
+    {
+      id: "kochi-2",
+      name: "Mattancherry Palace",
+      type: "palace",
+      address: "Mattancherry, Kochi",
+      city: "Kochi",
+      rating: 4.3,
+      reviews: 980,
+      image: "https://images.unsplash.com/photo-1578928932940-b4f90b98a62e",
+      coordinates: { lat: 9.9577, lng: 76.2604 }
+    }
+  ],
+  "Varanasi": [
+    {
+      id: "varanasi-1",
+      name: "Dashashwamedh Ghat",
+      type: "ghat",
+      address: "Dashashwamedh Ghat, Varanasi",
+      city: "Varanasi",
+      rating: 4.7,
+      reviews: 2600,
+      image: "https://images.unsplash.com/photo-1561361513-2d000a50f0dc",
+      coordinates: { lat: 25.3095, lng: 83.0134 }
+    },
+    {
+      id: "varanasi-2",
+      name: "Kashi Vishwanath Temple",
+      type: "temple",
+      address: "Lahori Tola, Varanasi",
+      city: "Varanasi",
+      rating: 4.8,
+      reviews: 3200,
+      image: "https://images.unsplash.com/photo-1578928932940-b4f90b98a62e",
+      coordinates: { lat: 25.3109, lng: 83.0107 }
     }
   ]
 };
 
-// Cab providers mock data
+// Travel alerts data for all major Indian cities
+const travelAlerts = {
+  "Kolkata": [
+    {
+      id: "kolkata-alert-1",
+      type: "traffic",
+      title: "Heavy Traffic on EM Bypass",
+      message: "Expect delays during 8-10 AM and 6-8 PM due to construction work",
+      severity: "medium",
+      timestamp: new Date().toISOString()
+    },
+    {
+      id: "kolkata-alert-2",
+      type: "weather",
+      title: "Monsoon Alert",
+      message: "Intermittent rainfall expected. Carry umbrella",
+      severity: "low",
+      timestamp: new Date().toISOString()
+    }
+  ],
+  "Mumbai": [
+    {
+      id: "mumbai-alert-1",
+      type: "transport",
+      title: "Local Train Delays",
+      message: "Western line experiencing 15-minute delays due to signal issues",
+      severity: "high",
+      timestamp: new Date().toISOString()
+    }
+  ],
+  "Delhi": [
+    {
+      id: "delhi-alert-1",
+      type: "air-quality",
+      title: "Air Quality Alert",
+      message: "AQI is moderate. Sensitive individuals should limit outdoor activities",
+      severity: "medium",
+      timestamp: new Date().toISOString()
+    }
+  ],
+  "Chennai": [
+    {
+      id: "chennai-alert-1",
+      type: "weather",
+      title: "High Temperature Warning",
+      message: "Temperature above 35°C. Stay hydrated and avoid direct sunlight",
+      severity: "medium",
+      timestamp: new Date().toISOString()
+    }
+  ],
+  "Bangalore": [
+    {
+      id: "bangalore-alert-1",
+      type: "traffic",
+      title: "Tech Park Traffic",
+      message: "Heavy traffic on Outer Ring Road near IT corridors",
+      severity: "medium",
+      timestamp: new Date().toISOString()
+    }
+  ],
+  "Hyderabad": [
+    {
+      id: "hyderabad-alert-1",
+      type: "construction",
+      title: "Metro Construction",
+      message: "Road diversions near HITEC City due to metro construction",
+      severity: "low",
+      timestamp: new Date().toISOString()
+    }
+  ],
+  "Jaipur": [
+    {
+      id: "jaipur-alert-1",
+      type: "weather",
+      title: "Extreme Heat",
+      message: "Temperature reaching 42°C. Avoid outdoor activities 12-4 PM",
+      severity: "high",
+      timestamp: new Date().toISOString()
+    }
+  ],
+  "Goa": [
+    {
+      id: "goa-alert-1",
+      type: "tourism",
+      title: "Beach Safety",
+      message: "Strong currents at some beaches. Follow lifeguard instructions",
+      severity: "medium",
+      timestamp: new Date().toISOString()
+    }
+  ],
+  "Kochi": [
+    {
+      id: "kochi-alert-1",
+      type: "weather",
+      title: "Monsoon Season",
+      message: "Heavy rainfall expected. Plan indoor activities",
+      severity: "medium",
+      timestamp: new Date().toISOString()
+    }
+  ],
+  "Varanasi": [
+    {
+      id: "varanasi-alert-1",
+      type: "cultural",
+      title: "Festival Crowds",
+      message: "Large crowds at ghats during evening aarti. Plan accordingly",
+      severity: "low",
+      timestamp: new Date().toISOString()
+    }
+  ]
+};
+
+// Cab providers data
 const cabOptions = [
   {
     provider: "Ola",
@@ -427,36 +729,73 @@ export async function registerRoutes(app: Express): Promise<Server> {
       ];
 
       try {
-        // the newest OpenAI model is "gpt-4o" which was released May 13, 2024. do not change this unless explicitly requested by the user
-        const response = await openai.chat.completions.create({
-          model: "gpt-4o",
-          messages: formattedMessages,
-          temperature: 0.7,
-          max_tokens: 500
-        });
+        // Try OpenAI first if API key is available and valid
+        if (process.env.OPENAI_API_KEY && process.env.OPENAI_API_KEY !== "dummy-key-for-development") {
+          try {
+            // the newest OpenAI model is "gpt-4o" which was released May 13, 2024. do not change this unless explicitly requested by the user
+            const response = await openai.chat.completions.create({
+              model: "gpt-4o",
+              messages: formattedMessages,
+              temperature: 0.7,
+              max_tokens: 500
+            });
 
-        const assistantMessage = response.choices[0].message.content || "Sorry, I couldn't generate a response.";
+            const assistantMessage = response.choices[0].message.content || "Sorry, I couldn't generate a response.";
+
+            // Save assistant message
+            const savedMessage = await storage.createMessage({
+              conversationId,
+              content: assistantMessage,
+              role: "assistant"
+            });
+
+            res.json({ message: savedMessage });
+            return;
+          } catch (openaiError: any) {
+            console.log("OpenAI API unavailable, using fallback responses");
+          }
+        }
+
+        // Fallback intelligent response system
+        const userMessage = message.toLowerCase();
+        let fallbackResponse = "";
+
+        // Travel-related responses
+        if (userMessage.includes("weather") || userMessage.includes("temperature")) {
+          fallbackResponse = "I can help you check the weather! You can view current weather conditions for major Indian cities including Kolkata, Mumbai, Delhi, Chennai, Bangalore, Hyderabad, Jaipur, Goa, Kochi, and Varanasi in the main app interface.";
+        } else if (userMessage.includes("hotel") || userMessage.includes("accommodation")) {
+          fallbackResponse = "For hotels and accommodation, I recommend checking popular booking platforms like MakeMyTrip, Goibibo, or Booking.com. They offer great deals and verified reviews for hotels across India.";
+        } else if (userMessage.includes("transport") || userMessage.includes("cab") || userMessage.includes("taxi")) {
+          fallbackResponse = "For transportation, you can use Ola, Uber, or Rapido for rides. For long-distance travel, consider Indian Railways, buses, or domestic flights. The app can help you find cab options for your location.";
+        } else if (userMessage.includes("food") || userMessage.includes("restaurant") || userMessage.includes("cuisine")) {
+          fallbackResponse = "India offers incredible regional cuisines! Each city has its specialties - try biryani in Hyderabad, street food in Mumbai, fish curry in Goa, or traditional Bengali sweets in Kolkata. Zomato and Swiggy are great for finding local restaurants.";
+        } else if (userMessage.includes("culture") || userMessage.includes("custom") || userMessage.includes("tradition")) {
+          fallbackResponse = "Indian culture varies beautifully across regions! I can provide cultural information and social customs for different cities. Each region has unique greetings, festivals, cuisines, and etiquette. Would you like to know about a specific city?";
+        } else if (userMessage.includes("place") || userMessage.includes("destination") || userMessage.includes("visit")) {
+          fallbackResponse = "India has amazing destinations! From the historical monuments in Delhi and Agra, to the beaches of Goa, the backwaters of Kerala, and the palaces of Rajasthan. The app shows popular destinations for each city. What type of experience are you looking for?";
+        } else if (userMessage.includes("plan") || userMessage.includes("itinerary")) {
+          fallbackResponse = "Great! I can help you plan your trip. Use the itinerary section to create detailed travel plans. Consider factors like weather, local festivals, and transportation when planning. Would you like suggestions for a specific city or duration?";
+        } else if (userMessage.includes("hello") || userMessage.includes("hi") || userMessage.includes("namaste")) {
+          fallbackResponse = "Namaste! Welcome to your AI travel companion for India. I'm here to help you explore incredible destinations, learn about local cultures, check weather, and plan amazing trips across the country. How can I assist you today?";
+        } else if (userMessage.includes("thank")) {
+          fallbackResponse = "You're most welcome! I'm here whenever you need travel assistance for exploring incredible India. Have a wonderful journey!";
+        } else {
+          fallbackResponse = "I'm your AI travel assistant for India! I can help you with:\n\n🌤️ Weather information for major cities\n🏛️ Popular destinations and attractions\n🍛 Local cuisines and cultural customs\n🚖 Transportation options\n📅 Travel planning and itineraries\n\nWhat would you like to explore today?";
+        }
 
         // Save assistant message
         const savedMessage = await storage.createMessage({
           conversationId,
-          content: assistantMessage,
+          content: fallbackResponse,
           role: "assistant"
         });
 
         res.json({ message: savedMessage });
       } catch (error: any) {
-        console.error("OpenAI API error:", error);
+        console.error("Chat API error:", error);
         
-        // Determine the type of error and provide appropriate message
-        let errorMessage = "I'm having trouble connecting to my knowledge base right now. Please try again in a moment.";
+        const errorMessage = "I apologize, but I'm experiencing technical difficulties right now. Please try again in a moment.";
         
-        // Check for quota exceeded error
-        if (error && error.code === 'insufficient_quota') {
-          errorMessage = "The API key for my knowledge base has exceeded its usage limit. Please contact the app administrator to update the API key.";
-        }
-        
-        // If OpenAI API fails, provide a specific response
         const fallbackMessage = await storage.createMessage({
           conversationId,
           content: errorMessage,
@@ -835,6 +1174,54 @@ export async function registerRoutes(app: Express): Promise<Server> {
     } catch (error) {
       res.status(400).json({ message: "Invalid follow check data", error });
     }
+  });
+
+  // ==== Weather API Route ====
+  apiRouter.get("/weather/:city", (req, res) => {
+    const city = req.params.city;
+    const weather = weatherData[city as keyof typeof weatherData];
+    
+    if (!weather) {
+      return res.status(404).json({ message: "Weather data not found for this city" });
+    }
+    
+    res.json({ weather });
+  });
+
+  // ==== Social Customs API Route ====
+  apiRouter.get("/customs/:city", (req, res) => {
+    const city = req.params.city;
+    const customs = socialCustoms[city as keyof typeof socialCustoms];
+    
+    if (!customs) {
+      return res.status(404).json({ message: "Cultural information not found for this city" });
+    }
+    
+    res.json({ customs });
+  });
+
+  // ==== Destinations API Route ====
+  apiRouter.get("/destinations/:city", (req, res) => {
+    const city = req.params.city;
+    const destinations = popularDestinations[city as keyof typeof popularDestinations];
+    
+    if (!destinations) {
+      return res.status(404).json({ message: "Destinations not found for this city" });
+    }
+    
+    res.json({ destinations });
+  });
+
+  // ==== Travel Alerts API Route ====
+  apiRouter.get("/alerts/:city", (req, res) => {
+    const city = req.params.city;
+    const alerts = travelAlerts[city as keyof typeof travelAlerts];
+    
+    if (!alerts) {
+      return res.status(404).json({ message: "Travel alerts not found for this city" });
+    }
+    
+    res.json({ alerts });
   });
   
 
