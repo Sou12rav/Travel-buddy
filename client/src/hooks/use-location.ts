@@ -32,34 +32,42 @@ export function useLocation() {
       if (navigator.geolocation) {
         navigator.geolocation.getCurrentPosition(
           (position) => {
-            // In a real app, we would use reverse geocoding here using the coordinates
-            // For this demo, we'll just update the coordinates
             setLocation(prev => ({
               ...prev,
               coords: {
                 latitude: position.coords.latitude,
                 longitude: position.coords.longitude
               },
-              loading: false
+              loading: false,
+              error: null
             }));
             
-            // For demo purposes, we'll just use Kolkata as the default city
             setCurrentCity("Kolkata");
           },
           (error) => {
+            console.warn("Geolocation error:", error.message);
+            // Use default location instead of showing error
             setLocation(prev => ({
               ...prev,
               loading: false,
-              error: `Unable to retrieve your location: ${error.message}`
+              error: null
             }));
+            setCurrentCity("Kolkata");
+          },
+          {
+            enableHighAccuracy: true,
+            timeout: 10000,
+            maximumAge: 600000
           }
         );
       } else {
+        // Browser doesn't support geolocation, use default
         setLocation(prev => ({
           ...prev,
           loading: false,
-          error: "Geolocation is not supported by your browser"
+          error: null
         }));
+        setCurrentCity("Kolkata");
       }
     };
 
