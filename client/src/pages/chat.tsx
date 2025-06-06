@@ -4,16 +4,22 @@ import { useQuery } from "@tanstack/react-query";
 import { useApp } from "../lib/api_context";
 import ChatBubble, { TypingIndicator } from "@/components/chat-bubble";
 import ChatInput from "@/components/chat-input";
+import ChatSuggestions from "@/components/chat-suggestions";
 import { HotelSuggestions } from "@/components/suggestion-chips";
-import { ArrowLeft, Mic, MoreVertical } from "lucide-react";
+import { ArrowLeft, Mic, MoreVertical, HelpCircle, Zap } from "lucide-react";
 import { useChat } from "@/hooks/use-chat";
 import { ChatMessage } from "@/lib/types";
+import { Button } from "@/components/ui/button";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { Card, CardContent } from "@/components/ui/card";
 
 export default function Chat() {
   const [, navigate] = useLocation();
   const [match, params] = useRoute("/chat/:id");
   const conversationId = match ? parseInt(params.id) : 0;
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  const [showSuggestions, setShowSuggestions] = useState(true);
+  const [isHelpOpen, setIsHelpOpen] = useState(false);
   
   const { 
     messages, 

@@ -54,6 +54,7 @@ export interface ChatMessage {
   content: string;
   role: 'user' | 'assistant';
   createdAt: string;
+  timestamp: string;
 }
 
 export interface MessagesResponse {
