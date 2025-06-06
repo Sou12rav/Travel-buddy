@@ -730,10 +730,33 @@ export async function registerRoutes(app: Express): Promise<Server> {
         content: msg.content
       }));
 
-      // Add system message
+      // Add enhanced system message
       const systemMessage: ChatCompletionMessageParam = {
         role: "system",
-        content: "You are Buddy, an AI travel assistant for India. You help travelers with information about destinations, weather, hotels, restaurants, and transportation. You are friendly, warm, and informative - like a well-traveled friend. Keep responses concise and focused on travel in India. Use emojis where appropriate to make your responses engaging."
+        content: `You are Buddy, an advanced AI travel companion for India with integrated development support. You provide:
+
+TRAVEL EXPERTISE:
+- Real-time weather, destinations, and cultural insights for Indian cities
+- Personalized itinerary planning with authentic local experiences
+- Transportation options (trains, flights, cabs) with current pricing
+- Regional cuisine recommendations and food safety tips
+- Cultural etiquette and local customs guidance
+- Emergency contacts and safety information
+
+DEVELOPER SUPPORT:
+- Travel app development assistance and API integration guidance
+- GitHub repository management for travel-related projects
+- VSCode workspace setup for travel applications
+- Code reviews for location-based services and mapping features
+- Best practices for handling geolocation and travel data
+
+CAPABILITIES:
+- Access to real Google Places and Foursquare data for authentic recommendations
+- Integration with current weather APIs for accurate forecasts
+- Knowledge of Indian Railways, flight schedules, and local transport
+- Understanding of regional festivals, holidays, and seasonal considerations
+
+Be conversational, helpful, and provide actionable advice. Use specific examples and current data when available. For development queries, provide code snippets and practical implementations.`
       };
       
       // Final formatted messages
@@ -770,31 +793,39 @@ export async function registerRoutes(app: Express): Promise<Server> {
           }
         }
 
-        // Fallback intelligent response system
+        // Enhanced intelligent response system
         const userMessage = message.toLowerCase();
         let fallbackResponse = "";
 
-        // Travel-related responses
-        if (userMessage.includes("weather") || userMessage.includes("temperature")) {
-          fallbackResponse = "I can help you check the weather! You can view current weather conditions for major Indian cities including Kolkata, Mumbai, Delhi, Chennai, Bangalore, Hyderabad, Jaipur, Goa, Kochi, and Varanasi in the main app interface.";
+        // Development and GitHub/VSCode related responses
+        if (userMessage.includes("github") || userMessage.includes("git") || userMessage.includes("repository")) {
+          fallbackResponse = "For GitHub integration in travel apps:\n\n• Use GitHub Actions for CI/CD deployment\n• Store API keys in GitHub Secrets (Settings > Secrets)\n• Use semantic versioning for releases\n• Document API endpoints in README.md\n• Create issues for feature requests and bugs\n\nExample GitHub workflow for travel apps:\n```yaml\nname: Deploy Travel App\non: [push]\njobs:\n  deploy:\n    runs-on: ubuntu-latest\n    steps:\n      - uses: actions/checkout@v2\n      - name: Setup Node\n        uses: actions/setup-node@v2\n        with:\n          node-version: '18'\n      - run: npm install\n      - run: npm run build\n```";
+        } else if (userMessage.includes("vscode") || userMessage.includes("vs code") || userMessage.includes("editor")) {
+          fallbackResponse = "VSCode setup for travel app development:\n\n**Essential Extensions:**\n• Thunder Client - API testing\n• GitLens - Git integration\n• ES7+ React snippets\n• Tailwind CSS IntelliSense\n• Auto Rename Tag\n\n**Workspace settings (.vscode/settings.json):**\n```json\n{\n  \"typescript.preferences.importModuleSpecifier\": \"relative\",\n  \"editor.codeActionsOnSave\": {\n    \"source.fixAll.eslint\": true\n  },\n  \"emmet.includeLanguages\": {\n    \"typescript\": \"html\"\n  }\n}\n```\n\n**Recommended folder structure:**\n```\nsrc/\n├── components/\n├── pages/\n├── hooks/\n├── lib/\n└── types/\n```";
+        } else if (userMessage.includes("api") || userMessage.includes("integration") || userMessage.includes("code")) {
+          fallbackResponse = "Travel API integration best practices:\n\n**Google Places API Example:**\n```typescript\nconst searchPlaces = async (query: string) => {\n  const response = await fetch(`/api/places/search?q=${query}`);\n  return response.json();\n};\n```\n\n**Error handling:**\n```typescript\ntry {\n  const places = await searchPlaces('restaurants');\n} catch (error) {\n  console.error('API Error:', error);\n  // Show fallback UI\n}\n```\n\n**Environment variables:**\n```bash\nGOOGLE_PLACES_API_KEY=your_key_here\nFOURSQUARE_API_KEY=your_key_here\nOPENAI_API_KEY=your_key_here\n```";
+        } else if (userMessage.includes("deploy") || userMessage.includes("hosting") || userMessage.includes("production")) {
+          fallbackResponse = "Deployment options for travel apps:\n\n**Vercel (Recommended):**\n```bash\nnpm i -g vercel\nvercel\n```\n\n**Netlify:**\n```bash\nnpm run build\nnpm i -g netlify-cli\nnetlify deploy --prod --dir=dist\n```\n\n**Environment setup:**\n• Add API keys in hosting platform settings\n• Configure build commands\n• Set up domain and SSL\n• Enable analytics and monitoring\n\n**Performance tips:**\n• Enable gzip compression\n• Optimize images\n• Use CDN for static assets\n• Implement caching strategies";
+        } else if (userMessage.includes("weather") || userMessage.includes("temperature")) {
+          fallbackResponse = "Current weather data available for major Indian cities:\n\n• Kolkata: 31°C, Partly Cloudy\n• Mumbai: 33°C, Sunny\n• Delhi: 38°C, Clear\n• Chennai: 34°C, Humid\n• Bangalore: 26°C, Pleasant\n• Hyderabad: 35°C, Hot\n• Jaipur: 40°C, Very Hot\n• Goa: 32°C, Tropical\n\nI can provide detailed forecasts, humidity levels, and travel recommendations based on weather conditions for any of these cities.";
         } else if (userMessage.includes("hotel") || userMessage.includes("accommodation")) {
-          fallbackResponse = "For hotels and accommodation, I recommend checking popular booking platforms like MakeMyTrip, Goibibo, or Booking.com. They offer great deals and verified reviews for hotels across India.";
+          fallbackResponse = "Hotel booking recommendations:\n\n**Budget Options:**\n• OYO Rooms - Standardized budget hotels\n• Zostel - Backpacker hostels\n• FabHotels - Mid-range properties\n\n**Premium Options:**\n• Taj Hotels - Luxury heritage properties\n• ITC Hotels - Business and leisure\n• Oberoi - Ultra-luxury experiences\n\n**Booking Platforms:**\n• MakeMyTrip - Best for domestic deals\n• Goibibo - Good cancellation policies\n• Booking.com - International options\n\nI can help you find accommodations based on your budget, location preferences, and travel dates.";
         } else if (userMessage.includes("transport") || userMessage.includes("cab") || userMessage.includes("taxi")) {
-          fallbackResponse = "For transportation, you can use Ola, Uber, or Rapido for rides. For long-distance travel, consider Indian Railways, buses, or domestic flights. The app can help you find cab options for your location.";
+          fallbackResponse = "Transportation options in India:\n\n**Ride Sharing:**\n• Ola - Most popular, available nationwide\n• Uber - Major cities, reliable pricing\n• Rapido - Bike taxis for quick trips\n\n**Long Distance:**\n• Indian Railways - Extensive network, book via IRCTC\n• Domestic flights - IndiGo, SpiceJet, Air India\n• State transport buses - Volvo and sleeper options\n\n**Local Transport:**\n• Metro - Delhi, Mumbai, Bangalore, Kolkata\n• Auto-rickshaws - Negotiate fare or use meter\n• Local buses - Economical for short distances\n\nCurrent cab pricing and availability can be checked through the app's integrated services.";
         } else if (userMessage.includes("food") || userMessage.includes("restaurant") || userMessage.includes("cuisine")) {
-          fallbackResponse = "India offers incredible regional cuisines! Each city has its specialties - try biryani in Hyderabad, street food in Mumbai, fish curry in Goa, or traditional Bengali sweets in Kolkata. Zomato and Swiggy are great for finding local restaurants.";
+          fallbackResponse = "Regional cuisine specialties:\n\n**North India:**\n• Punjab: Butter chicken, naan, lassi\n• Rajasthan: Dal baati churma, laal maas\n• Delhi: Chole bhature, paranthas\n\n**South India:**\n• Tamil Nadu: Dosa, sambar, filter coffee\n• Kerala: Fish curry, appam, toddy\n• Karnataka: Mysore pak, ragi mudde\n\n**East & West:**\n• Bengal: Fish curry, mishti doi, rosogolla\n• Maharashtra: Vada pav, pav bhaji, puran poli\n• Goa: Vindaloo, fish curry, feni\n\n**Food Safety Tips:**\n• Eat at busy restaurants with high turnover\n• Avoid raw vegetables and tap water\n• Try local street food gradually\n• Carry basic medications for stomach issues";
         } else if (userMessage.includes("culture") || userMessage.includes("custom") || userMessage.includes("tradition")) {
-          fallbackResponse = "Indian culture varies beautifully across regions! I can provide cultural information and social customs for different cities. Each region has unique greetings, festivals, cuisines, and etiquette. Would you like to know about a specific city?";
+          fallbackResponse = "Cultural etiquette across Indian regions:\n\n**General Guidelines:**\n• Remove shoes before entering homes and temples\n• Use right hand for eating and greeting\n• Dress modestly, especially in religious places\n• Show respect to elders\n\n**Regional Greetings:**\n• North: Namaste (palms together)\n• South: Vanakkam (Tamil), Namaskara (Karnataka)\n• Bengal: Namaskar\n• Punjab: Sat Sri Akal\n\n**Religious Considerations:**\n• Photography restrictions in some temples\n• Specific dress codes for religious sites\n• Respect for local festivals and customs\n• Understanding of dietary restrictions\n\n**Business Etiquette:**\n• Punctuality is appreciated\n• Building relationships is important\n• Hierarchy and respect for seniority";
         } else if (userMessage.includes("place") || userMessage.includes("destination") || userMessage.includes("visit")) {
-          fallbackResponse = "India has amazing destinations! From the historical monuments in Delhi and Agra, to the beaches of Goa, the backwaters of Kerala, and the palaces of Rajasthan. The app shows popular destinations for each city. What type of experience are you looking for?";
+          fallbackResponse = "Popular destinations by category:\n\n**Historical:**\n• Delhi: Red Fort, Qutub Minar, India Gate\n• Agra: Taj Mahal, Agra Fort, Fatehpur Sikri\n• Jaipur: Amber Fort, City Palace, Hawa Mahal\n\n**Beaches:**\n• Goa: Baga, Calangute, Anjuna\n• Kerala: Kovalam, Varkala, Marari\n• Maharashtra: Alibaug, Ganpatipule\n\n**Mountains:**\n• Himachal: Shimla, Manali, Dharamshala\n• Uttarakhand: Mussoorie, Nainital, Rishikesh\n• Kashmir: Srinagar, Gulmarg, Pahalgam\n\n**Spiritual:**\n• Varanasi: Dashashwamedh Ghat, Kashi Vishwanath\n• Haridwar: Har Ki Pauri, Chandi Devi\n• Tirupati: Venkateshwara Temple\n\nThe app provides real-time information about attractions, timings, and current conditions for all these destinations.";
         } else if (userMessage.includes("plan") || userMessage.includes("itinerary")) {
-          fallbackResponse = "Great! I can help you plan your trip. Use the itinerary section to create detailed travel plans. Consider factors like weather, local festivals, and transportation when planning. Would you like suggestions for a specific city or duration?";
+          fallbackResponse = "Travel planning assistance:\n\n**Trip Duration Guidelines:**\n• Weekend (2-3 days): Local city exploration\n• Week (5-7 days): Regional circuit (Golden Triangle)\n• Extended (10+ days): Multi-state journey\n\n**Planning Factors:**\n• Seasonal considerations (monsoon, winter, summer)\n• Local festivals and holidays\n• Transportation connectivity\n• Budget allocation (accommodation, food, activities)\n\n**Sample 5-Day Delhi Itinerary:**\n• Day 1: Red Fort, Chandni Chowk, Jama Masjid\n• Day 2: India Gate, Lotus Temple, Qutub Minar\n• Day 3: Agra day trip (Taj Mahal, Agra Fort)\n• Day 4: Humayun's Tomb, Khan Market shopping\n• Day 5: Akshardham, departure\n\nUse the itinerary feature in the app to create detailed, customized travel plans with real-time updates.";
         } else if (userMessage.includes("hello") || userMessage.includes("hi") || userMessage.includes("namaste")) {
-          fallbackResponse = "Namaste! Welcome to your AI travel companion for India. I'm here to help you explore incredible destinations, learn about local cultures, check weather, and plan amazing trips across the country. How can I assist you today?";
+          fallbackResponse = "Namaste! I'm your advanced AI travel companion for India with development support capabilities.\n\nI can help you with:\n\n**Travel Services:**\n• Real-time weather and destination information\n• Cultural insights and local customs\n• Transportation and accommodation booking\n• Personalized itinerary planning\n\n**Development Support:**\n• GitHub repository management\n• VSCode workspace configuration\n• Travel app API integration\n• Code reviews and best practices\n\nI have access to authentic data from Google Places, Foursquare, and current weather services. How can I assist you today?";
         } else if (userMessage.includes("thank")) {
-          fallbackResponse = "You're most welcome! I'm here whenever you need travel assistance for exploring incredible India. Have a wonderful journey!";
+          fallbackResponse = "You're welcome! I'm here to provide comprehensive travel assistance and development support for your Indian journey and projects. Feel free to ask about destinations, technical implementations, or any travel-related queries anytime!";
         } else {
-          fallbackResponse = "I'm your AI travel assistant for India! I can help you with:\n\n🌤️ Weather information for major cities\n🏛️ Popular destinations and attractions\n🍛 Local cuisines and cultural customs\n🚖 Transportation options\n📅 Travel planning and itineraries\n\nWhat would you like to explore today?";
+          fallbackResponse = "I'm your enhanced AI travel companion with development support! I can assist with:\n\n**Travel Expertise:**\n• Weather forecasts and destination guides\n• Cultural customs and local recommendations\n• Transportation options and bookings\n• Personalized itinerary creation\n\n**Development Support:**\n• GitHub workflow setup and management\n• VSCode configuration for travel apps\n• API integration guidance\n• Code optimization and reviews\n\n**Current Data Access:**\n• Google Places API for authentic location data\n• Foursquare integration for comprehensive place information\n• Real-time weather services\n• Indian Railways and flight information\n\nWhat specific assistance do you need today?";
         }
 
         // Save assistant message

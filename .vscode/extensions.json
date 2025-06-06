@@ -1,13 +1,18 @@
 {
   "recommendations": [
+    "esbenp.prettier-vscode",
     "ms-vscode.vscode-typescript-next",
     "bradlc.vscode-tailwindcss",
-    "esbenp.prettier-vscode",
-    "ms-vscode.vscode-json",
+    "rangav.vscode-thunder-client",
+    "eamodio.gitlens",
+    "dsznajder.es7-react-js-snippets",
     "formulahendry.auto-rename-tag",
+    "ms-vscode.vscode-json",
     "christian-kohler.path-intellisense",
-    "ms-vscode.vscode-eslint",
-    "ckolkman.vscode-postgres",
-    "ms-vscode.vscode-docker"
+    "zignd.html-css-class-completion",
+    "formulahendry.auto-close-tag",
+    "ms-playwright.playwright",
+    "github.copilot",
+    "github.vscode-pull-request-github"
   ]
 }
