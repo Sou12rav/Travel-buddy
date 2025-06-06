@@ -24,6 +24,11 @@ import {
   getDirections,
   getWeatherByCoordinates 
 } from "./google-api";
+import { 
+  searchNearbyPlaces as foursquareNearbyPlaces,
+  getPlaceDetails as foursquarePlaceDetails,
+  getWeatherData
+} from "./foursquare-api";
 
 // Initialize OpenAI client
 const openai = new OpenAI({ 
@@ -1301,7 +1306,32 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Get nearby places by type
+  // Get nearby places using Foursquare API
+  apiRouter.get("/foursquare/nearby", async (req, res) => {
+    try {
+      const { lat, lng, type, radius } = req.query;
+      
+      if (!lat || !lng || !type) {
+        return res.status(400).json({ message: "Latitude, longitude, and type are required" });
+      }
+
+      const radiusNum = radius ? parseInt(radius as string) : 5000;
+      
+      const places = await foursquareNearbyPlaces(
+        parseFloat(lat as string), 
+        parseFloat(lng as string), 
+        type as string, 
+        radiusNum
+      );
+      
+      res.json({ places });
+    } catch (error: any) {
+      console.error("Foursquare nearby places error:", error);
+      res.status(500).json({ message: error.message || "Failed to get nearby places" });
+    }
+  });
+
+  // Get nearby places by type (fallback to Google, prefer Foursquare)
   apiRouter.get("/google/nearby", async (req, res) => {
     try {
       const { lat, lng, type, radius } = req.query;
@@ -1312,22 +1342,35 @@ export async function registerRoutes(app: Express): Promise<Server> {
 
       const radiusNum = radius ? parseInt(radius as string) : 5000;
       
+      // Try Foursquare first
       try {
-        const places = await getNearbyPlaces(
+        const places = await foursquareNearbyPlaces(
           parseFloat(lat as string), 
           parseFloat(lng as string), 
           type as string, 
           radiusNum
         );
         res.json({ places });
-      } catch (googleError: any) {
-        // If Google API fails, return structured error with guidance
-        console.error("Google Places API error:", googleError.message);
-        res.status(503).json({ 
-          message: "Google Places API unavailable", 
-          error: googleError.message,
-          suggestion: "Please configure GOOGLE_PLACES_API_KEY environment variable"
-        });
+      } catch (foursquareError: any) {
+        console.error("Foursquare API error, trying Google:", foursquareError.message);
+        
+        // Fallback to Google Places
+        try {
+          const places = await getNearbyPlaces(
+            parseFloat(lat as string), 
+            parseFloat(lng as string), 
+            type as string, 
+            radiusNum
+          );
+          res.json({ places });
+        } catch (googleError: any) {
+          console.error("Both APIs failed:", googleError.message);
+          res.status(503).json({ 
+            message: "Places API unavailable", 
+            error: "Both Foursquare and Google APIs failed",
+            suggestion: "Please check API key configuration"
+          });
+        }
       }
     } catch (error: any) {
       console.error("Nearby places error:", error);
@@ -1357,7 +1400,24 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
-  // Enhanced weather by coordinates
+  // Enhanced weather by coordinates using OpenWeatherMap
+  apiRouter.get("/weather/coordinates", async (req, res) => {
+    try {
+      const { lat, lng } = req.query;
+      
+      if (!lat || !lng) {
+        return res.status(400).json({ message: "Latitude and longitude are required" });
+      }
+
+      const weather = await getWeatherData(parseFloat(lat as string), parseFloat(lng as string));
+      res.json({ weather });
+    } catch (error: any) {
+      console.error("Weather by coordinates error:", error);
+      res.status(500).json({ message: error.message || "Failed to get weather data" });
+    }
+  });
+
+  // Enhanced weather by coordinates (legacy Google endpoint with OpenWeatherMap fallback)
   apiRouter.get("/google/weather", async (req, res) => {
     try {
       const { lat, lng } = req.query;
@@ -1366,8 +1426,14 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(400).json({ message: "Latitude and longitude are required" });
       }
 
-      const weather = await getWeatherByCoordinates(parseFloat(lat as string), parseFloat(lng as string));
-      res.json({ weather });
+      try {
+        const weather = await getWeatherData(parseFloat(lat as string), parseFloat(lng as string));
+        res.json({ weather });
+      } catch (weatherError: any) {
+        console.error("OpenWeatherMap API error, using fallback:", weatherError.message);
+        const weather = await getWeatherByCoordinates(parseFloat(lat as string), parseFloat(lng as string));
+        res.json({ weather });
+      }
     } catch (error: any) {
       console.error("Weather by coordinates error:", error);
       res.status(500).json({ message: error.message || "Failed to get weather data" });
