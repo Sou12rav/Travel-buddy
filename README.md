@@ -1,109 +1,255 @@
-# Travel Companion App
+# AI-Powered Travel Companion
 
-An AI-powered travel companion web application designed for Indian travelers, offering intelligent and personalized travel experiences with comprehensive technological integrations and social features.
+An Instagram-style explore application for Indian travelers with authentic nearby places, weather data, and social features.
 
 ## Features
 
-- 🌙 Modern UI with Dark/Light mode support
-- 🏙️ Detailed city information for major Indian cities
-- 📍 Location-based services with custom welcome messages
-- 🌦️ Weather information and travel alerts
-- 🏨 Browse popular destinations, hotels, and restaurants
-- 🗣️ AI-powered chat assistant
-- 📱 Responsive mobile-first design
+- 🌍 **Location-based Explore**: Instagram-style feed of nearby restaurants, attractions, hotels, and more
+- 🌤️ **Real-time Weather**: Current weather conditions using OpenWeatherMap API
+- 📍 **Authentic Places**: Real venue data with ratings, photos, and reviews from Foursquare API
+- 🗺️ **Interactive Maps**: Get directions to any location
+- 👥 **Social Platform**: Share travel experiences and follow other travelers
+- 🤖 **AI Chat**: Travel assistance powered by OpenAI
 
 ## Tech Stack
 
-- **Frontend**: React with TypeScript, Tailwind CSS for styling
-- **Backend**: Express.js server
+- **Frontend**: React + TypeScript + Tailwind CSS
+- **Backend**: Node.js + Express + TypeScript
 - **Database**: PostgreSQL with Drizzle ORM
-- **State Management**: React Query for server state
-- **UI Components**: Shadcn UI components
-- **Routing**: Wouter for lightweight routing
+- **APIs**: Foursquare Places, OpenWeatherMap, OpenAI
 
-## Getting Started
+## Prerequisites
 
-### Prerequisites
+- Node.js 18+ 
+- PostgreSQL 14+
+- API Keys (see Environment Variables section)
 
-- Node.js (v18 or newer)
-- PostgreSQL database
+## Installation
 
-### Installation
-
-1. Clone the repository:
-   ```
-   git clone https://github.com/yourusername/travel-companion-app.git
-   cd travel-companion-app
+1. **Clone the repository**
+   ```bash
+   git clone <your-repo-url>
+   cd travel-companion
    ```
 
-2. Install dependencies:
-   ```
+2. **Install dependencies**
+   ```bash
    npm install
    ```
 
-3. Set up environment variables:
-   - Copy `.env.example` to `.env`
-   - Update the PostgreSQL connection details
-
-4. Initialize the database:
+3. **Set up PostgreSQL database**
+   
+   **Option A: Local PostgreSQL**
+   ```bash
+   # Install PostgreSQL (Ubuntu/Debian)
+   sudo apt update
+   sudo apt install postgresql postgresql-contrib
+   
+   # Start PostgreSQL service
+   sudo systemctl start postgresql
+   sudo systemctl enable postgresql
+   
+   # Create database and user
+   sudo -u postgres psql
+   CREATE DATABASE travel_app;
+   CREATE USER travel_user WITH ENCRYPTED PASSWORD 'your_password';
+   GRANT ALL PRIVILEGES ON DATABASE travel_app TO travel_user;
+   \q
    ```
+   
+   **Option B: Cloud PostgreSQL (Recommended)**
+   - Use services like Neon, Supabase, or Railway
+   - Get your connection string
+
+4. **Environment Variables**
+   
+   Create a `.env` file in the root directory:
+   ```bash
+   cp .env.example .env
+   ```
+   
+   Fill in your API keys and database credentials:
+   ```env
+   # Database
+   DATABASE_URL=postgresql://travel_user:your_password@localhost:5432/travel_app
+   
+   # API Keys
+   FOURSQUARE_API_KEY=your_foursquare_api_key
+   OPENWEATHER_API_KEY=your_openweather_api_key
+   OPENAI_API_KEY=your_openai_api_key
+   ```
+
+## Getting API Keys
+
+### 1. Foursquare Places API (Required for nearby places)
+- Visit: https://developer.foursquare.com/
+- Sign up for free account
+- Create new app
+- Copy your API key
+- Free tier: 100,000 requests/month
+
+### 2. OpenWeatherMap API (Required for weather)
+- Visit: https://openweathermap.org/api
+- Sign up for free account
+- Generate API key
+- Free tier: 1,000 calls/day
+
+### 3. OpenAI API (Optional for AI chat)
+- Visit: https://platform.openai.com/
+- Create account and add billing
+- Generate API key
+- Note: Requires paid account
+
+## Database Setup
+
+1. **Push database schema**
+   ```bash
    npm run db:push
    ```
 
-### Running the App
+2. **Verify tables are created**
+   ```bash
+   # Connect to your database and check tables
+   psql $DATABASE_URL -c "\dt"
+   ```
 
-To start the development server:
+## Development
 
-```
-npm run dev
-```
+1. **Start the development server**
+   ```bash
+   npm run dev
+   ```
 
-The application will be available at http://localhost:5000
+2. **Open your browser**
+   ```
+   http://localhost:5000
+   ```
+
+The application serves both frontend and backend on the same port.
 
 ## Project Structure
 
 ```
-/
-├── client/               # Frontend code
+├── client/                 # React frontend
 │   ├── src/
-│   │   ├── components/   # Reusable UI components
-│   │   ├── hooks/        # Custom React hooks
-│   │   ├── lib/          # Utility functions and helpers
-│   │   ├── pages/        # Page components
-│   │   └── main.tsx      # Entry point
-│   └── index.html        # HTML template
-├── server/               # Backend code
-│   ├── database-storage.ts  # Database integration
-│   ├── index.ts          # Server entry point
-│   ├── routes.ts         # API routes
-│   └── vite.ts           # Vite server configuration
-├── shared/               # Shared code between client and server
-│   └── schema.ts         # Database schema and types
-├── .env.example          # Example environment variables
-├── drizzle.config.ts     # Drizzle ORM configuration
-├── package.json          # Dependencies and scripts
-└── vite.config.ts        # Vite configuration
+│   │   ├── components/     # Reusable UI components
+│   │   ├── pages/          # Page components
+│   │   ├── hooks/          # Custom React hooks
+│   │   └── lib/           # Utilities and API clients
+├── server/                 # Express backend
+│   ├── routes.ts          # API endpoints
+│   ├── foursquare-api.ts  # Foursquare integration
+│   ├── google-api.ts      # Google APIs integration
+│   └── storage.ts         # Database operations
+├── shared/                 # Shared types and schemas
+│   └── schema.ts          # Database schema
+└── package.json
 ```
 
-## VS Code Configuration
+## Key Pages
 
-This project includes VS Code settings for an optimal development experience:
+- **Home** (`/`): Weather, destinations, and quick actions
+- **Explore** (`/feed`): Instagram-style nearby places feed
+- **Social** (`/social`): User profiles and social features
+- **Itinerary** (`/itinerary`): Travel planning tools
+- **Chat** (`/chat/:id`): AI-powered travel assistance
 
-- Debug configurations for full-stack development
-- Formatting on save with ESLint and Prettier
-- Tailwind CSS IntelliSense support
+## VS Code Setup
 
-## Dark Mode Support
+1. **Install recommended extensions**
+   - TypeScript and JavaScript Language Features
+   - ES7+ React/Redux/React-Native snippets
+   - Tailwind CSS IntelliSense
+   - PostgreSQL (for database management)
 
-The application uses custom theming with CSS variables to support both light and dark modes. The theme can be toggled via the UI with automatic preference detection based on system settings.
+2. **VS Code settings**
+   
+   Create `.vscode/settings.json`:
+   ```json
+   {
+     "typescript.preferences.importModuleSpecifier": "relative",
+     "editor.formatOnSave": true,
+     "editor.codeActionsOnSave": {
+       "source.fixAll.eslint": true
+     },
+     "tailwindCSS.includeLanguages": {
+       "typescript": "javascript",
+       "typescriptreact": "javascript"
+     }
+   }
+   ```
 
-## Database Schema
+3. **Debug configuration**
+   
+   Create `.vscode/launch.json`:
+   ```json
+   {
+     "version": "0.2.0",
+     "configurations": [
+       {
+         "name": "Launch Server",
+         "type": "node",
+         "request": "launch",
+         "program": "${workspaceFolder}/server/index.ts",
+         "outFiles": ["${workspaceFolder}/dist/**/*.js"],
+         "envFile": "${workspaceFolder}/.env",
+         "runtimeArgs": ["-r", "tsx/cjs"]
+       }
+     ]
+   }
+   ```
 
-The database schema is defined in `shared/schema.ts` using Drizzle ORM. To make changes to the schema:
+## Deployment
 
-1. Update the schema definitions in `shared/schema.ts`
-2. Run `npm run db:push` to apply the changes to the database
+### Option 1: Railway (Recommended)
+1. Install Railway CLI: `npm install -g @railway/cli`
+2. Login: `railway login`
+3. Deploy: `railway up`
+4. Add environment variables in Railway dashboard
+
+### Option 2: Vercel + Neon
+1. Deploy frontend to Vercel
+2. Use Neon for PostgreSQL
+3. Set environment variables in Vercel dashboard
+
+### Option 3: Self-hosted
+1. Build application: `npm run build`
+2. Set `NODE_ENV=production`
+3. Start: `npm start`
+
+## Troubleshooting
+
+### Common Issues
+
+1. **Empty places in explore page**
+   - Check Foursquare API key is valid
+   - Ensure location permissions are enabled
+   - Verify API key has proper permissions
+
+2. **Database connection errors**
+   - Check DATABASE_URL format
+   - Ensure PostgreSQL is running
+   - Verify database exists and user has permissions
+
+3. **Build errors**
+   - Clear node_modules: `rm -rf node_modules && npm install`
+   - Check TypeScript errors: `npm run check`
+
+### Development Tips
+
+1. **Hot reload**: Changes to frontend automatically refresh
+2. **Server restart**: Backend restarts automatically on file changes
+3. **Database inspection**: Use `npm run db:push` to sync schema changes
+4. **API testing**: Use the browser network tab to debug API calls
+
+## Contributing
+
+1. Fork the repository
+2. Create feature branch: `git checkout -b feature/new-feature`
+3. Commit changes: `git commit -m 'Add new feature'`
+4. Push to branch: `git push origin feature/new-feature`
+5. Submit pull request
 
 ## License
 
-[MIT](LICENSE)
+MIT License - see LICENSE file for details
