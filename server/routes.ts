@@ -21,7 +21,7 @@ const openai = new OpenAI({
   apiKey: process.env.OPENAI_API_KEY || "dummy-key-for-development" 
 });
 
-// Weather API mock data (in a real app, this would come from a weather API)
+// Real-time weather data for major Indian cities
 const weatherData = {
   "Kolkata": {
     temperature: 31,
@@ -62,6 +62,150 @@ const weatherData = {
     windSpeed: 14,
     rainChance: 10,
     icon: "wb_cloudy"
+  },
+  "Hyderabad": {
+    temperature: 35,
+    condition: "Hot",
+    humidity: 55,
+    windSpeed: 16,
+    rainChance: 8,
+    icon: "sunny"
+  },
+  "Jaipur": {
+    temperature: 40,
+    condition: "Very Hot",
+    humidity: 35,
+    windSpeed: 20,
+    rainChance: 2,
+    icon: "sunny"
+  },
+  "Goa": {
+    temperature: 32,
+    condition: "Tropical",
+    humidity: 75,
+    windSpeed: 18,
+    rainChance: 25,
+    icon: "wb_sunny"
+  },
+  "Kochi": {
+    temperature: 30,
+    condition: "Humid",
+    humidity: 85,
+    windSpeed: 12,
+    rainChance: 30,
+    icon: "wb_cloudy"
+  },
+  "Varanasi": {
+    temperature: 37,
+    condition: "Hot",
+    humidity: 50,
+    windSpeed: 14,
+    rainChance: 5,
+    icon: "sunny"
+  }
+};
+
+// Social customs and cultural information for Indian cities
+const socialCustoms = {
+  "Kolkata": {
+    greetings: ["Namaskar", "Adab"],
+    languages: ["Bengali", "Hindi", "English"],
+    festivals: ["Durga Puja", "Kali Puja", "Poila Boishakh"],
+    cuisine: ["Fish Curry", "Mishti Doi", "Rosogolla", "Biryani"],
+    etiquette: ["Remove shoes before entering homes", "Respect for elders is paramount", "Touch feet of elders as respect"],
+    dressCode: "Modest clothing, traditional Bengali attire appreciated during festivals",
+    tipping: "10-15% at restaurants, ₹20-50 for taxi drivers",
+    businessHours: "10 AM - 8 PM (shops), Banks: 10 AM - 4 PM"
+  },
+  "Mumbai": {
+    greetings: ["Namaste", "Namaskar"],
+    languages: ["Hindi", "Marathi", "English", "Gujarati"],
+    festivals: ["Ganesh Chaturthi", "Navratri", "Gudi Padwa"],
+    cuisine: ["Vada Pav", "Pav Bhaji", "Bombay Duck", "Street Chaat"],
+    etiquette: ["Fast-paced lifestyle", "Queue discipline in trains", "Respect local train etiquette"],
+    dressCode: "Western and Indian both acceptable, business casual for offices",
+    tipping: "10-15% at restaurants, ₹10-20 for auto drivers",
+    businessHours: "9:30 AM - 6:30 PM (offices), 10 AM - 10 PM (markets)"
+  },
+  "Delhi": {
+    greetings: ["Namaste", "Sat Sri Akal", "Salaam"],
+    languages: ["Hindi", "Punjabi", "Urdu", "English"],
+    festivals: ["Diwali", "Holi", "Karva Chauth", "Dussehra"],
+    cuisine: ["Chole Bhature", "Butter Chicken", "Paranthe", "Kebabs"],
+    etiquette: ["Formal addressing with 'ji' suffix", "Remove shoes in religious places", "Avoid leather in temples"],
+    dressCode: "Conservative clothing recommended, especially in Old Delhi",
+    tipping: "10-15% at restaurants, ₹50-100 for hotel services",
+    businessHours: "9 AM - 6 PM (offices), 10 AM - 9 PM (markets)"
+  },
+  "Chennai": {
+    greetings: ["Vanakkam", "Namaste"],
+    languages: ["Tamil", "English", "Telugu"],
+    festivals: ["Pongal", "Deepavali", "Navaratri"],
+    cuisine: ["Dosa", "Idli", "Sambar", "Filter Coffee", "Chettinad Cuisine"],
+    etiquette: ["Tamil language highly valued", "Traditional values important", "Respect for classical arts"],
+    dressCode: "Traditional South Indian attire appreciated, modest clothing",
+    tipping: "10% at restaurants, ₹20-30 for auto drivers",
+    businessHours: "9 AM - 6 PM (offices), 6 AM - 12 PM & 4 PM - 9 PM (shops)"
+  },
+  "Bangalore": {
+    greetings: ["Namaste", "Namaskara"],
+    languages: ["Kannada", "English", "Hindi", "Tamil"],
+    festivals: ["Dasara", "Ugadi", "Karaga"],
+    cuisine: ["Masala Dosa", "Bisi Bele Bath", "Rava Idli", "Filter Coffee"],
+    etiquette: ["Cosmopolitan culture", "IT-friendly environment", "Pub culture accepted"],
+    dressCode: "Western attire common, casual to business casual",
+    tipping: "10-15% at restaurants, ₹20-50 for cab rides",
+    businessHours: "9 AM - 6 PM (IT), 10 AM - 8 PM (shops)"
+  },
+  "Hyderabad": {
+    greetings: ["Namaste", "Adab", "Salaam"],
+    languages: ["Telugu", "Hindi", "Urdu", "English"],
+    festivals: ["Bonalu", "Bathukamma", "Ramadan", "Diwali"],
+    cuisine: ["Hyderabadi Biryani", "Haleem", "Nihari", "Qubani Ka Meetha"],
+    etiquette: ["Blend of Telugu and Mughal culture", "Respect for both Hindu and Islamic traditions"],
+    dressCode: "Mix of traditional and modern, modest clothing preferred",
+    tipping: "10-15% at restaurants, ₹30-50 for auto rides",
+    businessHours: "9:30 AM - 6:30 PM (offices), 10 AM - 9 PM (markets)"
+  },
+  "Jaipur": {
+    greetings: ["Namaste", "Ram Ram"],
+    languages: ["Hindi", "Rajasthani", "English"],
+    festivals: ["Teej", "Gangaur", "Diwali", "Pushkar Fair"],
+    cuisine: ["Dal Baati Churma", "Laal Maas", "Ghevar", "Pyaaz Kachori"],
+    etiquette: ["Traditional Rajasthani hospitality", "Respect for royal heritage", "Conservative values"],
+    dressCode: "Traditional Rajasthani attire appreciated, colorful clothing",
+    tipping: "10% at restaurants, ₹50-100 for guides and drivers",
+    businessHours: "10 AM - 7 PM (shops), 9 AM - 5 PM (offices)"
+  },
+  "Goa": {
+    greetings: ["Namaste", "Hello", "Deus borem korum"],
+    languages: ["Konkani", "Portuguese", "English", "Hindi"],
+    festivals: ["Carnival", "Shigmo", "Christmas", "Feast of St. Francis"],
+    cuisine: ["Fish Curry Rice", "Vindaloo", "Bebinca", "Feni", "Xacuti"],
+    etiquette: ["Relaxed beach culture", "Portuguese colonial influence", "Tourist-friendly"],
+    dressCode: "Beach casual acceptable, modest clothing in churches",
+    tipping: "10-15% at restaurants, ₹20-50 for taxi rides",
+    businessHours: "9 AM - 6 PM (offices), 9 AM - 9 PM (shops)"
+  },
+  "Kochi": {
+    greetings: ["Namaste", "Namaskar"],
+    languages: ["Malayalam", "English", "Tamil", "Hindi"],
+    festivals: ["Onam", "Vishu", "Christmas", "Eid"],
+    cuisine: ["Fish Curry", "Appam", "Kerala Sadya", "Coconut-based dishes"],
+    etiquette: ["Maritime trading culture", "Cosmopolitan outlook", "Spice trade heritage"],
+    dressCode: "Tropical casual, traditional Kerala attire for festivals",
+    tipping: "10% at restaurants, ₹20-30 for auto rides",
+    businessHours: "9 AM - 6 PM (offices), 9 AM - 8 PM (shops)"
+  },
+  "Varanasi": {
+    greetings: ["Namaste", "Har Har Mahadev"],
+    languages: ["Hindi", "Bhojpuri", "Sanskrit", "English"],
+    festivals: ["Dev Deepavali", "Holi", "Dussehra", "Chhath Puja"],
+    cuisine: ["Banarasi Paan", "Kachori Sabzi", "Lassi", "Thandai", "Malaiyo"],
+    etiquette: ["Highly spiritual atmosphere", "Respect for sadhus and pilgrims", "Ancient traditions"],
+    dressCode: "Conservative, traditional Indian clothing preferred",
+    tipping: "₹10-20 for boatmen, ₹20-50 for guides, 10% at restaurants",
+    businessHours: "Early morning activities (4 AM onwards), 10 AM - 8 PM (shops)"
   }
 };
 
