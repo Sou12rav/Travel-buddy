@@ -45,6 +45,7 @@ function Router() {
           <Route path="/profile" component={Profile} />
           <Route path="/social" component={Social} />
           <Route path="/feed" component={Feed} />
+          <Route path="/google" component={GoogleTravel} />
           <Route component={NotFound} />
         </Switch>
       </div>

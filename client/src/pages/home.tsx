@@ -97,6 +97,20 @@ export default function Home() {
       {/* Travel Alerts */}
       <TravelAlerts />
       
+      {/* Google Features Access */}
+      <section className="px-4 pb-4">
+        <div className="bg-gradient-to-r from-blue-500 to-purple-600 rounded-lg p-4 text-white">
+          <h3 className="font-semibold mb-2">Discover with Google</h3>
+          <p className="text-sm mb-3">Search real places, find nearby attractions, and get directions with Google Maps integration</p>
+          <button 
+            onClick={() => navigate("/google")}
+            className="bg-white text-blue-600 px-4 py-2 rounded-lg text-sm font-medium hover:bg-gray-100 transition-colors"
+          >
+            Explore Google Features
+          </button>
+        </div>
+      </section>
+      
       {/* Floating Chat Button */}
       <button 
         onClick={() => startConversation()} 
