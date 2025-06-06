@@ -12,6 +12,7 @@ import { WelcomeSuggestions } from "@/components/suggestion-chips";
 import { MessageSquare } from "lucide-react";
 import { CityDetails } from "@/components/city-details";
 import { CityBackdrop } from "@/components/city-backdrop";
+import CitySelector from "@/components/city-selector";
 
 export default function Home() {
   const [, navigate] = useLocation();
