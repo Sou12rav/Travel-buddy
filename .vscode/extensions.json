@@ -6,13 +6,18 @@
     "rangav.vscode-thunder-client",
     "eamodio.gitlens",
     "dsznajder.es7-react-js-snippets",
-    "formulahendry.auto-rename-tag",
     "ms-vscode.vscode-json",
+    "yzhang.markdown-all-in-one",
+    "formulahendry.auto-rename-tag",
     "christian-kohler.path-intellisense",
-    "zignd.html-css-class-completion",
-    "formulahendry.auto-close-tag",
-    "ms-playwright.playwright",
+    "ms-vscode.vscode-eslint",
+    "usernamehw.errorlens",
+    "gruntfuggly.todo-tree",
     "github.copilot",
-    "github.vscode-pull-request-github"
+    "github.copilot-chat",
+    "ms-vscode.vscode-node-azure-pack",
+    "ckolkman.vscode-postgres",
+    "mtxr.sqltools",
+    "mtxr.sqltools-driver-pg"
   ]
 }
