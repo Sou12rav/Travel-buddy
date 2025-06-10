@@ -93,23 +93,50 @@ npm run db:push      # Push database schema changes
 - `GET /api/users/:userId/followers` - Get user followers
 - `POST /api/follow` - Follow user
 
-## VSCode Setup
+## Visual Studio Code Setup
 
-The project includes pre-configured VSCode settings for optimal development experience:
+This project is fully optimized for VS Code development with comprehensive configuration and tooling.
 
-### Recommended Extensions
-- Prettier - Code formatter
-- TypeScript - Language support
-- Tailwind CSS IntelliSense - CSS autocomplete
-- Thunder Client - API testing
-- GitLens - Git integration
-- ES7+ React snippets - React code snippets
+### Quick Start for VS Code
+```bash
+# Open the project workspace
+code travel-companion.code-workspace
 
-### Workspace Settings
-- Auto-format on save
-- TypeScript path resolution
-- Tailwind CSS support
-- ESLint integration
+# Install recommended extensions (VS Code will prompt automatically)
+# Start development server
+Ctrl+Shift+T or F5
+```
+
+### Pre-configured Features
+- **Auto-formatting** on save with Prettier
+- **TypeScript IntelliSense** with path resolution
+- **Tailwind CSS** autocomplete and class sorting
+- **ESLint** integration with inline error display
+- **Debugging** configurations for server, client, and full-stack
+- **API Testing** with Thunder Client collections
+- **Database** integration with SQLTools
+- **Code Snippets** for React, TypeScript, and Drizzle
+- **Custom Keybindings** for common development tasks
+
+### Recommended Extensions (Auto-installed)
+Essential extensions are automatically recommended:
+- **Prettier** - Code formatting
+- **ESLint** - Code linting
+- **TypeScript** - Enhanced language support
+- **Tailwind CSS IntelliSense** - CSS autocomplete
+- **Thunder Client** - API testing
+- **GitLens** - Git integration
+- **Error Lens** - Inline error display
+- **GitHub Copilot** - AI assistance (optional)
+
+### Development Workflow
+1. **Start**: Press `F5` or `Ctrl+Shift+T` to launch the dev server
+2. **Code**: Full IntelliSense, auto-imports, and error checking
+3. **Test**: Use Thunder Client for API testing
+4. **Debug**: Set breakpoints and debug TypeScript directly
+5. **Deploy**: Built-in tasks for building and deployment
+
+For detailed VS Code setup instructions, see [VSCODE_SETUP.md](./VSCODE_SETUP.md)
 
 ## GitHub Integration
 

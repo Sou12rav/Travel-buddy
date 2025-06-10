@@ -1,31 +1,12 @@
-# Logs
-logs
-*.log
+# Dependencies
+node_modules/
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
-pnpm-debug.log*
-lerna-debug.log*
 
-# Dependencies
-node_modules
-.pnp
-.pnp.js
-
-# Build outputs
-dist
-dist-ssr
-*.local
-build
-
-# Editor directories and files
-.idea
-*.suo
-*.ntvs*
-*.njsproj
-*.sln
-*.sw?
-.DS_Store
+# Production builds
+dist/
+build/
 
 # Environment variables
 .env
@@ -35,16 +16,41 @@ build
 .env.production.local
 
 # Database
-*.sqlite
-*.sqlite3
 *.db
+*.sqlite
 
-# Misc
-coverage
-.vercel
-.output
-.turbo
+# Logs
+logs
+*.log
 
-# Vite
-vite.config.js.timestamp-*
-vite.config.ts.timestamp-*
+# Runtime data
+pids
+*.pid
+*.seed
+*.pid.lock
+
+# Coverage directory used by tools like istanbul
+coverage/
+
+# IDE and editor files
+.vscode/settings.local.json
+*.swp
+*.swo
+*~
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Temporary folders
+tmp/
+temp/
+
+# Thunder Client
+.vscode/thunder-client/requests/
+.vscode/thunder-client/settings.json
