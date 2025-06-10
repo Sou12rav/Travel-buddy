@@ -1,7 +1,6 @@
-import { pgTable, text, serial, integer, boolean, timestamp, jsonb, varchar, decimal, index, unique } from "drizzle-orm/pg-core";
+import { pgTable, text, serial, integer, timestamp, jsonb, varchar, index } from "drizzle-orm/pg-core";
 import { createInsertSchema } from "drizzle-zod";
 import { z } from "zod";
-import { relations } from "drizzle-orm";
 
 export const users = pgTable("users", {
   id: serial("id").primaryKey(),
@@ -33,9 +32,13 @@ export const insertUserSchema = createInsertSchema(users).pick({
 
 export const conversations = pgTable("conversations", {
   id: serial("id").primaryKey(),
-  userId: integer("user_id").references(() => users.id),
+  userId: integer("user_id").references(() => users.id, { onDelete: "cascade" }).notNull(),
+  title: varchar("title", { length: 200 }),
   createdAt: timestamp("created_at").defaultNow().notNull(),
-});
+  updatedAt: timestamp("updated_at").defaultNow().notNull(),
+}, (table) => ({
+  userIdIdx: index("conversations_user_id_idx").on(table.userId),
+}));
 
 export const insertConversationSchema = createInsertSchema(conversations).pick({
   userId: true,
@@ -43,11 +46,14 @@ export const insertConversationSchema = createInsertSchema(conversations).pick({
 
 export const messages = pgTable("messages", {
   id: serial("id").primaryKey(),
-  conversationId: integer("conversation_id").references(() => conversations.id),
+  conversationId: integer("conversation_id").references(() => conversations.id, { onDelete: "cascade" }).notNull(),
   content: text("content").notNull(),
-  role: text("role").notNull(), // 'user' or 'assistant'
+  role: varchar("role", { length: 20 }).notNull(), // 'user' or 'assistant'
   timestamp: timestamp("timestamp").defaultNow().notNull(),
-});
+}, (table) => ({
+  conversationIdIdx: index("messages_conversation_id_idx").on(table.conversationId),
+  timestampIdx: index("messages_timestamp_idx").on(table.timestamp),
+}));
 
 export const insertMessageSchema = createInsertSchema(messages).pick({
   conversationId: true,
@@ -57,14 +63,19 @@ export const insertMessageSchema = createInsertSchema(messages).pick({
 
 export const itineraries = pgTable("itineraries", {
   id: serial("id").primaryKey(),
-  userId: integer("user_id").references(() => users.id),
-  title: text("title").notNull(),
+  userId: integer("user_id").references(() => users.id, { onDelete: "cascade" }).notNull(),
+  title: varchar("title", { length: 200 }).notNull(),
   date: timestamp("date").notNull(),
-  city: text("city").notNull(),
-  activities: jsonb("activities").notNull(),
-  metadata: jsonb("metadata"), // For storing additional info like budget, transportation, etc.
+  city: varchar("city", { length: 100 }).notNull(),
+  activities: jsonb("activities").$type<any[]>().notNull().default([]),
+  metadata: jsonb("metadata").$type<Record<string, any>>().default({}),
   createdAt: timestamp("created_at").defaultNow().notNull(),
-});
+  updatedAt: timestamp("updated_at").defaultNow().notNull(),
+}, (table) => ({
+  userIdIdx: index("itineraries_user_id_idx").on(table.userId),
+  dateIdx: index("itineraries_date_idx").on(table.date),
+  cityIdx: index("itineraries_city_idx").on(table.city),
+}));
 
 export const insertItinerarySchema = createInsertSchema(itineraries).pick({
   userId: true,
@@ -77,16 +88,22 @@ export const insertItinerarySchema = createInsertSchema(itineraries).pick({
 
 export const savedPlaces = pgTable("saved_places", {
   id: serial("id").primaryKey(),
-  userId: integer("user_id").references(() => users.id),
-  name: text("name").notNull(),
-  type: text("type").notNull(), // 'hotel', 'restaurant', 'attraction'
+  userId: integer("user_id").references(() => users.id, { onDelete: "cascade" }).notNull(),
+  name: varchar("name", { length: 200 }).notNull(),
+  type: varchar("type", { length: 50 }).notNull(), // 'hotel', 'restaurant', 'attraction'
   address: text("address"),
-  city: text("city").notNull(),
+  city: varchar("city", { length: 100 }).notNull(),
   rating: integer("rating"),
-  placeId: text("place_id"), // For Google Places API reference
-  coordinates: jsonb("coordinates"), // { lat: number, lng: number }
+  placeId: varchar("place_id", { length: 100 }), // For Google Places API reference
+  coordinates: jsonb("coordinates").$type<{ lat: number; lng: number }>(),
   createdAt: timestamp("created_at").defaultNow().notNull(),
-});
+  updatedAt: timestamp("updated_at").defaultNow().notNull(),
+}, (table) => ({
+  userIdIdx: index("saved_places_user_id_idx").on(table.userId),
+  typeIdx: index("saved_places_type_idx").on(table.type),
+  cityIdx: index("saved_places_city_idx").on(table.city),
+  placeIdIdx: index("saved_places_place_id_idx").on(table.placeId),
+}));
 
 export const insertSavedPlaceSchema = createInsertSchema(savedPlaces).pick({
   userId: true,
@@ -165,16 +182,22 @@ export type Activity = {
 // Social platform types
 export const posts = pgTable("posts", {
   id: serial("id").primaryKey(),
-  userId: integer("user_id").references(() => users.id),
+  userId: integer("user_id").references(() => users.id, { onDelete: "cascade" }).notNull(),
   content: text("content"),
   mediaUrl: text("media_url"),
-  mediaType: text("media_type"), // 'image', 'video', 'reel'
-  location: text("location"),
-  placeId: text("place_id"), // ID of a tagged place
-  placeDetails: jsonb("place_details"), // Details about the tagged place
+  mediaType: varchar("media_type", { length: 20 }), // 'image', 'video', 'reel'
+  location: varchar("location", { length: 200 }),
+  placeId: varchar("place_id", { length: 100 }), // ID of a tagged place
+  placeDetails: jsonb("place_details").$type<Record<string, any>>(),
   createdAt: timestamp("created_at").defaultNow().notNull(),
-  likes: integer("likes").default(0),
-});
+  updatedAt: timestamp("updated_at").defaultNow().notNull(),
+  likes: integer("likes").default(0).notNull(),
+}, (table) => ({
+  userIdIdx: index("posts_user_id_idx").on(table.userId),
+  createdAtIdx: index("posts_created_at_idx").on(table.createdAt),
+  locationIdx: index("posts_location_idx").on(table.location),
+  placeIdIdx: index("posts_place_id_idx").on(table.placeId),
+}));
 
 export const insertPostSchema = createInsertSchema(posts).pick({
   userId: true,
@@ -188,11 +211,16 @@ export const insertPostSchema = createInsertSchema(posts).pick({
 
 export const comments = pgTable("comments", {
   id: serial("id").primaryKey(),
-  postId: integer("post_id").references(() => posts.id),
-  userId: integer("user_id").references(() => users.id),
+  postId: integer("post_id").references(() => posts.id, { onDelete: "cascade" }).notNull(),
+  userId: integer("user_id").references(() => users.id, { onDelete: "cascade" }).notNull(),
   content: text("content").notNull(),
   createdAt: timestamp("created_at").defaultNow().notNull(),
-});
+  updatedAt: timestamp("updated_at").defaultNow().notNull(),
+}, (table) => ({
+  postIdIdx: index("comments_post_id_idx").on(table.postId),
+  userIdIdx: index("comments_user_id_idx").on(table.userId),
+  createdAtIdx: index("comments_created_at_idx").on(table.createdAt),
+}));
 
 export const insertCommentSchema = createInsertSchema(comments).pick({
   postId: true,
@@ -202,11 +230,16 @@ export const insertCommentSchema = createInsertSchema(comments).pick({
 
 export const friendships = pgTable("friendships", {
   id: serial("id").primaryKey(),
-  userId: integer("user_id").references(() => users.id),
-  friendId: integer("friend_id").references(() => users.id),
-  status: text("status").notNull(), // 'pending', 'accepted', 'rejected'
+  userId: integer("user_id").references(() => users.id, { onDelete: "cascade" }).notNull(),
+  friendId: integer("friend_id").references(() => users.id, { onDelete: "cascade" }).notNull(),
+  status: varchar("status", { length: 20 }).notNull().default("pending"), // 'pending', 'accepted', 'rejected'
   createdAt: timestamp("created_at").defaultNow().notNull(),
-});
+  updatedAt: timestamp("updated_at").defaultNow().notNull(),
+}, (table) => ({
+  userIdIdx: index("friendships_user_id_idx").on(table.userId),
+  friendIdIdx: index("friendships_friend_id_idx").on(table.friendId),
+  statusIdx: index("friendships_status_idx").on(table.status),
+}));
 
 export const insertFriendshipSchema = createInsertSchema(friendships).pick({
   userId: true,
@@ -227,10 +260,14 @@ export type InsertFriendship = z.infer<typeof insertFriendshipSchema>;
 // Instagram-like followers system
 export const followers = pgTable("followers", {
   id: serial("id").primaryKey(),
-  followerId: integer("follower_id").references(() => users.id).notNull(),
-  followingId: integer("following_id").references(() => users.id).notNull(),
+  followerId: integer("follower_id").references(() => users.id, { onDelete: "cascade" }).notNull(),
+  followingId: integer("following_id").references(() => users.id, { onDelete: "cascade" }).notNull(),
   createdAt: timestamp("created_at").defaultNow().notNull(),
-});
+}, (table) => ({
+  followerIdIdx: index("followers_follower_id_idx").on(table.followerId),
+  followingIdIdx: index("followers_following_id_idx").on(table.followingId),
+  uniqueFollowIdx: index("followers_unique_follow_idx").on(table.followerId, table.followingId),
+}));
 
 export const insertFollowerSchema = createInsertSchema(followers).pick({
   followerId: true,
