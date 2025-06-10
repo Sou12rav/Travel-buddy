@@ -1,18 +1,24 @@
-import { pgTable, text, serial, integer, boolean, timestamp, jsonb } from "drizzle-orm/pg-core";
+import { pgTable, text, serial, integer, boolean, timestamp, jsonb, varchar, decimal, index, unique } from "drizzle-orm/pg-core";
 import { createInsertSchema } from "drizzle-zod";
 import { z } from "zod";
+import { relations } from "drizzle-orm";
 
 export const users = pgTable("users", {
   id: serial("id").primaryKey(),
-  username: text("username").notNull().unique(),
+  username: varchar("username", { length: 50 }).notNull().unique(),
   password: text("password").notNull(),
-  displayName: text("display_name"),
-  email: text("email"),
+  displayName: varchar("display_name", { length: 100 }),
+  email: varchar("email", { length: 255 }).unique(),
   avatar: text("avatar"),
   bio: text("bio"),
-  location: text("location"),
-  preferences: jsonb("preferences"),
-});
+  location: varchar("location", { length: 100 }),
+  preferences: jsonb("preferences").$type<Record<string, any>>().default({}),
+  createdAt: timestamp("created_at").defaultNow().notNull(),
+  updatedAt: timestamp("updated_at").defaultNow().notNull(),
+}, (table) => ({
+  usernameIdx: index("users_username_idx").on(table.username),
+  emailIdx: index("users_email_idx").on(table.email),
+}));
 
 export const insertUserSchema = createInsertSchema(users).pick({
   username: true,
