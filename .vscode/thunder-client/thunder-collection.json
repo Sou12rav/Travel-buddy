@@ -1,0 +1,93 @@
+[
+  {
+    "name": "Travel App API",
+    "requests": [
+      {
+        "name": "Get Weather",
+        "method": "GET",
+        "url": "{{apiUrl}}/weather/{{city}}",
+        "headers": []
+      },
+      {
+        "name": "Get Destinations",
+        "method": "GET",
+        "url": "{{apiUrl}}/destinations/{{city}}",
+        "headers": []
+      },
+      {
+        "name": "Get Travel Alerts",
+        "method": "GET",
+        "url": "{{apiUrl}}/alerts/{{city}}",
+        "headers": []
+      },
+      {
+        "name": "Get User Itineraries",
+        "method": "GET",
+        "url": "{{apiUrl}}/users/{{userId}}/itineraries",
+        "headers": []
+      },
+      {
+        "name": "Create Itinerary",
+        "method": "POST",
+        "url": "{{apiUrl}}/itineraries",
+        "headers": [
+          {
+            "name": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "type": "json",
+          "raw": "{\n  \"userId\": 1,\n  \"title\": \"New Trip\",\n  \"description\": \"Trip description\",\n  \"destination\": \"Delhi\",\n  \"startDate\": \"2024-01-01\",\n  \"endDate\": \"2024-01-05\",\n  \"activities\": []\n}"
+        }
+      },
+      {
+        "name": "Get User Posts",
+        "method": "GET",
+        "url": "{{apiUrl}}/users/{{userId}}/posts",
+        "headers": []
+      },
+      {
+        "name": "Create Post",
+        "method": "POST",
+        "url": "{{apiUrl}}/posts",
+        "headers": [
+          {
+            "name": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "type": "json",
+          "raw": "{\n  \"userId\": 1,\n  \"content\": \"Amazing trip to Delhi!\",\n  \"image\": \"https://example.com/image.jpg\",\n  \"location\": \"Delhi, India\"\n}"
+        }
+      },
+      {
+        "name": "Get Feed Posts",
+        "method": "GET",
+        "url": "{{apiUrl}}/feed/{{userId}}",
+        "headers": []
+      },
+      {
+        "name": "Get Nearby Places",
+        "method": "GET",
+        "url": "{{apiUrl}}/google/nearby",
+        "headers": [],
+        "params": [
+          {
+            "name": "lat",
+            "value": "28.6139"
+          },
+          {
+            "name": "lng",
+            "value": "77.2090"
+          },
+          {
+            "name": "type",
+            "value": "restaurant"
+          }
+        ]
+      }
+    ]
+  }
+]

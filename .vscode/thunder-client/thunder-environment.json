@@ -1,0 +1,30 @@
+[
+  {
+    "name": "Development",
+    "default": true,
+    "data": [
+      {
+        "name": "baseUrl",
+        "value": "http://localhost:5000"
+      },
+      {
+        "name": "apiUrl",
+        "value": "{{baseUrl}}/api"
+      }
+    ]
+  },
+  {
+    "name": "Production",
+    "default": false,
+    "data": [
+      {
+        "name": "baseUrl",
+        "value": "https://your-app.replit.app"
+      },
+      {
+        "name": "apiUrl",
+        "value": "{{baseUrl}}/api"
+      }
+    ]
+  }
+]

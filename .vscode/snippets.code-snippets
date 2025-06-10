@@ -1,0 +1,118 @@
+{
+  "React Functional Component": {
+    "prefix": "rfc",
+    "body": [
+      "interface ${1:ComponentName}Props {",
+      "  ${2:// props}",
+      "}",
+      "",
+      "export default function ${1:ComponentName}({ ${3:} }: ${1:ComponentName}Props) {",
+      "  return (",
+      "    <div>",
+      "      ${4:// component content}",
+      "    </div>",
+      "  );",
+      "}"
+    ],
+    "description": "Create a React functional component with TypeScript"
+  },
+  "React Hook": {
+    "prefix": "rhook",
+    "body": [
+      "import { useState, useEffect } from 'react';",
+      "",
+      "export function use${1:HookName}() {",
+      "  const [${2:state}, set${2/(.*)/${1:/capitalize}/}] = useState${3:<${4:type}>}(${5:initialValue});",
+      "",
+      "  useEffect(() => {",
+      "    ${6:// effect logic}",
+      "  }, []);",
+      "",
+      "  return { ${2:state}, set${2/(.*)/${1:/capitalize}/} };",
+      "}"
+    ],
+    "description": "Create a custom React hook"
+  },
+  "Drizzle Schema Table": {
+    "prefix": "dtable",
+    "body": [
+      "export const ${1:tableName} = pgTable(\"${1:tableName}\", {",
+      "  id: serial(\"id\").primaryKey(),",
+      "  ${2:// columns}",
+      "  createdAt: timestamp(\"created_at\").defaultNow().notNull(),",
+      "  updatedAt: timestamp(\"updated_at\").defaultNow().notNull(),",
+      "});",
+      "",
+      "export const insert${1/(.*)/${1:/capitalize}/}Schema = createInsertSchema(${1:tableName}).pick({",
+      "  ${3:// pick fields}",
+      "});",
+      "",
+      "export type ${1/(.*)/${1:/capitalize}/} = typeof ${1:tableName}.$inferSelect;",
+      "export type Insert${1/(.*)/${1:/capitalize}/} = z.infer<typeof insert${1/(.*)/${1:/capitalize}/}Schema>;"
+    ],
+    "description": "Create a Drizzle table schema with types"
+  },
+  "API Route": {
+    "prefix": "aroute",
+    "body": [
+      "apiRouter.${1|get,post,put,delete|}(\"${2:/api/path}\", async (req, res) => {",
+      "  try {",
+      "    ${3:// route logic}",
+      "    res.json({ ${4:data} });",
+      "  } catch (error) {",
+      "    res.status(${5:400}).json({ message: \"${6:Error message}\", error });",
+      "  }",
+      "});"
+    ],
+    "description": "Create an API route handler"
+  },
+  "React Query Hook": {
+    "prefix": "rquery",
+    "body": [
+      "export function use${1:QueryName}(${2:params}) {",
+      "  return useQuery({",
+      "    queryKey: [\"${3:queryKey}\", ${4:params}],",
+      "    queryFn: () => fetch(`${5:/api/endpoint}`).then(res => res.json()),",
+      "    ${6:// additional options}",
+      "  });",
+      "}"
+    ],
+    "description": "Create a React Query hook"
+  },
+  "React Mutation Hook": {
+    "prefix": "rmutation",
+    "body": [
+      "export function use${1:MutationName}() {",
+      "  const queryClient = useQueryClient();",
+      "",
+      "  return useMutation({",
+      "    mutationFn: (${2:data}) => apiRequest(\"${3:POST}\", \"${4:/api/endpoint}\", ${2:data}),",
+      "    onSuccess: () => {",
+      "      queryClient.invalidateQueries({ queryKey: [\"${5:queryKey}\"] });",
+      "    },",
+      "  });",
+      "}"
+    ],
+    "description": "Create a React Mutation hook"
+  },
+  "Tailwind Component": {
+    "prefix": "twc",
+    "body": [
+      "import { cn } from \"@/lib/utils\";",
+      "",
+      "interface ${1:ComponentName}Props {",
+      "  className?: string;",
+      "  ${2:// other props}",
+      "}",
+      "",
+      "export default function ${1:ComponentName}({ className, ${3:...props} }: ${1:ComponentName}Props) {",
+      "  return (",
+      "    <div className={cn(\"${4:base-classes}\", className)} ${5:{...props}}>",
+      "      ${6:// content}",
+      "    </div>",
+      "  );",
+      "}"
+    ],
+    "description": "Create a Tailwind CSS component"
+  }
+}

@@ -1,0 +1,16 @@
+{
+  "sqltools.connections": [
+    {
+      "name": "Travel App Database",
+      "driver": "PostgreSQL",
+      "previewLimit": 50,
+      "server": "localhost",
+      "port": 5432,
+      "database": "travel_app",
+      "username": "postgres",
+      "password": "your_password_here"
+    }
+  ],
+  "thunder-client.workspaceRelativePath": ".vscode/thunder-client",
+  "thunder-client.saveToWorkspace": true
+}
