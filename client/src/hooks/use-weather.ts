@@ -7,7 +7,9 @@ export function useWeather() {
   
   const { data, isLoading, error, refetch } = useQuery<Weather>({
     queryKey: [`/api/weather/${currentCity}`],
+    queryFn: () => getWeather(currentCity),
     refetchInterval: 1000 * 60 * 30, // Refetch every 30 minutes
+    enabled: !!currentCity,
   });
 
   return {

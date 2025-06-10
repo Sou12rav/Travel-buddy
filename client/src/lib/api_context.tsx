@@ -38,7 +38,12 @@ export const AppProvider: React.FC<{ children: ReactNode }> = ({ children }) => 
     password: "demo",
     displayName: "Rahul Singh",
     email: "rahul.singh@example.com",
-    preferences: { notifications: true, darkMode: false, language: "English" }
+    avatar: null,
+    bio: null,
+    location: null,
+    preferences: { notifications: true, darkMode: false, language: "English" },
+    createdAt: new Date(),
+    updatedAt: new Date()
   });
   const [currentCity, setCurrentCity] = useState<string>("Kolkata");
 
