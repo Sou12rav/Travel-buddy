@@ -470,7 +470,7 @@ import { DatabaseStorage } from "./database-storage";
 
 // You can toggle between MemStorage and DatabaseStorage
 // For development, you can use MemStorage
-// export const storage = new MemStorage();
+export const storage = new MemStorage();
 
 // For production with actual database
-export const storage = new DatabaseStorage();
+// export const storage = new DatabaseStorage();
