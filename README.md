@@ -163,12 +163,7 @@ The application uses PostgreSQL with the following main entities:
 - **Posts** - Social media posts
 - **Saved Places** - User bookmarked locations
 
-## Deployment
-
-### Replit (Current)
-The application is configured for Replit deployment with auto-scaling capabilities.
-
-### Alternative Deployments
+## Deployments
 ```bash
 # Vercel
 npm i -g vercel
